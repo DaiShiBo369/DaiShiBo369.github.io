@@ -1,0 +1,298 @@
+{
+  "main": {
+    "id": "a635ae8b4ffda494",
+    "type": "split",
+    "children": [
+      {
+        "id": "d3135bffd49e55b9",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "8cbe979dfe1990e8",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "source/_posts/hello-world.md",
+                "mode": "preview",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "hello-world"
+            }
+          }
+        ]
+      },
+      {
+        "id": "52d824bec9037d6c",
+        "type": "split",
+        "children": [
+          {
+            "id": "c457571e8fbb8297",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "48e1330965429879",
+                "type": "leaf",
+                "state": {
+                  "type": "graph",
+                  "state": {},
+                  "icon": "lucide-git-fork",
+                  "title": "关系图谱"
+                }
+              }
+            ]
+          },
+          {
+            "id": "e3478f414f6a6853",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "767078cc4a69b1fc",
+                "type": "leaf",
+                "state": {
+                  "type": "markdown",
+                  "state": {
+                    "file": "source/_posts/hello-world.md",
+                    "mode": "source",
+                    "source": false
+                  },
+                  "icon": "lucide-file",
+                  "title": "hello-world"
+                }
+              }
+            ]
+          }
+        ],
+        "direction": "horizontal"
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "5428b772d01ee1a5",
+    "type": "split",
+    "children": [
+      {
+        "id": "8b739c3819db2604",
+        "type": "tabs",
+        "dimension": 76.19047619047619,
+        "children": [
+          {
+            "id": "1e206b813236effb",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "文件列表"
+            }
+          },
+          {
+            "id": "f284d1f928b89f93",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "84712e3f09c15f17",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      },
+      {
+        "id": "ce6e552615d4d695",
+        "type": "tabs",
+        "dimension": 23.809523809523807,
+        "children": [
+          {
+            "id": "72d1ce2d8d48b4b0",
+            "type": "leaf",
+            "state": {
+              "type": "recent-files",
+              "state": {},
+              "icon": "clock",
+              "title": "Recent Files"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "7c9f996731bc0d8c",
+    "type": "split",
+    "children": [
+      {
+        "id": "d8c8bdc527b9040e",
+        "type": "tabs",
+        "dimension": 35.147392290249435,
+        "children": [
+          {
+            "id": "90f3d8de69dbe188",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "themes/anzhiyu/README.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for README"
+            }
+          },
+          {
+            "id": "c9c6a76be40d8270",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "themes/anzhiyu/README.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from README"
+            }
+          },
+          {
+            "id": "ffd1156ba61f17c2",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "ab1b230ffa1e7abd",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "c8a42fceb8275ec4",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "themes/anzhiyu/README.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of README"
+            }
+          },
+          {
+            "id": "8ca6d88881a969ce",
+            "type": "leaf",
+            "state": {
+              "type": "calendar",
+              "state": {},
+              "icon": "calendar-with-checkmark",
+              "title": "Calendar"
+            }
+          }
+        ],
+        "currentTab": 5
+      },
+      {
+        "id": "35eeb355b0eeb667",
+        "type": "tabs",
+        "dimension": 64.85260770975057,
+        "children": [
+          {
+            "id": "6b58f1f82aff30ab",
+            "type": "leaf",
+            "state": {
+              "type": "planner-timeline",
+              "state": {},
+              "icon": "calendar-with-checkmark",
+              "title": "Timeline"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:打开快速切换": false,
+      "graph:查看关系图谱": false,
+      "canvas:新建白板": false,
+      "daily-notes:打开/创建今天的日记": false,
+      "templates:插入模板": false,
+      "command-palette:打开命令面板": false,
+      "bases:新建数据库": false,
+      "obsidian-day-planner:Open Timeline": false,
+      "obsidian-day-planner:Open Multi-Day View": false,
+      "obsidian-excalidraw-plugin:新建绘图文件": false,
+      "obsidian-git:Open Git source control": false,
+      "templater-obsidian:Templater": false,
+      "markdown-importer:打开 Markdown 格式转换器": false,
+      "workspaces:管理工作区布局": false,
+      "obsidian-kanban:创建新看板": false
+    }
+  },
+  "active": "8cbe979dfe1990e8",
+  "lastOpenFiles": [
+    "source/CNAME.txt.txt",
+    "未命名看板.md",
+    "source/_posts/hello-world.md",
+    "Excalidraw/Drawing 2026-02-07 15.37.12.excalidraw.md",
+    "Excalidraw",
+    "source/_posts/2026-01-17-Disboundia-开发日志.md",
+    "source/_posts/2026-01-16-Disboundia-开发日志.md",
+    "themes/anzhiyu/README.md",
+    "themes/anzhiyu/README_EN.md",
+    "source/essay/index.md",
+    "source/equipment/index.md",
+    "source/album/index.md"
+  ]
+}
