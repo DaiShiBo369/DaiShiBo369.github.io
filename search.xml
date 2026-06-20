@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search> 
+  
+  
+    
+    <entry>
+      <title>2026-04-29 - 音乐馆重构：关系图 + 内置播放器</title>
+      <link href="/2026/04/29/2026-04-29-music-gallery-dev-log/"/>
+      <url>/2026/04/29/2026-04-29-music-gallery-dev-log/</url>
+      
+        <content type="html"><![CDATA[<h3 id="音乐馆开发日志：关系图-内置播放器-数据扩充"><a href="#音乐馆开发日志：关系图-内置播放器-数据扩充" class="headerlink" title="音乐馆开发日志：关系图 + 内置播放器 + 数据扩充"></a><strong>音乐馆开发日志：关系图 + 内置播放器 + 数据扩充</strong></h3><p><strong>日期</strong>：2026-04-29<br><strong>作者</strong>：DaiShiBo<br><strong>类别</strong>：<code>开发日志</code><br><strong>标签</strong>：<code>HTML</code> <code>CSS</code> <code>JavaScript</code> <code>Canvas</code> <code>力导向图</code> <code>音乐馆</code><br><strong>描述</strong>：</p><hr><h4 id="1-本次更新概述-Summary"><a href="#1-本次更新概述-Summary" class="headerlink" title="1. 本次更新概述 (Summary)"></a><strong>1. 本次更新概述 (Summary)</strong></h4><p>本次开发对 <code>music-gallery.html</code> 进行了全面重构，主要包含以下内容：</p><ol><li><strong>专辑关系图</strong>：基于纯 Canvas 实现的力导向图，展示专辑之间的歌手与标签关联</li><li><strong>内置播放器</strong>：替代 QQ 音乐 iframe，使用 HTML5 Audio 对象实现站内播放</li><li><strong>数据扩充</strong>：新增 25 张经典专辑，覆盖流行、电子、朋克、前卫摇滚、另类摇滚、重金属六大流派</li><li><strong>封面图</strong>：所有封面链接替换为 MusicBrainz Cover Art Archive 的高清图片</li><li><strong>交互优化</strong>：修复卡片展开闪烁、布局抖动等问题，优化搜索栏和导航</li></ol><hr><h4 id="2-关键任务与目标-Key-Tasks-Goals"><a href="#2-关键任务与目标-Key-Tasks-Goals" class="headerlink" title="2. 关键任务与目标 (Key Tasks &amp; Goals)"></a><strong>2. 关键任务与目标 (Key Tasks &amp; Goals)</strong></h4><table><thead><tr><th>任务</th><th>状态</th></tr></thead><tbody><tr><td>视图切换 Tab（唱片架 &#x2F; 关系图）</td><td>✅ 完成 → 后改为独立页面</td></tr><tr><td>力导向关系图引擎（纯 Canvas）</td><td>✅ 完成</td></tr><tr><td>内置 HTML5 音频播放器</td><td>✅ 完成</td></tr><tr><td>底部播放条 + 播放列表</td><td>✅ 完成</td></tr><tr><td>歌曲列表点击播放联动</td><td>✅ 完成</td></tr><tr><td>新增 25 张专辑数据</td><td>✅ 完成</td></tr><tr><td>封面图替换为 Cover Art Archive</td><td>✅ 完成</td></tr><tr><td>搜索栏移至顶部</td><td>✅ 完成</td></tr><tr><td>侧边栏导航</td><td>✅ 完成</td></tr><tr><td>卡片展开闪烁修复</td><td>✅ 完成</td></tr><tr><td>卡片展开下行抖动修复</td><td>✅ 完成</td></tr><tr><td>标签移入展开区域</td><td>✅ 完成</td></tr><tr><td>国别标签移除</td><td>✅ 完成</td></tr><tr><td>关系图独立页面</td><td>✅ 完成</td></tr><tr><td>Blog 目录迁移至 D 盘</td><td>✅ 完成</td></tr></tbody></table><hr><h4 id="3-详细修改记录"><a href="#3-详细修改记录" class="headerlink" title="3. 详细修改记录"></a><strong>3. 详细修改记录</strong></h4><h5 id="3-1-关系图（独立页面）"><a href="#3-1-关系图（独立页面）" class="headerlink" title="3.1 关系图（独立页面）"></a>3.1 关系图（独立页面）</h5><p><strong>文件</strong>：<code>music-graph.html</code>（新建）</p><ul><li>纯 Canvas 力导向图引擎，无外部依赖</li><li><strong>数据构建</strong> <code>buildGraph()</code>：遍历所有专辑对，自动生成两种关系边：<ul><li>同歌手 → 粉色粗线</li><li>共通标签 → 蓝色细线</li><li>同一对专辑多条边时，用二次贝塞尔曲线分向两侧</li></ul></li><li><strong>力模拟</strong> <code>simulateGraph()</code>：库仑斥力 + 弹簧引力 + 中心引力 + 速度阻尼</li><li><strong>渲染</strong> <code>renderGraph()</code>：<ul><li>节点为圆形裁剪的封面图 + 描边 + 阴影</li><li>悬停时关联节点保持高亮，无关节点淡化</li><li>悬停边时显示标签（歌手名或标签名）</li></ul></li><li><strong>交互</strong>：拖拽节点 &#x2F; 空白处平移 &#x2F; 滚轮缩放 &#x2F; 触屏适配</li><li>DPI 适配 <code>devicePixelRatio</code></li></ul><h5 id="3-2-内置播放器"><a href="#3-2-内置播放器" class="headerlink" title="3.2 内置播放器"></a>3.2 内置播放器</h5><p><strong>文件</strong>：<code>music-gallery.html</code></p><ul><li>全局单例 <code>Audio()</code> 对象</li><li>底部固定播放条：封面缩略图 + 歌名&#x2F;歌手 + 播放控制 + 进度条 + 音量 + 播放列表</li><li>播放队列系统：点击歌曲时将整张专辑加入队列，支持上一首&#x2F;下一首&#x2F;循环</li><li>有 <code>url</code> 字段的歌曲 → 站内播放；无 <code>url</code> 的歌曲 → 跳转 QQ 音乐外链</li><li>播放列表展开&#x2F;收起（汉堡按钮）</li><li>当前播放歌曲高亮（<code>.playing</code> class + 动画指示器）</li><li>移动端适配：进度条和音量简化</li></ul><h5 id="3-3-卡片展开优化"><a href="#3-3-卡片展开优化" class="headerlink" title="3.3 卡片展开优化"></a>3.3 卡片展开优化</h5><ul><li><strong>闪烁修复</strong>：<code>playSong()</code> 不再调用 <code>renderAlbums()</code> 重渲染整个网格，改为 <code>updatePlayingHighlight()</code> 只更新 <code>.playing</code> class</li><li><strong>布局抖动修复</strong>：展开时 <code>.album-card-inner</code> 使用 <code>position: absolute</code> 浮在上方，不占据文档流；卡片固定 <code>height: 240px</code>，防止高度塌缩</li><li><strong>透明度问题</strong>：展开 overlay 背景改为 <code>rgba(16,24,48,0.92)</code> + <code>blur(24px)</code> 毛玻璃效果</li></ul><h5 id="3-4-UI-调整"><a href="#3-4-UI-调整" class="headerlink" title="3.4 UI 调整"></a>3.4 UI 调整</h5><ul><li>搜索栏从 gallery 内部移至页面顶部固定定位（<code>search-bar-top</code>）</li><li>新增左侧侧边栏导航（唱片架 &#x2F; 关系图），毛玻璃背景，当前页面高亮</li><li>封面上的标签（<code>.album-tags</code>）改为展开后在 body 区域显示</li><li>卡片封面不再显示国别标签</li><li>关系图从内嵌 Tab 切换改为独立页面 <code>music-graph.html</code>，通过侧边栏导航</li></ul><h5 id="3-5-数据与封面"><a href="#3-5-数据与封面" class="headerlink" title="3.5 数据与封面"></a>3.5 数据与封面</h5><ul><li>新增 25 张专辑，覆盖六大流派：<ul><li><strong>流行</strong>：Taylor Swift - 1989</li><li><strong>电子</strong>：Kraftwerk, Daft Punk, Aphex Twin, Massive Attack, The Prodigy</li><li><strong>朋克摇滚</strong>：Sex Pistols, The Ramones, The Clash, Patti Smith, Green Day</li><li><strong>前卫摇滚</strong>：Pink Floyd, King Crimson, Yes, Genesis, Rush</li><li><strong>另类&#x2F;垃圾摇滚</strong>：Nirvana, Pearl Jam, R.E.M., The Smiths, Radiohead (OK Computer)</li><li><strong>重金属</strong>：Black Sabbath, Metallica, Iron Maiden, Judas Priest, Megadeth</li></ul></li><li>所有封面 URL 通过 MusicBrainz API 批量查询 MBID，替换为 Cover Art Archive 500px 高清链接</li></ul><h5 id="3-6-文件迁移"><a href="#3-6-文件迁移" class="headerlink" title="3.6 文件迁移"></a>3.6 文件迁移</h5><ul><li>Blog 目录从 <code>/mnt/d/My_Obsidian_Vault/Blog</code> 迁移至 <code>/mnt/d/Blog</code></li></ul><hr><h4 id="4-文件变更清单"><a href="#4-文件变更清单" class="headerlink" title="4. 文件变更清单"></a><strong>4. 文件变更清单</strong></h4><table><thead><tr><th>文件</th><th>操作</th></tr></thead><tbody><tr><td><code>music-gallery.html</code></td><td>重构（CSS + HTML + JS + 数据）</td></tr><tr><td><code>music-graph.html</code></td><td>新建（关系图独立页面）</td></tr></tbody></table><hr><h4 id="5-待办"><a href="#5-待办" class="headerlink" title="5. 待办"></a><strong>5. 待办</strong></h4><ul><li><input disabled="" type="checkbox"> 为歌曲添加实际音频 <code>url</code> 字段（当前均为空，点击跳转 QQ 音乐）</li><li><input disabled="" type="checkbox"> 考虑添加更多专辑数据</li><li><input disabled="" type="checkbox"> 考虑暗色&#x2F;亮色主题切换</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 开发日志 </category>
+          
+          <category> 音乐馆 </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>深广小记</title>
+      <link href="/2026/01/24/%E6%B7%B1%E5%B9%BF%E5%B0%8F%E8%AE%B0/"/>
+      <url>/2026/01/24/%E6%B7%B1%E5%B9%BF%E5%B0%8F%E8%AE%B0/</url>
+      
+        <content type="html"><![CDATA[<h4 id="深广游记"><a href="#深广游记" class="headerlink" title="深广游记"></a><strong>深广游记</strong></h4><p>一月十九日的北京还是白雪纷纷，雾凇沆荡。年末的燕山飞雪一次一次震撼着来自北纬三十度的我。然而不过几柱香的时间，起飞、落地，人已在岭南的广粤大地上。 </p><p><strong>深圳</strong>是一座完全陌生的城市，走出宝安机场，街旁招展的棕榈树提示着这座年轻城市的过分热情。晴朗的天空下高楼耸立，不时吹来南国湿润的风，杭州的影子与这座城市的种种相重叠，一时间竟有些恍惚。</p><p>环深圳湾的<strong>娱乐生态</strong>真乃城市规划中的神来之笔，从西端的人才公园步过深圳湾公园<br>**“研学”**的确是一种极为高级的旅行生态</p><p>—[[深度技术叙事与博客写作助手]]</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 旅游 </category>
+          
+          <category> 旅游 </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>2026-01-18 - Disboundia 开发日志</title>
+      <link href="/2026/01/18/2026-01-18-Disboundia-%E5%BC%80%E5%8F%91%E6%97%A5%E5%BF%97/"/>
+      <url>/2026/01/18/2026-01-18-Disboundia-%E5%BC%80%E5%8F%91%E6%97%A5%E5%BF%97/</url>
+      
+        <content type="html"><![CDATA[<h3 id="Disboundia-开发日志：解决了Invalid-time-value后的界面优化"><a href="#Disboundia-开发日志：解决了Invalid-time-value后的界面优化" class="headerlink" title="Disboundia 开发日志：解决了Invalid time value后的界面优化"></a><strong>Disboundia 开发日志：解决了<code>Invalid time value</code>后的界面优化</strong></h3><p><strong>日期</strong>：2026-1-18<br><strong>作者</strong>：DaiShiBo<br><strong>类别</strong>：<code>开发日志</code><br><strong>标签</strong>：<code>Hexo</code> <code>Disboundia</code> <code>Anzhiyu</code> <code>GitHub Pages</code> <code>YAML</code> <code>Bug修复</code> <code>主题配置</code> <code>图床</code> <code>Git</code> <code>Node.js</code><br><strong>描述</strong>：</p><hr><h4 id="1-本次更新概述-Summary"><a href="#1-本次更新概述-Summary" class="headerlink" title="1. 本次更新概述 (Summary)"></a><strong>1. 本次更新概述 (Summary)</strong></h4><p>本次开发围绕 Disboundia 个人博客的<strong>界面优化</strong>展开。主要目标是完善主页界面。</p><h4 id="2-关键任务与目标-Key-Tasks-Goals"><a href="#2-关键任务与目标-Key-Tasks-Goals" class="headerlink" title="2. 关键任务与目标 (Key Tasks &amp; Goals)"></a><strong>2. 关键任务与目标 (Key Tasks &amp; Goals)</strong></h4><ul><li><input checked="" disabled="" type="checkbox"> 完善PicGo图床配置</li><li><input checked="" disabled="" type="checkbox"> 绑定其他社交平台账号，解决跳转问题</li><li><input checked="" disabled="" type="checkbox"> 完善<code>about</code>界面</li><li>[] 完善<code>album</code>界面</li><li>[] 完善运行时间的计算</li><li><input checked="" disabled="" type="checkbox"> 文章标签的确定</li><li>[]解决图床失灵问题</li></ul><h4 id="3-遇到的问题与解决方案-Problems-Solutions"><a href="#3-遇到的问题与解决方案-Problems-Solutions" class="headerlink" title="3. 遇到的问题与解决方案 (Problems &amp; Solutions)"></a><strong>3. 遇到的问题与解决方案 (Problems &amp; Solutions)</strong></h4><h5 id="3-1-小红书没有显示"><a href="#3-1-小红书没有显示" class="headerlink" title="3.1 小红书没有显示"></a><strong>3.1 小红书没有显示</strong></h5><ul><li><strong>问题</strong>：在 <code>_config.yml</code> 配置 <code>deploy</code> 时，HTTPS 协议下推送需要输入密码，直接输入 GitHub 登录密码会失败。</li><li><strong>原因分析</strong>：GitHub 自 2021 年起禁用密码进行命令行 Git 操作，需要使用 Personal Access Token (PAT)。</li><li><strong>解决方案</strong>：<ol><li>前往 GitHub <code>Settings</code> -&gt; <code>Developer settings</code> -&gt; <code>Personal access tokens</code> -&gt; <code>Tokens (classic)</code>。</li><li>生成一个新的 Token，<strong>只勾选 <code>repo</code> 权限</strong>，并设置为“永不过期”。</li><li>复制 Token 字符串并妥善保存。</li><li>在执行 <code>hexo d</code> 弹出密码提示时，粘贴 Token 替代密码。</li></ol></li><li><strong>反思</strong>：初次接触 Git 部署，未了解 GitHub 的安全策略更新，导致鉴权失败。熟悉 PAT 机制是进行任何 GitHub 自动化操作的基础。</li></ul><h5 id="3-2-追番界面图片中心偏移"><a href="#3-2-追番界面图片中心偏移" class="headerlink" title="3.2 追番界面图片中心偏移"></a><strong>3.2 追番界面图片中心偏移</strong></h5><ul><li>编辑图片即可</li></ul><h4 id="4-新功能实现与配置-New-Features-Configurations"><a href="#4-新功能实现与配置-New-Features-Configurations" class="headerlink" title="4. 新功能实现与配置 (New Features &amp; Configurations)"></a><strong>4. 新功能实现与配置 (New Features &amp; Configurations)</strong></h4><h5 id="4-1-社交平台账号相关跳转"><a href="#4-1-社交平台账号相关跳转" class="headerlink" title="4.1 社交平台账号相关跳转"></a><strong>4.1 社交平台账号相关跳转</strong></h5><ul><li><strong>目标</strong>：通过<code>Disboundia</code>跳转至其他社交平台。</li><li><strong>操作</strong>：修改<code>_config_anzhiyu_yml</code>的<code>social</code>部分代码。</li><li><strong>意义</strong>：整合各平台博客资源。</li></ul><h4 id="5-思考与心得-Reflections-Learnings"><a href="#5-思考与心得-Reflections-Learnings" class="headerlink" title="5. 思考与心得 (Reflections &amp; Learnings)"></a><strong>5. 思考与心得 (Reflections &amp; Learnings)</strong></h4><p>本次 Disboundia 博客的初期搭建过程，充满了挑战与学习。从 YAML 语法的严格要求，到 Hexo 内部渲染机制对日期格式的敏感性，再到 Git 部署与 GitHub Pages 交互的细节，每一步都是对基础知识的深化理解。</p><p>最大的收获在于：<strong>定位和解决错误的过程本身就是最宝贵的学习。</strong> 面对报错信息，不再是盲目尝试，而是学会分析其指向的文件、行数和错误类型。这让我对“代码即逻辑”有了更直观的感受。</p><p>通过安知鱼主题的引入，Disboundia 的外观已从基础跃升至专业级别。下一步，我将专注于实现更丰富的功能，如基于 GitHub + PicGo 的图床管理，以及更多关于“朋友圈”、“相册”、“音乐”等高级模块的配置。同时，将持续以开发日志的形式记录这些探索过程，使 Disboundia 不仅是内容输出的平台，更是个人学习与成长的生动见证。</p><p>—[[深度技术叙事与博客写作助手]]</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 开发日志 </category>
+          
+          <category> Hexo </category>
+          
+          <category> Disboundia </category>
+          
+          <category> 图床 </category>
+          
+          <category> bug修复 </category>
+          
+          <category> anzhiyu </category>
+          
+          <category> Yaml </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>2026-01-17 - Disboundia 开发日志</title>
+      <link href="/2026/01/17/2026-01-17-Disboundia-%E5%BC%80%E5%8F%91%E6%97%A5%E5%BF%97/"/>
+      <url>/2026/01/17/2026-01-17-Disboundia-%E5%BC%80%E5%8F%91%E6%97%A5%E5%BF%97/</url>
+      
+        <content type="html"><![CDATA[<h3 id="Disboundia-开发日志：解决了Invalid-time-value后的界面优化"><a href="#Disboundia-开发日志：解决了Invalid-time-value后的界面优化" class="headerlink" title="Disboundia 开发日志：解决了Invalid time value后的界面优化"></a><strong>Disboundia 开发日志：解决了<code>Invalid time value</code>后的界面优化</strong></h3><p><strong>日期</strong>：2026-1-17<br><strong>作者</strong>：DaiShiBo<br><strong>类别</strong>：<code>开发日志</code><br><strong>标签</strong>：<code>Hexo</code> <code>Disboundia</code> <code>Anzhiyu</code> <code>GitHub Pages</code> <code>YAML</code> <code>Bug修复</code> <code>主题配置</code> <code>图床</code> <code>Git</code> <code>Node.js</code><br><strong>描述</strong>：本篇日志记录了 Disboundia 解决了 <code>Invalid time value</code> 配置问题后的界面优化过程。</p><hr><h4 id="1-本次更新概述-Summary"><a href="#1-本次更新概述-Summary" class="headerlink" title="1. 本次更新概述 (Summary)"></a><strong>1. 本次更新概述 (Summary)</strong></h4><p>本次开发围绕 Disboundia 个人博客的<strong>界面优化</strong>展开。主要目标是完善主页界面。</p><h4 id="2-关键任务与目标-Key-Tasks-Goals"><a href="#2-关键任务与目标-Key-Tasks-Goals" class="headerlink" title="2. 关键任务与目标 (Key Tasks &amp; Goals)"></a><strong>2. 关键任务与目标 (Key Tasks &amp; Goals)</strong></h4><ul><li><input checked="" disabled="" type="checkbox"> 完善PicGo图床配置</li><li><input checked="" disabled="" type="checkbox"> 绑定其他社交平台账号，解决跳转问题</li><li><input checked="" disabled="" type="checkbox"> 完善<code>about</code>界面</li><li>[] 完善<code>album</code>界面</li><li>[] 完善运行时间的计算</li><li><input checked="" disabled="" type="checkbox"> 文章标签的确定</li></ul><h4 id="3-遇到的问题与解决方案-Problems-Solutions"><a href="#3-遇到的问题与解决方案-Problems-Solutions" class="headerlink" title="3. 遇到的问题与解决方案 (Problems &amp; Solutions)"></a><strong>3. 遇到的问题与解决方案 (Problems &amp; Solutions)</strong></h4><h5 id="3-1-小红书没有显示"><a href="#3-1-小红书没有显示" class="headerlink" title="3.1 小红书没有显示"></a><strong>3.1 小红书没有显示</strong></h5><ul><li><strong>问题</strong>：在 <code>_config.yml</code> 配置 <code>deploy</code> 时，HTTPS 协议下推送需要输入密码，直接输入 GitHub 登录密码会失败。</li><li><strong>原因分析</strong>：GitHub 自 2021 年起禁用密码进行命令行 Git 操作，需要使用 Personal Access Token (PAT)。</li><li><strong>解决方案</strong>：<ol><li>前往 GitHub <code>Settings</code> -&gt; <code>Developer settings</code> -&gt; <code>Personal access tokens</code> -&gt; <code>Tokens (classic)</code>。</li><li>生成一个新的 Token，<strong>只勾选 <code>repo</code> 权限</strong>，并设置为“永不过期”。</li><li>复制 Token 字符串并妥善保存。</li><li>在执行 <code>hexo d</code> 弹出密码提示时，粘贴 Token 替代密码。</li></ol></li><li><strong>反思</strong>：初次接触 Git 部署，未了解 GitHub 的安全策略更新，导致鉴权失败。熟悉 PAT 机制是进行任何 GitHub 自动化操作的基础。</li></ul><h5 id="3-2-追番界面图片中心偏移"><a href="#3-2-追番界面图片中心偏移" class="headerlink" title="3.2 追番界面图片中心偏移"></a><strong>3.2 追番界面图片中心偏移</strong></h5><ul><li><strong>尚未解决</strong></li></ul><h4 id="4-新功能实现与配置-New-Features-Configurations"><a href="#4-新功能实现与配置-New-Features-Configurations" class="headerlink" title="4. 新功能实现与配置 (New Features &amp; Configurations)"></a><strong>4. 新功能实现与配置 (New Features &amp; Configurations)</strong></h4><h5 id="4-1-社交平台账号相关跳转"><a href="#4-1-社交平台账号相关跳转" class="headerlink" title="4.1 社交平台账号相关跳转"></a><strong>4.1 社交平台账号相关跳转</strong></h5><ul><li><strong>目标</strong>：通过<code>Disboundia</code>跳转至其他社交平台。</li><li><strong>操作</strong>：修改<code>_config_anzhiyu_yml</code>的<code>social</code>部分代码。</li><li><strong>意义</strong>：整合各平台博客资源。</li></ul><h4 id="5-思考与心得-Reflections-Learnings"><a href="#5-思考与心得-Reflections-Learnings" class="headerlink" title="5. 思考与心得 (Reflections &amp; Learnings)"></a><strong>5. 思考与心得 (Reflections &amp; Learnings)</strong></h4><p>本次 Disboundia 博客的初期搭建过程，充满了挑战与学习。从 YAML 语法的严格要求，到 Hexo 内部渲染机制对日期格式的敏感性，再到 Git 部署与 GitHub Pages 交互的细节，每一步都是对基础知识的深化理解。</p><p>最大的收获在于：<strong>定位和解决错误的过程本身就是最宝贵的学习。</strong> 面对报错信息，不再是盲目尝试，而是学会分析其指向的文件、行数和错误类型。这让我对“代码即逻辑”有了更直观的感受。</p><p>通过安知鱼主题的引入，Disboundia 的外观已从基础跃升至专业级别。下一步，我将专注于实现更丰富的功能，如基于 GitHub + PicGo 的图床管理，以及更多关于“朋友圈”、“相册”、“音乐”等高级模块的配置。同时，将持续以开发日志的形式记录这些探索过程，使 Disboundia 不仅是内容输出的平台，更是个人学习与成长的生动见证。</p><hr><p>[[深度技术叙事与博客写作助手]]</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 开发日志 </category>
+          
+          <category> Hexo </category>
+          
+          <category> Disboundia </category>
+          
+          <category> 图床 </category>
+          
+          <category> bug修复 </category>
+          
+          <category> anzhiyu </category>
+          
+          <category> Yaml </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>2026-01-16 - Disboundia 开发日志</title>
+      <link href="/2026/01/17/2026-01-16-Disboundia-%E5%BC%80%E5%8F%91%E6%97%A5%E5%BF%97/"/>
+      <url>/2026/01/17/2026-01-16-Disboundia-%E5%BC%80%E5%8F%91%E6%97%A5%E5%BF%97/</url>
+      
+        <content type="html"><![CDATA[<h3 id="Disboundia-开发日志：从-Hexo-初始化到-Anzhiyu-主题调试"><a href="#Disboundia-开发日志：从-Hexo-初始化到-Anzhiyu-主题调试" class="headerlink" title="Disboundia 开发日志：从 Hexo 初始化到 Anzhiyu 主题调试"></a><strong>Disboundia 开发日志：从 Hexo 初始化到 Anzhiyu 主题调试</strong></h3><p><strong>日期</strong>：2026-01-16<br><strong>作者</strong>：DaiShiBo<br><strong>类别</strong>：<code>开发日志</code><br><strong>标签</strong>：<code>Hexo</code> <code>Disboundia</code> <code>Anzhiyu</code> <code>GitHub Pages</code> <code>YAML</code> <code>Bug修复</code> <code>主题配置</code> <code>图床</code> <code>Git</code> <code>Node.js</code><br><strong>描述</strong>：本篇日志详细记录了 Disboundia 从基础搭建、域名绑定，到 Anzhiyu 主题引入与调试的关键阶段。重点分析了多次遇到的 <code>YAMLException</code> 和 <code>Invalid time value</code> 等配置问题及其排查过程，并规划了未来的图床与内容管理策略。</p><hr><h4 id="1-本次更新概述-Summary"><a href="#1-本次更新概述-Summary" class="headerlink" title="1. 本次更新概述 (Summary)"></a><strong>1. 本次更新概述 (Summary)</strong></h4><p>本次开发围绕 Disboundia 个人博客的<strong>核心基础设施搭建与初步个性化</strong>展开。主要目标是成功部署 Hexo 博客到 GitHub Pages，并顺利切换至 Anzhiyu 主题，为后续的功能集成和内容创作打下坚实基础。过程中，对 YAML 语法、Hexo 主题配置机制、Git 部署流程及常见错误排查有了深入理解。</p><h4 id="2-关键任务与目标-Key-Tasks-Goals"><a href="#2-关键任务与目标-Key-Tasks-Goals" class="headerlink" title="2. 关键任务与目标 (Key Tasks &amp; Goals)"></a><strong>2. 关键任务与目标 (Key Tasks &amp; Goals)</strong></h4><ul><li><input checked="" disabled="" type="checkbox"> Hexo 环境初始化与基础博客搭建。</li><li><input checked="" disabled="" type="checkbox"> 成功部署 Hexo 默认主题至 GitHub Pages。</li><li><input checked="" disabled="" type="checkbox"> 绑定自定义域名 <code>disboundary.top</code> 并配置 DNS 解析。</li><li><input checked="" disabled="" type="checkbox"> 克隆并安装 Anzhiyu (安知鱼) Hexo 主题。</li><li><input checked="" disabled="" type="checkbox"> 安装 Anzhiyu 主题所需的核心渲染插件 (<code>hexo-renderer-pug</code>, <code>hexo-renderer-stylus</code>)。</li><li><input checked="" disabled="" type="checkbox"> 实现主题配置分离，创建并编辑 <code>_config.anzhiyu.yml</code>。</li><li><input checked="" disabled="" type="checkbox"> <strong>修复多次出现的 <code>YAMLException: duplicated mapping key</code> 配置错误。</strong></li><li><input checked="" disabled="" type="checkbox"> <strong>修复多次出现的 <code>RangeError: Invalid time value</code> 时间配置错误。</strong></li><li><input checked="" disabled="" type="checkbox"> 解决 <code>hexo d</code> 后网站显示空白的问题。</li><li><input checked="" disabled="" type="checkbox"> 完成 Hexo + GitHub Pages + Anzhiyu 主题的首次完整部署。</li><li><input disabled="" type="checkbox"> 规划图床方案（GitHub + PicGo + jsDelivr）。</li><li><input checked="" disabled="" type="checkbox"> 规划博客开发日志的撰写规范。</li></ul><h4 id="3-遇到的问题与解决方案-Problems-Solutions"><a href="#3-遇到的问题与解决方案-Problems-Solutions" class="headerlink" title="3. 遇到的问题与解决方案 (Problems &amp; Solutions)"></a><strong>3. 遇到的问题与解决方案 (Problems &amp; Solutions)</strong></h4><h5 id="3-1-Hexo-部署协议选择与-Token-配置"><a href="#3-1-Hexo-部署协议选择与-Token-配置" class="headerlink" title="3.1 Hexo 部署协议选择与 Token 配置"></a><strong>3.1 Hexo 部署协议选择与 Token 配置</strong></h5><ul><li><strong>问题</strong>：在 <code>_config.yml</code> 配置 <code>deploy</code> 时，HTTPS 协议下推送需要输入密码，直接输入 GitHub 登录密码会失败。</li><li><strong>原因分析</strong>：GitHub 自 2021 年起禁用密码进行命令行 Git 操作，需要使用 Personal Access Token (PAT)。</li><li><strong>解决方案</strong>：<ol><li>前往 GitHub <code>Settings</code> -&gt; <code>Developer settings</code> -&gt; <code>Personal access tokens</code> -&gt; <code>Tokens (classic)</code>。</li><li>生成一个新的 Token，<strong>只勾选 <code>repo</code> 权限</strong>，并设置为“永不过期”。</li><li>复制 Token 字符串并妥善保存。</li><li>在执行 <code>hexo d</code> 弹出密码提示时，粘贴 Token 替代密码。</li></ol></li><li><strong>反思</strong>：初次接触 Git 部署，未了解 GitHub 的安全策略更新，导致鉴权失败。熟悉 PAT 机制是进行任何 GitHub 自动化操作的基础。</li></ul><h5 id="3-2-Anzhiyu-主题仓库克隆失败"><a href="#3-2-Anzhiyu-主题仓库克隆失败" class="headerlink" title="3.2 Anzhiyu 主题仓库克隆失败"></a><strong>3.2 Anzhiyu 主题仓库克隆失败</strong></h5><ul><li><strong>问题</strong>：执行 <code>git clone https://github.com/anzhiyu-c/hexo-theme-anheyu.git themes/anheyu</code> 时，报错 <code>remote: Repository not found</code>。</li><li><strong>原因分析</strong>：主题仓库的名称拼写错误，实际应为 <code>anzhiyu</code> 而非 <code>anheyu</code>。</li><li><strong>解决方案</strong>：修正 Git Clone 命令为 <code>git clone https://github.com/anzhiyu-c/hexo-theme-anzhiyu.git themes/anzhiyu</code>。</li><li><strong>反思</strong>：在命令行操作中，即使是单个字母的拼写错误也可能导致完全不同的结果。日后需更加细致地核对地址和名称。</li></ul><h5 id="3-3-YAMLException-duplicated-mapping-key-配置文件重复键"><a href="#3-3-YAMLException-duplicated-mapping-key-配置文件重复键" class="headerlink" title="3.3 YAMLException: duplicated mapping key (配置文件重复键)"></a><strong>3.3 <code>YAMLException: duplicated mapping key</code> (配置文件重复键)</strong></h5><ul><li><strong>问题</strong>：运行 <code>hexo clean</code> 或 <code>hexo g</code> 时，报错 <code>duplicated mapping key (980:1)</code>，指向 <code>icons:</code>。</li><li><strong>原因分析</strong>：在 <code>_config.anzhiyu.yml</code> 文件中，<code>icons:</code> 这个配置项在同一层级下被定义了两次。这通常是由于复制粘贴失误或手动修改时重复添加。</li><li><strong>解决方案</strong>：使用 VS Code 打开 <code>_config.anzhiyu.yml</code>，跳转到报错提示的行数（980行），然后向上或向下搜索 <code>icons:</code>，找到并删除其中一个重复的定义。</li><li><strong>反思</strong>：YAML 语法对缩进和键的唯一性要求极其严格。此错误强调了仔细检查配置文件结构的重要性。</li></ul><h5 id="3-4-RangeError-Invalid-time-value-无效的时间值"><a href="#3-4-RangeError-Invalid-time-value-无效的时间值" class="headerlink" title="3.4 RangeError: Invalid time value (无效的时间值)"></a><strong>3.4 <code>RangeError: Invalid time value</code> (无效的时间值)</strong></h5><ul><li><strong>问题</strong>：运行 <code>hexo g</code> 或 <code>hexo s</code> 时，多次报错 <code>Invalid time value</code>，指向 <code>card_webinfo.pug</code> 中的 <code>theme.runtimeshow.publish_date</code>。</li><li><strong>原因分析</strong>：安知鱼主题的“网站运行时间”卡片需要一个有效的日期来计算博客已运行天数。但 <code>_config.anzhiyu.yml</code> 中 <code>runtimeshow.publish_date</code> 配置项为空、被注释掉，或者日期格式不正确（例如：<code>publish_date: </code> 或 <code>publish_date: 2023年10月26日</code>）。</li><li><strong>解决方案</strong>：打开 <code>_config.anzhiyu.yml</code>，找到 <code>runtimeshow.publish_date</code>，并将其值修改为标准的 <code>YYYY/MM/DD</code> 或 <code>YYYY-MM-DD</code> 格式的日期，例如 <code>publish_date: 2023/10/26</code>。</li><li><strong>反思</strong>：日期格式的准确性在编程中至关重要。此错误揭示了主题对特定数据格式的依赖，以及配置文件中每一项都需正确设置的重要性。</li></ul><h5 id="3-5-hexo-d-后线上博客显示空白"><a href="#3-5-hexo-d-后线上博客显示空白" class="headerlink" title="3.5 hexo d 后线上博客显示空白"></a><strong>3.5 <code>hexo d</code> 后线上博客显示空白</strong></h5><ul><li><strong>问题</strong>：虽然本地 <code>hexo d</code> 提示 <code>Deploy done: git</code>，但访问 <code>disboundary.top</code> 仍显示空白页面。</li><li><strong>原因分析</strong>：<ol><li><strong>根本原因</strong>：之前 <code>Invalid time value</code> 报错导致 <code>hexo g</code> 生成的 <code>public</code> 文件夹内容不完整或有缺陷，Git 将这些有问题的静态文件推送到了 GitHub Pages。</li><li><strong>次要原因 (需要复查)</strong>：GitHub Pages 的 <code>Settings</code> -&gt; <code>Pages</code> 中，<code>Source</code> 的 <code>Branch</code> 和 <code>/(root)</code> 路径可能未正确设置或未保存生效；自定义域名 <code>CNAME</code> 文件可能缺失或配置错误。</li></ol></li><li><strong>解决方案</strong>：<ol><li><strong>优先解决所有 <code>hexo g</code> 阶段的错误</strong>（即上述的 <code>Invalid time value</code>）。</li><li>确保 <code>source</code> 目录下存在一个名为 <code>CNAME</code>（无后缀）的文件，且内容为 <code>disboundary.top</code>。</li><li>执行完整的 <code>hexo clean &amp;&amp; hexo g &amp;&amp; hexo d</code>。</li><li>重新检查 GitHub 仓库 <code>Settings</code> -&gt; <code>Pages</code> 中 <code>Branch</code> 为 <code>main</code> 和 <code>/(root)</code>，并手动点击 <code>Save</code> 按钮强制刷新。</li><li>勾选 <code>Enforce HTTPS</code>。</li><li>等待 5-15 分钟，强制刷新浏览器访问 <code>https://disboundary.top</code>。</li></ol></li><li><strong>反思</strong>：一个看似成功的部署（<code>Deploy done</code>）并不代表最终效果一定正确。中间的 <code>hexo g</code> 阶段的错误才是根源。部署前彻底清除所有本地生成错误至关重要。</li></ul><h5 id="3-6-Invalid-time-value"><a href="#3-6-Invalid-time-value" class="headerlink" title="3.6 Invalid time value"></a><strong>3.6 <code>Invalid time value</code></strong></h5><ul><li><strong>问题</strong>：<code>runtimeshow</code>中<code>enable</code>打开后显示<code>Invalid time value</code>。</li><li><strong>原因分析</strong>：<ol><li><strong>根本原因</strong>：15&#x2F;1&#x2F;2026 是“日&#x2F;月&#x2F;年”格式，但<code>Hexo (Node.js)</code>默认解析逻辑是 “月&#x2F;日&#x2F;年”。<br>系统会尝试把 15 解析为月份（第 15 个月），因为没有 15 月，所以报错<code> Invalid time value</code>。</li></ol></li><li><strong>解决方案</strong>：<ol><li><strong>修改<code>publishtime</code>的格式</strong></li></ol></li></ul><h4 id="4-新功能实现与配置-New-Features-Configurations"><a href="#4-新功能实现与配置-New-Features-Configurations" class="headerlink" title="4. 新功能实现与配置 (New Features &amp; Configurations)"></a><strong>4. 新功能实现与配置 (New Features &amp; Configurations)</strong></h4><h5 id="4-1-Anzhiyu-主题配置分离"><a href="#4-1-Anzhiyu-主题配置分离" class="headerlink" title="4.1 Anzhiyu 主题配置分离"></a><strong>4.1 Anzhiyu 主题配置分离</strong></h5><ul><li><strong>目标</strong>：将主题配置从 <code>themes/anzhiyu/_config.yml</code> 迁移至博客根目录的 <code>_config.anzhiyu.yml</code>。</li><li><strong>操作</strong>：复制 <code>themes/anzhiyu/_config.yml</code> 到 <code>D:/Blog/</code> 并重命名为 <code>_config.anzhiyu.yml</code>。</li><li><strong>意义</strong>：实现主题配置与核心代码分离，便于主题升级和管理。</li></ul><h5 id="4-2-博客名称与-Logo-意境设定"><a href="#4-2-博客名称与-Logo-意境设定" class="headerlink" title="4.2 博客名称与 Logo 意境设定"></a><strong>4.2 博客名称与 Logo 意境设定</strong></h5><ul><li><strong>名称</strong>：确认博客名称为 <strong>Disboundia</strong> (解缚之境)。</li><li><strong>域名</strong>：<code>disboundary.top</code> (破除边界)。</li><li><strong>Logo 意境</strong>：基于手写花体“D”，采用蓝紫色渐变，边缘柔和消散，背景融入蓝紫色霞光下的暗淡草原与隐现雪山，象征知识的显现与无边界的探索。</li></ul><h4 id="5-思考与心得-Reflections-Learnings"><a href="#5-思考与心得-Reflections-Learnings" class="headerlink" title="5. 思考与心得 (Reflections &amp; Learnings)"></a><strong>5. 思考与心得 (Reflections &amp; Learnings)</strong></h4><p>本次 Disboundia 博客的初期搭建过程，充满了挑战与学习。从 YAML 语法的严格要求，到 Hexo 内部渲染机制对日期格式的敏感性，再到 Git 部署与 GitHub Pages 交互的细节，每一步都是对基础知识的深化理解。</p><p>最大的收获在于：<strong>定位和解决错误的过程本身就是最宝贵的学习。</strong> 面对报错信息，不再是盲目尝试，而是学会分析其指向的文件、行数和错误类型。这让我对“代码即逻辑”有了更直观的感受。</p><p>通过安知鱼主题的引入，Disboundia 的外观已从基础跃升至专业级别。下一步，我将专注于实现更丰富的功能，如基于 GitHub + PicGo 的图床管理，以及更多关于“朋友圈”、“相册”、“音乐”等高级模块的配置。同时，将持续以开发日志的形式记录这些探索过程，使 Disboundia 不仅是内容输出的平台，更是个人学习与成长的生动见证。</p><hr><p>[[深度技术叙事与博客写作助手]]</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 开发日志 </category>
+          
+          <category> Hexo </category>
+          
+          <category> Disboundia </category>
+          
+          <category> 图床 </category>
+          
+          <category> bug修复 </category>
+          
+          <category> anzhiyu </category>
+          
+          <category> Yaml </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Hello World</title>
+      <link href="/2025/11/07/hello-world/"/>
+      <url>/2025/11/07/hello-world/</url>
+      
+        <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a><br>[[深度技术叙事与博客写作助手]]</p>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+  
+  
+</search>

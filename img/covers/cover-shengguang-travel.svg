@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Disboundia article cover - Shenzhen Guangzhou travel note</title>
+  <desc id="desc">A same-series travel cover with route line, bay skyline, and southern light.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#08111f"/>
+      <stop offset="0.35" stop-color="#12305a"/>
+      <stop offset="0.68" stop-color="#2563eb"/>
+      <stop offset="1" stop-color="#f59e0b"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="80%" cy="18%" r="62%">
+      <stop offset="0" stop-color="#fde68a" stop-opacity="0.62"/>
+      <stop offset="0.38" stop-color="#f472b6" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#020617" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="11" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <pattern id="grid" width="64" height="64" patternUnits="userSpaceOnUse">
+      <path d="M64 0H0V64" fill="none" stroke="#ffffff" stroke-opacity="0.05"/>
+      <circle cx="0" cy="0" r="2" fill="#ffffff" fill-opacity="0.14"/>
+    </pattern>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect width="1600" height="900" fill="url(#sun)"/>
+  <rect width="1600" height="900" fill="url(#grid)"/>
+  <path d="M0 650c170-70 330-72 500-24 178 50 298 34 472-42 198-86 398-92 628-10v326H0Z" fill="#020617" fill-opacity="0.34"/>
+  <g transform="translate(920 300)" filter="url(#glow)">
+    <path d="M0 320h540" stroke="#ffffff" stroke-opacity="0.38" stroke-width="4"/>
+    <rect x="30" y="180" width="46" height="140" fill="#dbeafe" fill-opacity="0.16"/>
+    <rect x="104" y="114" width="64" height="206" fill="#dbeafe" fill-opacity="0.18"/>
+    <rect x="198" y="152" width="52" height="168" fill="#dbeafe" fill-opacity="0.15"/>
+    <rect x="280" y="70" width="74" height="250" fill="#dbeafe" fill-opacity="0.2"/>
+    <rect x="390" y="132" width="58" height="188" fill="#dbeafe" fill-opacity="0.16"/>
+    <path d="M-40 250C80 134 184 360 300 216c82-102 156-126 244-84" fill="none" stroke="#fde68a" stroke-width="12" stroke-linecap="round"/>
+    <circle cx="-40" cy="250" r="18" fill="#fde68a"/>
+    <circle cx="300" cy="216" r="18" fill="#67e8f9"/>
+    <circle cx="544" cy="132" r="18" fill="#f9a8d4"/>
+  </g>
+  <g font-family="'PingFang SC','Microsoft YaHei','Segoe UI',Arial,sans-serif" fill="#fff">
+    <text x="112" y="140" font-size="30" letter-spacing="6" opacity="0.78">DISBOUNDIA</text>
+    <rect x="112" y="184" width="236" height="48" rx="24" fill="#fde68a" fill-opacity="0.18" stroke="#fde68a" stroke-opacity="0.46"/>
+    <text x="136" y="217" font-size="24" fill="#fef3c7">旅行 / 研学</text>
+    <text x="112" y="335" font-size="86" font-weight="800">深广小记</text>
+    <text x="116" y="430" font-size="40" font-weight="600" fill="#e0f2fe">从北方雪色到岭南海风</text>
+    <text x="116" y="510" font-size="30" fill="#dbeafe">深圳、广州与一次城市经验的展开</text>
+    <text x="116" y="790" font-size="26" fill="#fde68a">2026-01-24</text>
+  </g>
+</svg>

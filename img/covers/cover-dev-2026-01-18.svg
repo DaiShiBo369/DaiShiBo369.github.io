@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Disboundia article cover - theme debugging</title>
+  <desc id="desc">A same-series abstract cover about debugging and interface polishing.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1020"/>
+      <stop offset="0.46" stop-color="#241d58"/>
+      <stop offset="0.75" stop-color="#4c1d95"/>
+      <stop offset="1" stop-color="#f472b6"/>
+    </linearGradient>
+    <radialGradient id="halo" cx="76%" cy="22%" r="72%">
+      <stop offset="0" stop-color="#fda4af" stop-opacity="0.46"/>
+      <stop offset="0.45" stop-color="#818cf8" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#020617" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="12" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <pattern id="grid" width="64" height="64" patternUnits="userSpaceOnUse">
+      <path d="M64 0H0V64" fill="none" stroke="#ffffff" stroke-opacity="0.05"/>
+      <circle cx="0" cy="0" r="2" fill="#ffffff" fill-opacity="0.14"/>
+    </pattern>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect width="1600" height="900" fill="url(#halo)"/>
+  <rect width="1600" height="900" fill="url(#grid)"/>
+  <g transform="translate(980 210)" filter="url(#glow)">
+    <path d="M88 64h286c36 0 66 30 66 66v220c0 36-30 66-66 66H88c-36 0-66-30-66-66V130c0-36 30-66 66-66Z" fill="#020617" fill-opacity="0.38" stroke="#f0abfc" stroke-opacity="0.52"/>
+    <path d="M116 160 70 240l46 80M350 160l46 80-46 80" fill="none" stroke="#f9a8d4" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M200 334 270 134" stroke="#93c5fd" stroke-width="20" stroke-linecap="round"/>
+    <circle cx="230" cy="464" r="92" fill="#f472b6" fill-opacity="0.16" stroke="#f9a8d4" stroke-opacity="0.42"/>
+    <path d="M172 464h116M230 406v116" stroke="#ffffff" stroke-opacity="0.52" stroke-width="14" stroke-linecap="round"/>
+  </g>
+  <g opacity="0.24" fill="none" stroke="#fff" stroke-width="2">
+    <path d="M118 690c152-70 298-62 438-2s282 62 430-18 300-92 454-18"/>
+    <path d="M118 744c152-70 298-62 438-2s282 62 430-18 300-92 454-18"/>
+  </g>
+  <g font-family="'PingFang SC','Microsoft YaHei','Segoe UI',Arial,sans-serif" fill="#fff">
+    <text x="112" y="140" font-size="30" letter-spacing="6" opacity="0.78">DISBOUNDIA</text>
+    <rect x="112" y="184" width="270" height="48" rx="24" fill="#f472b6" fill-opacity="0.18" stroke="#f9a8d4" stroke-opacity="0.44"/>
+    <text x="136" y="217" font-size="24" fill="#fce7f3">开发日志 / DEBUG</text>
+    <text x="112" y="335" font-size="78" font-weight="800">主题配置与图床</text>
+    <text x="112" y="430" font-size="78" font-weight="800">继续排错</text>
+    <text x="116" y="510" font-size="30" fill="#f5d0fe">把偶发问题记录成可复用经验</text>
+    <text x="116" y="790" font-size="26" fill="#fbcfe8">2026-01-18</text>
+  </g>
+</svg>
