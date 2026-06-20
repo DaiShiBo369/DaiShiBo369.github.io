@@ -6,7 +6,7 @@
 title: Disboundia-解缚之境
 subtitle: Disboundary's Blog
 description: '百转千回，一笑了之'
-keywords:
+keywords: 学习,阅读,思考
 author: Disboundary
 language: zh-CN
 timezone: 'Asia/Shanghai'
@@ -109,3 +109,9 @@ deploy:
   type: git
   repo: https://github.com/DaiShiBo369/DaiShiBo369.github.io.git #你的仓库地址
   branch: main
+
+#Search
+search:
+  path: search.xml
+  field: post
+  content: true

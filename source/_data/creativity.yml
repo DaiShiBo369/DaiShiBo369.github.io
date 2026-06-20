@@ -1,0 +1,86 @@
+- class_name: Creative Stack
+  creativity_list:
+    - name: Hexo
+      color: "#0E83CD"
+      icon: https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/hexo.svg
+    - name: AnZhiYu
+      color: "#425AEF"
+      icon: https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/butterfly.svg
+    - name: JavaScript
+      color: "#F7DF1E"
+      icon: https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/javascript.svg
+    - name: TypeScript
+      color: "#3178C6"
+      icon: https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/typescript.svg
+    - name: HTML5
+      color: "#E34F26"
+      icon: https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/html5.svg
+    - name: CSS3
+      color: "#1572B6"
+      icon: https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/css3.svg
+    - name: Node.js
+      color: "#339933"
+      icon: https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/nodedotjs.svg
+    - name: Vue
+      color: "#4FC08D"
+      icon: https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/vuedotjs.svg
+    - name: React
+      color: "#20232A"
+      icon: https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/react.svg
+    - name: Vite
+      color: "#646CFF"
+      icon: https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/vite.svg
+    - name: Git
+      color: "#F05032"
+      icon: https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/git.svg
+    - name: GitHub
+      color: "#181717"
+      icon: https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/github.svg
+    - name: VS Code
+      color: "#007ACC"
+      icon: https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/visualstudiocode.svg
+    - name: Markdown
+      color: "#000000"
+      icon: https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/markdown.svg
+    - name: Obsidian
+      color: "#7C3AED"
+      icon: https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/obsidian.svg
+    - name: Figma
+      color: "#F24E1E"
+      icon: https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/figma.svg
+    - name: Photoshop
+      color: "#31A8FF"
+      icon: https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/adobephotoshop.svg
+    - name: Illustrator
+      color: "#FF9A00"
+      icon: https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/adobeillustrator.svg
+    - name: Blender
+      color: "#E87D0D"
+      icon: https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/blender.svg
+    - name: Docker
+      color: "#2496ED"
+      icon: https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/docker.svg
+    - name: Cloudflare
+      color: "#F38020"
+      icon: https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/cloudflare.svg
+    - name: Vercel
+      color: "#000000"
+      icon: https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/vercel.svg
+    - name: Netlify
+      color: "#00C7B7"
+      icon: https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/netlify.svg
+    - name: NPM
+      color: "#CB3837"
+      icon: https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/npm.svg
+    - name: Windows
+      color: "#0078D4"
+      icon: https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/windows11.svg
+    - name: Linux
+      color: "#FCC624"
+      icon: https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/linux.svg
+    - name: Python
+      color: "#3776AB"
+      icon: https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/python.svg
+    - name: OpenAI
+      color: "#412991"
+      icon: https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/openai.svg

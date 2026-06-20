@@ -5,7 +5,7 @@
     left:
       - 🤖️ 数码科技学习者
       - 📖 文史哲爱好者
-      - 🧑‍🎓 前物竞信奥选手
+      - 🧑‍🎓 AI时代逐浪者
       - ✍️ 业余写作者
       - 👋 分享与热心帮助
     right:
@@ -14,7 +14,7 @@
       - 入门吉他手 🎸
       - 苦练乒乓 🏓
       - 试图健身 💢
-  name: 戴士博
+  name: DisBoundary
   description: 是一名 学生、爱好科技、热爱生活、沉迷思考
   aboutsiteTips:
     tips: 追求
@@ -38,13 +38,9 @@
     tips: 学业
     title: 无限进步
     list:
-      - desc: 温州蒲鞋市小学
-        color: "#357ef5"
-      - desc: 杭州育才中学
-        color: "#5C2FDE"
       - desc: 杭州第二中学
         color: "#2F3ADE"
-      - desc: 清华大学 未央书院
+      - desc: 清华大学 软件工程
         color: "#2FA9DE"
       #- desc: EDU,软件工程专业
       #  color: "#357ef5"
@@ -79,30 +75,30 @@
     buff_tips: 特长
     buff_top: 间歇性踌躇满志
     buff_bottom: 持续性天马行空
-  game:
-    game_tips: 爱好游戏
-    game_title: 原神
-    game_uid: "UID: 125766904"
-    game_bg: https://bu.dusays.com/2023/04/22/64433bf26e25d.webp
-  comic:
-    comic_tips: 爱好番剧
-    comic_title: 追番
-    comic_list:
-      - name: 电锯人
-        href: https://www.bilibili.com/video/BV16b6oBcEoE/?spm_id_from=333.337.search-card.all.click&vd_source=1430931fad696844d66b04333315ae97
-        cover: https://cdn.jsdelivr.net/gh/DaiShiBo369/PicBed@main/img/chainsawman(1).jpg
-      - name: 名侦探柯南
-        href: https://www.bilibili.com/bangumi/play/ss33378?spm_id_from=333.337.0.0
-        cover: https://cdn.jsdelivr.net/gh/DaiShiBo369/PicBed@main/img/conan.png
-      - name: 魔法禁书目录
-        href: https://www.bilibili.com/bangumi/play/ss25617?spm_id_from=333.337.0.0
-        cover: https://cdn.jsdelivr.net/gh/DaiShiBo369/PicBed@main/img/mofajinshumulu.jpg
-      - name: 鬼灭之刃
-        href: https://www.bilibili.com/bangumi/media/md22718131/?spm_id_from=666.25.b_6d656469615f6d6f64756c65.1
-        cover: https://cdn.jsdelivr.net/gh/DaiShiBo369/PicBed@main/img/guimie.jpg
-      - name: 孤独摇滚
-        href: https://www.bilibili.com/bangumi/play/ss43164?spm_id_from=333.337.0.0
-        cover: https://cdn.jsdelivr.net/gh/DaiShiBo369/PicBed@main/img/bocchi.jpg
+  #game:
+  #  game_tips: 爱好游戏
+  #  game_title: 原神
+  #  game_uid: "UID: 125766904"
+  #  game_bg: https://bu.dusays.com/2023/04/22/64433bf26e25d.webp
+  #comic:
+  #  comic_tips: 爱好番剧
+  #  comic_title: 追番
+  #  comic_list:
+  #    - name: 电锯人
+  #      href: https://www.bilibili.com/video/BV16b6oBcEoE/?spm_id_from=333.337.search-card.all.click&vd_source=1430931fad696844d66b04333315ae97
+  #      cover: https://cdn.jsdelivr.net/gh/DaiShiBo369/PicBed@main/img/chainsawman(1).jpg
+     # - name: 名侦探柯南
+     #   href: https://www.bilibili.com/bangumi/play/ss33378?spm_id_from=333.337.0.0
+     #   cover: https://cdn.jsdelivr.net/gh/DaiShiBo369/PicBed@main/img/conan.png
+     # - name: 魔法禁书目录
+     #   href: https://www.bilibili.com/bangumi/play/ss25617?spm_id_from=333.337.0.0
+     #   cover: https://cdn.jsdelivr.net/gh/DaiShiBo369/PicBed@main/img/mofajinshumulu.jpg
+     # - name: 鬼灭之刃
+     #   href: https://www.bilibili.com/bangumi/media/md22718131/?spm_id_from=666.25.b_6d656469615f6d6f64756c65.1
+     #   cover: https://cdn.jsdelivr.net/gh/DaiShiBo369/PicBed@main/img/guimie.jpg
+     # - name: 孤独摇滚
+    #    href: https://www.bilibili.com/bangumi/play/ss43164?spm_id_from=333.337.0.0
+   #     cover: https://cdn.jsdelivr.net/gh/DaiShiBo369/PicBed@main/img/bocchi.jpg
   
   like:
     like_tips: 关注偏好

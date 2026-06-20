@@ -1050,7 +1050,7 @@ home_top:
   enable: true # 开关
   timemode: date #date/updated
   title: Disboundia-解缚之境
-  subTitle: "*世上有一条唯一的路，除你之外无人能走。它通往何方？不要问，走便是了。当一个人不知道他的路还会把他引向何方的时候，他已经攀登得比任何时候更高了*————弗里德里希·尼采"
+  subTitle: 愿你择良所安。
   siteText: disboundary.top
   category:
     - name: 前端
@@ -1249,7 +1249,7 @@ rightClickMenu:
 
 # 首页随便逛逛people模式 而非技能点模式，关闭后为技能点模式需要配置creativity.yml
 peoplecanvas:
-  enable: true
+  enable: false
   img: https://upload-bbs.miyoushe.com/upload/2024/07/27/125766904/ba62475f396df9de3316a08ed9e65d86_5680958632268053399..png
 
 # 动效
