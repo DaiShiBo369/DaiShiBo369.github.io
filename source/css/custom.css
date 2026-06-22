@@ -1,0 +1,61 @@
+html,
+body {
+  cursor: url("/img/cursor-default.svg") 4 2, auto;
+}
+
+a,
+a *,
+button,
+button *,
+summary,
+summary *,
+label,
+label *,
+select,
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+[href],
+[href] *,
+[onclick],
+[onclick] *,
+[role="button"],
+[role="button"] *,
+.site-page,
+.site-page *,
+.nav-button,
+.nav-button *,
+.banner-button,
+.banner-button *,
+.categoryButton,
+.categoryButton *,
+.recent-post-item,
+.recent-post-item *,
+.card-widget,
+.card-widget *,
+#rightside button,
+#rightside button *,
+#search-button,
+#search-button *,
+#random-hover,
+#random-hover *,
+#toggle-menu,
+#toggle-menu *,
+.menus_item,
+.menus_item *,
+.back-home-button,
+.back-home-button *,
+.social-icon,
+.social-icon *,
+.card-tag-cloud a,
+.card-tag-cloud a *,
+.pagination a,
+.pagination a * {
+  cursor: url("/img/cursor-pointer.svg") 12 12, pointer !important;
+}
+
+input,
+textarea,
+.local-search-box--input {
+  cursor: text !important;
+}

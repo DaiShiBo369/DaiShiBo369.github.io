@@ -75,30 +75,30 @@
     buff_tips: 特长
     buff_top: 间歇性踌躇满志
     buff_bottom: 持续性天马行空
-  #game:
-  #  game_tips: 爱好游戏
-  #  game_title: 原神
-  #  game_uid: "UID: 125766904"
-  #  game_bg: https://bu.dusays.com/2023/04/22/64433bf26e25d.webp
-  #comic:
-  #  comic_tips: 爱好番剧
-  #  comic_title: 追番
-  #  comic_list:
-  #    - name: 电锯人
-  #      href: https://www.bilibili.com/video/BV16b6oBcEoE/?spm_id_from=333.337.search-card.all.click&vd_source=1430931fad696844d66b04333315ae97
-  #      cover: https://cdn.jsdelivr.net/gh/DaiShiBo369/PicBed@main/img/chainsawman(1).jpg
-     # - name: 名侦探柯南
-     #   href: https://www.bilibili.com/bangumi/play/ss33378?spm_id_from=333.337.0.0
-     #   cover: https://cdn.jsdelivr.net/gh/DaiShiBo369/PicBed@main/img/conan.png
-     # - name: 魔法禁书目录
-     #   href: https://www.bilibili.com/bangumi/play/ss25617?spm_id_from=333.337.0.0
-     #   cover: https://cdn.jsdelivr.net/gh/DaiShiBo369/PicBed@main/img/mofajinshumulu.jpg
-     # - name: 鬼灭之刃
-     #   href: https://www.bilibili.com/bangumi/media/md22718131/?spm_id_from=666.25.b_6d656469615f6d6f64756c65.1
-     #   cover: https://cdn.jsdelivr.net/gh/DaiShiBo369/PicBed@main/img/guimie.jpg
-     # - name: 孤独摇滚
-    #    href: https://www.bilibili.com/bangumi/play/ss43164?spm_id_from=333.337.0.0
-   #     cover: https://cdn.jsdelivr.net/gh/DaiShiBo369/PicBed@main/img/bocchi.jpg
+  game:
+    game_tips: 偶尔游玩
+    game_title: 原神
+    game_uid: "UID: 125766904"
+    game_bg: https://bu.dusays.com/2023/04/22/64433bf26e25d.webp
+  comic:
+    comic_tips: 爱好番剧
+    comic_title: 追番
+    comic_list:
+      - name: 电锯人
+        href: https://www.bilibili.com/video/BV16b6oBcEoE/
+        cover: /img/chainsawman(1).jpg
+      - name: 名侦探柯南
+        href: https://www.bilibili.com/bangumi/play/ss33378
+        cover: /img/conan.png
+      - name: 魔法禁书目录
+        href: https://www.bilibili.com/bangumi/play/ss25617
+        cover: /img/mofajinshumulu.jpg
+      - name: 鬼灭之刃
+        href: https://www.bilibili.com/bangumi/media/md22718131/
+        cover: /img/guimie.jpg
+      - name: 孤独摇滚
+        href: https://www.bilibili.com/bangumi/play/ss43164
+        cover: /img/bocchi.jpg
   
   like:
     like_tips: 关注偏好

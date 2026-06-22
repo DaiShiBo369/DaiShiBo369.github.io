@@ -11,7 +11,7 @@ menu:
 
   我的:
     音乐馆: /music/ || anzhiyu-icon-music
-    追番页: /bangumis/ || anzhiyu-icon-bilibili
+    #追番页: /bangumis/ || anzhiyu-icon-bilibili
     相册集: /album/ || anzhiyu-icon-images
     小空调: /air-conditioner/ || anzhiyu-icon-fan
 
@@ -70,9 +70,9 @@ copy:
 #   name: link || icon
 social:
   Github: https://github.com/DaiShiBo369 || anzhiyu-icon-github
-  BiliBili: https://space.bilibili.com/3546930185505147?spm_id_from=333.1007.0.0 || anzhiyu-icon-bilibili
-  XiaoHongShu: https://www.xiaohongshu.com/user/profile/63ae4a160000000026011eb0 || anzhiyu-icon-xiaohongshu
 
+  XiaoHongShu: https://www.xiaohongshu.com/user/profile/63ae4a160000000026011eb0 || anzhiyu-icon-book-open
+  #BiliBili: https://space.bilibili.com/3546930185505147?spm_id_from=333.1007.0.0 || anzhiyu-icon-bilibili
 # 作者卡片 状态
 author_status:
   enable: true
@@ -141,11 +141,11 @@ katex:
 # --------------------------------------
 
 # Favicon（网站图标）
-favicon: /img/avatar.png
+favicon: /img/avatar_1.png
 
 # Avatar (头像)
 avatar:
-  img: /img/avatar.png
+  img: /img/avatar_1.png
   effect: true
 
 # Disable all banner image
@@ -435,7 +435,7 @@ footer:
   custom_text:
   runtime:
     enable: true
-    launch_time: "15/1/2026 00:00:00" # 网站上线时间
+    launch_time: "2026/01/15 00:00:00" # 网站上线时间
     work_img: https://npm.elemecdn.com/anzhiyu-blog@2.0.4/img/badge/安知鱼-上班摸鱼中.svg
     work_description: 距离月入25k也就还差一个大佬带我~
     offduty_img: https://npm.elemecdn.com/anzhiyu-blog@2.0.4/img/badge/安知鱼-下班啦.svg
@@ -746,16 +746,18 @@ beautify:
 # Global font settings
 # Don't modify the following settings unless you know how they work (非必要不要修改)
 font:
+  #code-font-family: consolas, Menlo, "PingFang SC", "Microsoft JhengHei", "Microsoft YaHei", sans-serif
   global-font-size: 16px
   code-font-size:
-  font-family:
-  code-font-family: consolas, Menlo, "PingFang SC", "Microsoft JhengHei", "Microsoft YaHei", sans-serif
+  font-family: '"LXGW WenKai Screen", "霞鹜文楷", "PingFang SC", "Microsoft YaHei", sans-serif'
+  code-font-family: consolas, Menlo, "PingFang SC", "Microsoft YaHei", sans-serif
 
 # Font settings for the site title and site subtitle
 # 左上角网站名字 主页居中网站名字
 blog_title_font:
   font_link:
-  font-family: PingFang SC, 'Hiragino Sans GB', 'Microsoft JhengHei', 'Microsoft YaHei', sans-serif
+  #font-family: PingFang SC, 'Hiragino Sans GB', 'Microsoft JhengHei', 'Microsoft YaHei', sans-serif
+  font-family: '"LXGW WenKai Screen", "霞鹜文楷", "PingFang SC", "Microsoft YaHei", sans-serif'
 
 # The setting of divider icon (水平分隔线图标设置)
 hr_icon:
@@ -816,7 +818,7 @@ aside:
     name_link: /
 
   card_announcement:
-    enable: false
+    enable: true
     content: 欢迎来看我的博客鸭~
   card_weixin:
     enable: true
@@ -1053,36 +1055,21 @@ home_top:
   subTitle: 愿你择良所安。
   siteText: disboundary.top
   category:
-    - name: 前端
-      path: /categories/前端开发/
-      shadow: var(--anzhiyu-shadow-blue)
-      class: blue
-      icon: anzhiyu-icon-dove
-    - name: 摄影
-      path: /categories/摄影/
+    - name: 学习
+      path: /categories/学习/
       shadow: var(--anzhiyu-shadow-blue)
       class: blue
       icon: anzhiyu-icon-camera
-    - name: 音乐
-      path: /categories/音乐/
-      shadow: var(--anzhiyu-shadow-blue)
-      class: blue
-      icon: anzhiyu-icon-dove
-    - name: 电影
-      path: /categories/电影/
-      shadow: var(--anzhiyu-shadow-blue)
-      class: blue
-      icon: anzhiyu-icon-dove
-    - name: 大学
-      path: /categories/大学生涯/
-      shadow: var(--anzhiyu-shadow-red)
-      class: red
-      icon: anzhiyu-icon-fire
     - name: 生活
       path: /categories/生活日常/
       shadow: var(--anzhiyu-shadow-green)
       class: green
       icon: anzhiyu-icon-book
+    - name: 想法
+      path: /categories/想法/
+      shadow: var(--anzhiyu-shadow-purple)
+      class: purple
+      icon: anzhiyu-icon-lightbulb
   default_descr: 再怎么看我也不知道怎么描述它的啦！
   swiper:
     enable: false
@@ -1181,34 +1168,34 @@ greetingBox:
   enable: true #开启后必须配置下面的list对应的时间段，不然会出现小白条
   default: 晚上好👋
   list:
-    # - greeting: 晚安😴
-    #   startTime: 0
-    #   endTime: 5
-    # - greeting: 早上好鸭👋, 祝你一天好心情！
-    #   startTime: 6
-    #   endTime: 9
-    # - greeting: 上午好👋, 状态很好，鼓励一下～
-    #   startTime: 10
-    #   endTime: 10
-    # - greeting: 11点多啦, 在坚持一下就吃饭啦～
-    #   startTime: 11
-    #   endTime: 11
-    # - greeting: 午安👋, 宝贝
-    #   startTime: 12
-    #   endTime: 14
-    # - greeting: 🌈充实的一天辛苦啦！
-    #   startTime: 14
-    #   endTime: 18
-    # - greeting: 19点喽, 奖励一顿丰盛的大餐吧🍔。
-    #   startTime: 19
-    #   endTime: 19
-    # - greeting: 晚上好👋, 在属于自己的时间好好放松😌~
-    #   startTime: 20
-    #   endTime: 24
+     - greeting: 晚安😴
+       startTime: 0
+       endTime: 5
+     - greeting: 早上好鸭👋, 祝你一天好心情！
+       startTime: 6
+       endTime: 9
+     - greeting: 上午好👋, 状态很好，鼓励一下～
+       startTime: 10
+       endTime: 10
+     - greeting: 11点多啦, 在坚持一下就吃饭啦～
+       startTime: 11
+       endTime: 11
+     - greeting: 午安👋, 宝贝
+       startTime: 12
+       endTime: 14
+     - greeting: 🌈充实的一天辛苦啦！
+       startTime: 14
+       endTime: 18
+     - greeting: 19点喽, 奖励一顿丰盛的大餐吧🍔。
+       startTime: 19
+       endTime: 19
+     - greeting: 晚上好👋, 在属于自己的时间好好放松😌~
+       startTime: 20
+       endTime: 24
 
 # 文章顶部ai摘要
 post_head_ai_description:
-  enable: true
+  enable: false
   gptName: AnZhiYu
   mode: local # 默认模式 可选值: tianli/local
   switchBtn: false # 可以配置是否显示切换按钮 以切换tianli/local
@@ -1263,6 +1250,8 @@ dynamicEffect:
 # 插入代码到头部 </head> 之前 和 底部 </body> 之前
 inject:
   head:
+    - <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-webfont@1.7.0/style.css">
+    - <link rel="stylesheet" href="/css/custom.css">
     # 自定义css
     # - <link rel="stylesheet" href="/css/custom.css" media="defer" onload="this.media='all'">
 
