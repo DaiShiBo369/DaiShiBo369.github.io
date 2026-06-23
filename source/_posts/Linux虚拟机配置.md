@@ -9,7 +9,7 @@ tags:
   - 虚拟机
   - Windows
 description: 本篇记录了在windows系统上配置虚拟机的过程。
-cover: https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/linux.svg
+cover: /img/covers/cover-linux-vm.svg
 ---
 # 从零开始：Windows 11 上配置 Ubuntu 24.04 虚拟机完整指南
 
