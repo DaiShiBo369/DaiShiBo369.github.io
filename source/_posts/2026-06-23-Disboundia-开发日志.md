@@ -12,7 +12,7 @@ tags:
   - 文章封面
   - UI优化
 description: 本篇记录了 Disboundia 博客近期围绕页面完整度、搜索、封面、鼠标样式、访问统计、About 页面和公众号接入思路进行的一轮集中整理与修复。
-cover: /img/covers/cover-dev-2026-01-18.svg
+cover: /img/covers/cover-dev-2026-06-23.svg
 ---
 
 ### **Disboundia 开发日志：博客完整度与体验修复**
