@@ -59,3 +59,43 @@ textarea,
 .local-search-box--input {
   cursor: text !important;
 }
+
+#article-container .mathjax-display {
+  display: block;
+  margin: 0.9rem 0 1.15rem;
+  padding: 0.15rem 0;
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  line-height: normal !important;
+  text-align: center;
+}
+
+#article-container mjx-container[display="true"],
+#article-container mjx-container[display] {
+  margin: 0 auto !important;
+  padding: 0.25rem 0.25rem !important;
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+  line-height: normal !important;
+  text-align: center;
+}
+
+#article-container mjx-container:not([display]) {
+  line-height: normal !important;
+  vertical-align: -0.12em;
+}
+
+#article-container mjx-container mjx-math {
+  max-width: 100%;
+  overflow: visible !important;
+}
+
+#article-container mjx-container svg {
+  max-width: 100%;
+  height: auto;
+  overflow: visible !important;
+}
+
+#article-container .mathjax-inline {
+  white-space: nowrap;
+}
