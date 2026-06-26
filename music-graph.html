@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>专辑关系图 | Disboundia Music Gallery</title>
+<meta name="theme-color" content="#0a1628">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: 'Quicksand', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  color: #fff;
+  min-height: 100vh;
+  overflow: hidden;
+  line-height: 1.6;
+  background: #0a1628;
+}
+
+/* Sky */
+.sky {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%; z-index: -2;
+  background: linear-gradient(180deg, #0a1628 0%, #1a3a5c 25%, #4a90d9 50%, #87ceeb 75%, #c8a8e8 100%);
+}
+.sky::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(255,255,255,0.16), transparent 28%),
+    radial-gradient(circle at 82% 22%, rgba(255,107,157,0.18), transparent 30%),
+    linear-gradient(180deg, rgba(10,22,40,0.08), rgba(10,16,30,0.5));
+}
+
+/* Stars */
+.stars { position: fixed; top: 0; left: 0; width: 100%; height: 40%; z-index: -1; pointer-events: none; }
+.star {
+  position: absolute; width: 2px; height: 2px;
+  background: #fff; border-radius: 50%;
+  animation: twinkle 3s ease-in-out infinite alternate;
+}
+@keyframes twinkle {
+  0% { opacity: 0.2; transform: scale(1); }
+  100% { opacity: 1; transform: scale(1.5); }
+}
+
+/* ===== Sidebar ===== */
+.sidebar {
+  position: fixed;
+  left: 0; top: 50%; transform: translateY(-50%);
+  z-index: 160;
+  display: flex; flex-direction: column; gap: 0.5rem;
+  padding: 0.6rem;
+  background: rgba(10, 16, 30, 0.5);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  border-radius: 0 16px 16px 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: none;
+}
+.sidebar-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 0.2rem;
+  padding: 0.6rem 0.5rem; border-radius: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: none; transition: all 0.25s ease;
+  min-width: 48px;
+}
+.sidebar-btn:hover { background: rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.85); }
+.sidebar-btn.active { background: rgba(255, 107, 157, 0.3); color: #ff6b9d; }
+.sidebar-label { font-size: 0.6rem; font-weight: 500; white-space: nowrap; }
+
+/* ===== Graph Page ===== */
+.graph-page {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  padding: 1rem 1rem 1rem 4rem;
+  display: flex; flex-direction: column;
+  z-index: 1;
+}
+
+.graph-header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-shrink: 0;
+}
+.graph-title {
+  grid-column: 2;
+  text-align: center;
+}
+.graph-header h1 {
+  font-size: clamp(1.3rem, 3vw, 2rem);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 0.2rem;
+}
+.graph-header p {
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 0.85rem;
+}
+.graph-stats {
+  justify-self: start;
+  display: flex;
+  gap: 0.55rem;
+}
+.graph-stat {
+  min-width: 78px;
+  padding: 0.55rem 0.7rem;
+  border-radius: 14px;
+  background: rgba(10, 16, 30, 0.36);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.graph-stat strong {
+  display: block;
+  font-size: 1rem;
+  line-height: 1;
+}
+.graph-stat span {
+  display: block;
+  margin-top: 0.28rem;
+  font-size: 0.66rem;
+  color: rgba(255, 255, 255, 0.52);
+}
+.graph-tools {
+  justify-self: end;
+  display: flex;
+  gap: 0.5rem;
+}
+.graph-tool {
+  min-height: 34px;
+  padding: 0.4rem 0.72rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.09);
+  color: rgba(255, 255, 255, 0.78);
+  font: inherit;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+.graph-tool:hover,
+.graph-tool:focus-visible {
+  transform: translateY(-1px);
+  background: rgba(255, 107, 157, 0.2);
+  border-color: rgba(255, 107, 157, 0.46);
+  color: #fff;
+  outline: none;
+}
+
+.graph-container {
+  flex: 1;
+  border-radius: 18px;
+  overflow: hidden;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    rgba(255, 255, 255, 0.06);
+  background-size: 48px 48px;
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  position: relative;
+  cursor: grab;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.24);
+}
+.graph-container:active { cursor: grabbing; }
+.graph-container canvas { display: block; width: 100%; height: 100%; }
+
+.graph-tooltip {
+  position: absolute; pointer-events: none;
+  background: rgba(10, 22, 40, 0.9);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px; padding: 0.6rem 1rem;
+  color: #fff; font-size: 0.8rem; line-height: 1.5;
+  opacity: 0; transition: opacity 0.2s ease;
+  white-space: nowrap; z-index: 10;
+  max-width: min(280px, calc(100vw - 2rem));
+  white-space: normal;
+}
+.graph-tooltip.visible { opacity: 1; }
+.graph-tooltip .tt-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.15rem; }
+.graph-tooltip .tt-artist { color: rgba(255, 255, 255, 0.6); font-size: 0.8rem; }
+.graph-tooltip .tt-tag { color: rgba(255, 107, 157, 0.9); font-size: 0.75rem; }
+
+.graph-legend {
+  display: flex; justify-content: center; gap: 1.5rem;
+  margin-top: 0.8rem; flex-shrink: 0;
+}
+.legend-item {
+  display: flex; align-items: center; gap: 0.4rem;
+  font-size: 0.8rem; color: rgba(255, 255, 255, 0.6);
+}
+.legend-line { display: inline-block; width: 28px; height: 3px; border-radius: 2px; }
+.artist-line { background: #ff6b9d; height: 4px; }
+.tag-line { background: #87ceeb; }
+
+@media (max-width: 768px) {
+  .graph-page { padding: 0.7rem 0.7rem 5.2rem; }
+  .graph-header {
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+  }
+  .graph-title {
+    grid-column: 1;
+  }
+  .graph-stats,
+  .graph-tools {
+    justify-self: center;
+  }
+  .graph-stat {
+    min-width: 66px;
+    padding: 0.48rem 0.55rem;
+  }
+  .graph-header h1 { font-size: 1.1rem; }
+  .graph-header p { font-size: 0.76rem; }
+  .graph-container { border-radius: 14px; }
+  .graph-legend {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 0.6rem;
+  }
+  .sidebar {
+    left: 50%;
+    top: auto;
+    bottom: 0.8rem;
+    transform: translateX(-50%);
+    flex-direction: row;
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,0.12);
+    padding: 0.45rem;
+  }
+  .sidebar-btn {
+    min-width: 76px;
+    padding: 0.48rem 0.65rem;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="sky"></div>
+<div class="stars" id="stars"></div>
+
+<!-- Sidebar -->
+<nav class="sidebar">
+  <a class="sidebar-btn" href="music-gallery.html" title="唱片架">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2"/><circle cx="8" cy="8" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
+    <span class="sidebar-label">唱片架</span>
+  </a>
+  <a class="sidebar-btn active" href="music-graph.html" title="关系图">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="12" cy="18" r="2"/><line x1="7" y1="7" x2="10" y2="17"/><line x1="17" y1="7" x2="14" y2="17"/><line x1="7" y1="6" x2="17" y2="6"/></svg>
+    <span class="sidebar-label">关系图</span>
+  </a>
+</nav>
+
+<!-- Graph Page -->
+<div class="graph-page">
+  <div class="graph-header">
+    <div class="graph-stats" aria-label="关系图统计">
+      <div class="graph-stat">
+        <strong id="graphAlbumCount">--</strong>
+        <span>专辑</span>
+      </div>
+      <div class="graph-stat">
+        <strong id="graphArtistCount">--</strong>
+        <span>音乐人</span>
+      </div>
+      <div class="graph-stat">
+        <strong id="graphEdgeCount">--</strong>
+        <span>关系</span>
+      </div>
+    </div>
+    <div class="graph-title">
+      <h1>专辑关系图</h1>
+      <p>拖拽节点 / 滚轮缩放 / 空白处平移</p>
+    </div>
+    <div class="graph-tools">
+      <button class="graph-tool" type="button" id="fitGraphBtn">适合窗口</button>
+      <button class="graph-tool" type="button" id="resetGraphBtn">重置视图</button>
+    </div>
+  </div>
+  <div class="graph-container">
+    <canvas id="graphCanvas"></canvas>
+    <div class="graph-tooltip" id="graphTooltip"></div>
+  </div>
+  <div class="graph-legend">
+    <div class="legend-item"><span class="legend-line artist-line"></span> 同歌手</div>
+    <div class="legend-item"><span class="legend-line tag-line"></span> 共通标签</div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// 专辑数据（与 music-gallery.html 共享）
+// ============================================================
+const albums = [
+  {
+    title: "范特西", artist: "周杰伦", country: "中国",
+    cover: "https://y.qq.com/music/photo_new/T002R300x300M0000025dRbE3qxZYp.jpg",
+    year: "2001",
+    tags: ["华语", "经典", "周杰伦"]
+  },
+  {
+    title: "OK Computer", artist: "Radiohead", country: "英国",
+    cover: "https://y.qq.com/music/photo_new/T002R300x300M0000011Aef63RfCUp.jpg",
+    year: "1997",
+    tags: ["摇滚", "经典", "英国", "另类/垃圾摇滚"]
+  },
+  {
+    title: "葉惠美", artist: "周杰伦", country: "中国",
+    cover: "https://y.qq.com/music/photo_new/T002R300x300M000000WoaG72WQ8Nu.jpg",
+    year: "2003",
+    tags: ["华语", "经典", "周杰伦"]
+  },
+  {
+    title: "1989", artist: "Taylor Swift", country: "美国",
+    cover: "https://coverartarchive.org/release/e4417eaf-7a8c-40e2-8ae1-979f3c793157/front-500",
+    year: "2014",
+    tags: ["流行", "经典", "美国"]
+  },
+  {
+    title: "The Man-Machine", artist: "Kraftwerk", country: "德国",
+    cover: "https://coverartarchive.org/release/8cb01654-34b5-409c-9217-33e1782bd433/front-500",
+    year: "1978",
+    tags: ["电子", "经典", "德国"]
+  },
+  {
+    title: "Discovery", artist: "Daft Punk", country: "法国",
+    cover: "https://coverartarchive.org/release/098060d4-ba3c-469d-88b0-08642261c7ab/front-500",
+    year: "2001",
+    tags: ["电子", "经典", "法国"]
+  },
+  {
+    title: "Selected Ambient Works 85-92", artist: "Aphex Twin", country: "英国",
+    cover: "https://coverartarchive.org/release/309b05b5-c22b-49c8-aeb1-240af7b56514/front-500",
+    year: "1992",
+    tags: ["电子", "经典", "英国"]
+  },
+  {
+    title: "Mezzanine", artist: "Massive Attack", country: "英国",
+    cover: "https://coverartarchive.org/release/0d33ef7a-1f5d-4365-b807-b412271b99c3/front-500",
+    year: "1998",
+    tags: ["电子", "经典", "英国"]
+  },
+  {
+    title: "The Fat of the Land", artist: "The Prodigy", country: "英国",
+    cover: "https://coverartarchive.org/release/6e62a3d2-b2d8-47e8-a046-b7799089c2af/front-500",
+    year: "1997",
+    tags: ["电子", "经典", "英国"]
+  },
+  {
+    title: "Never Mind the Bollocks, Here's the Sex Pistols", artist: "Sex Pistols", country: "英国",
+    cover: "https://coverartarchive.org/release/155cc065-924f-3046-a73b-624e3311ce11/front-500",
+    year: "1977",
+    tags: ["朋克摇滚", "经典", "英国"]
+  },
+  {
+    title: "Ramones", artist: "The Ramones", country: "美国",
+    cover: "https://coverartarchive.org/release/668a6f77-a070-4f38-bb26-1ebd18d1cc5d/front-500",
+    year: "1976",
+    tags: ["朋克摇滚", "经典", "美国"]
+  },
+  {
+    title: "London Calling", artist: "The Clash", country: "英国",
+    cover: "https://coverartarchive.org/release/985bd7aa-d0df-46b8-9582-4bdeb3b768b8/front-500",
+    year: "1979",
+    tags: ["朋克摇滚", "经典", "英国"]
+  },
+  {
+    title: "Horses", artist: "Patti Smith", country: "美国",
+    cover: "https://coverartarchive.org/release/17de58a1-09f0-391e-8969-65a055c10ecf/front-500",
+    year: "1975",
+    tags: ["朋克摇滚", "经典", "美国"]
+  },
+  {
+    title: "Dookie", artist: "Green Day", country: "美国",
+    cover: "https://coverartarchive.org/release/4bc174a0-cc5b-380e-b09f-a7e2cc7dba76/front-500",
+    year: "1994",
+    tags: ["朋克摇滚", "经典", "美国"]
+  },
+  {
+    title: "The Dark Side of the Moon", artist: "Pink Floyd", country: "英国",
+    cover: "https://coverartarchive.org/release/9a4df5ff-faa2-4e62-8542-dc7684e62bf2/front-500",
+    year: "1973",
+    tags: ["前卫摇滚", "经典", "英国"]
+  },
+  {
+    title: "In the Court of the Crimson King", artist: "King Crimson", country: "英国",
+    cover: "https://coverartarchive.org/release/fe821f9f-b0c6-3e43-a23d-8d41e5af654c/front-500",
+    year: "1969",
+    tags: ["前卫摇滚", "经典", "英国"]
+  },
+  {
+    title: "Close to the Edge", artist: "Yes", country: "英国",
+    cover: "https://coverartarchive.org/release/3f0d1bbb-134f-466d-a795-e6c0265f4d0c/front-500",
+    year: "1972",
+    tags: ["前卫摇滚", "经典", "英国"]
+  },
+  {
+    title: "Selling England by the Pound", artist: "Genesis", country: "英国",
+    cover: "https://coverartarchive.org/release/19f2fd25-87e2-4b3a-823f-f17abbe07069/front-500",
+    year: "1973",
+    tags: ["前卫摇滚", "经典", "英国"]
+  },
+  {
+    title: "Moving Pictures", artist: "Rush", country: "加拿大",
+    cover: "https://coverartarchive.org/release/4fec1556-0149-379b-9494-6682e9dd9287/front-500",
+    year: "1981",
+    tags: ["前卫摇滚", "经典", "加拿大"]
+  },
+  {
+    title: "Nevermind", artist: "Nirvana", country: "美国",
+    cover: "https://coverartarchive.org/release/f922ec87-4758-421d-a839-3193455345ff/front-500",
+    year: "1991",
+    tags: ["另类/垃圾摇滚", "经典", "美国"]
+  },
+  {
+    title: "Ten", artist: "Pearl Jam", country: "美国",
+    cover: "https://coverartarchive.org/release/9ab961a0-aab6-4601-9ca4-50375fc9445d/front-500",
+    year: "1991",
+    tags: ["另类/垃圾摇滚", "经典", "美国"]
+  },
+  {
+    title: "Automatic for the People", artist: "R.E.M.", country: "美国",
+    cover: "https://coverartarchive.org/release/7ccea213-bf47-455d-89af-2e91aa777761/front-500",
+    year: "1992",
+    tags: ["另类/垃圾摇滚", "经典", "美国"]
+  },
+  {
+    title: "The Queen Is Dead", artist: "The Smiths", country: "英国",
+    cover: "https://coverartarchive.org/release/fd0da5e1-fbb4-3a6c-a575-929b78a272c3/front-500",
+    year: "1986",
+    tags: ["另类/垃圾摇滚", "经典", "英国"]
+  },
+  {
+    title: "Paranoid", artist: "Black Sabbath", country: "英国",
+    cover: "https://coverartarchive.org/release/bd0ed0ac-e4f5-4bb5-887c-6963d8972381/front-500",
+    year: "1970",
+    tags: ["重金属", "经典", "英国"]
+  },
+  {
+    title: "Master of Puppets", artist: "Metallica", country: "美国",
+    cover: "https://coverartarchive.org/release/4c183eb6-1258-4a9f-b8e4-9f9e94187b6b/front-500",
+    year: "1986",
+    tags: ["重金属", "经典", "美国"]
+  },
+  {
+    title: "The Number of the Beast", artist: "Iron Maiden", country: "英国",
+    cover: "https://coverartarchive.org/release/eb8b0a99-0c1e-4cc8-9dbc-afdbb6c221ac/front-500",
+    year: "1982",
+    tags: ["重金属", "经典", "英国"]
+  },
+  {
+    title: "British Steel", artist: "Judas Priest", country: "英国",
+    cover: "https://coverartarchive.org/release/b82929da-fb3a-3c4b-94c9-49d182717593/front-500",
+    year: "1980",
+    tags: ["重金属", "经典", "英国"]
+  },
+  {
+    title: "Rust in Peace", artist: "Megadeth", country: "美国",
+    cover: "https://coverartarchive.org/release/200d226d-a20e-4fb7-9b40-8331e1a4731a/front-500",
+    year: "1990",
+    tags: ["重金属", "经典", "美国"]
+  }
+];
+
+// ============================================================
+// Stars
+// ============================================================
+(function() {
+  const c = document.getElementById('stars');
+  for (let i = 0; i < 80; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    s.style.left = Math.random() * 100 + '%';
+    s.style.top = Math.random() * 100 + '%';
+    s.style.animationDelay = Math.random() * 3 + 's';
+    s.style.animationDuration = (2 + Math.random() * 3) + 's';
+    s.style.width = s.style.height = (1 + Math.random() * 2) + 'px';
+    c.appendChild(s);
+  }
+})();
+
+// ============================================================
+// Force-Directed Graph Engine
+// ============================================================
+const canvas = document.getElementById('graphCanvas');
+const ctx = canvas.getContext('2d');
+const graphTooltipEl = document.getElementById('graphTooltip');
+const NODE_RADIUS = 32;
+
+let graphNodes = [];
+let graphEdges = [];
+let graphAnim = null;
+let graphHover = null;
+let graphDrag = null;
+let graphPan = { x: 0, y: 0 };
+let graphScale = 1;
+let graphPanStart = null;
+let graphPanStartMouse = null;
+let coverImages = {};
+let graphIsSettled = false;
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function buildGraph() {
+  graphNodes = albums.map((a, i) => ({
+    idx: i,
+    x: (Math.random() - 0.5) * 400,
+    y: (Math.random() - 0.5) * 400,
+    vx: 0, vy: 0,
+    album: a
+  }));
+
+  graphEdges = [];
+  for (let i = 0; i < albums.length; i++) {
+    for (let j = i + 1; j < albums.length; j++) {
+      const a = albums[i], b = albums[j];
+      if (a.artist === b.artist) {
+        graphEdges.push({ source: i, target: j, type: 'artist', label: a.artist });
+      }
+      const shared = a.tags.filter(t => b.tags.includes(t));
+      shared.forEach(t => {
+        if (t !== '经典') {
+          graphEdges.push({ source: i, target: j, type: 'tag', label: t });
+        }
+      });
+    }
+  }
+
+  albums.forEach((a, i) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.src = a.cover;
+    img.onload = () => { coverImages[i] = img; };
+  });
+
+  updateGraphStats();
+  fitGraphToViewport();
+
+  if (graphAnim) cancelAnimationFrame(graphAnim);
+  simulateGraph();
+}
+
+function updateGraphStats() {
+  document.getElementById('graphAlbumCount').textContent = albums.length;
+  document.getElementById('graphArtistCount').textContent = new Set(albums.map(a => a.artist)).size;
+  document.getElementById('graphEdgeCount').textContent = graphEdges.length;
+}
+
+function resetGraphView() {
+  graphPan = { x: 0, y: 0 };
+  graphScale = 1;
+}
+
+function fitGraphToViewport() {
+  if (!canvas.width || graphNodes.length === 0) {
+    resetGraphView();
+    return;
+  }
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.width / dpr;
+  const h = canvas.height / dpr;
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  graphNodes.forEach(n => {
+    minX = Math.min(minX, n.x);
+    minY = Math.min(minY, n.y);
+    maxX = Math.max(maxX, n.x);
+    maxY = Math.max(maxY, n.y);
+  });
+  const graphW = Math.max(maxX - minX + NODE_RADIUS * 4, NODE_RADIUS * 6);
+  const graphH = Math.max(maxY - minY + NODE_RADIUS * 4, NODE_RADIUS * 6);
+  graphScale = Math.max(0.35, Math.min(1.25, Math.min(w / graphW, h / graphH)));
+  graphPan = {
+    x: -((minX + maxX) / 2) * graphScale,
+    y: -((minY + maxY) / 2) * graphScale
+  };
+}
+
+function simulateGraph() {
+  const repulsion = 8000;
+  const springLen = 180;
+  const springK = 0.005;
+  const centerK = 0.01;
+  const damping = 0.85;
+
+  for (let i = 0; i < graphNodes.length; i++) {
+    for (let j = i + 1; j < graphNodes.length; j++) {
+      const a = graphNodes[i], b = graphNodes[j];
+      let dx = a.x - b.x, dy = a.y - b.y;
+      let dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 1) dist = 1;
+      const force = repulsion / (dist * dist);
+      const fx = (dx / dist) * force, fy = (dy / dist) * force;
+      a.vx += fx; a.vy += fy;
+      b.vx -= fx; b.vy -= fy;
+    }
+  }
+
+  graphEdges.forEach(e => {
+    const a = graphNodes[e.source], b = graphNodes[e.target];
+    let dx = b.x - a.x, dy = b.y - a.y;
+    let dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist < 1) dist = 1;
+    const force = (dist - springLen) * springK;
+    const fx = (dx / dist) * force, fy = (dy / dist) * force;
+    a.vx += fx; a.vy += fy;
+    b.vx -= fx; b.vy -= fy;
+  });
+
+  graphNodes.forEach(n => { n.vx -= n.x * centerK; n.vy -= n.y * centerK; });
+
+  let movement = 0;
+  graphNodes.forEach(n => {
+    if (n.idx === graphDrag) return;
+    n.vx *= damping; n.vy *= damping;
+    n.x += n.vx; n.y += n.vy;
+    movement += Math.abs(n.vx) + Math.abs(n.vy);
+  });
+
+  if (!graphIsSettled && movement < 0.45) {
+    graphIsSettled = true;
+    fitGraphToViewport();
+  }
+
+  renderGraph();
+  graphAnim = requestAnimationFrame(simulateGraph);
+}
+
+function renderGraph() {
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.width / dpr, h = canvas.height / dpr;
+
+  ctx.save();
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, w, h);
+  ctx.translate(w / 2 + graphPan.x, h / 2 + graphPan.y);
+  ctx.scale(graphScale, graphScale);
+
+  const connectedSet = new Set();
+  if (graphHover !== null) {
+    connectedSet.add(graphHover);
+    graphEdges.forEach(e => {
+      if (e.source === graphHover) connectedSet.add(e.target);
+      if (e.target === graphHover) connectedSet.add(e.source);
+    });
+  }
+
+  // Edges
+  graphEdges.forEach(e => {
+    const a = graphNodes[e.source], b = graphNodes[e.target];
+    const isHovered = graphHover !== null && (e.source === graphHover || e.target === graphHover);
+    const isDimmed = graphHover !== null && !isHovered;
+    const dx = b.x - a.x, dy = b.y - a.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+    const perpX = -(dy / (dist || 1)) * 20, perpY = (dx / (dist || 1)) * 20;
+    const sign = e.type === 'artist' ? -1 : 1;
+    const cx = mx + perpX * sign, cy = my + perpY * sign;
+
+    ctx.beginPath();
+    ctx.moveTo(a.x, a.y);
+    ctx.quadraticCurveTo(cx, cy, b.x, b.y);
+
+    if (e.type === 'artist') {
+      ctx.strokeStyle = isHovered ? 'rgba(255,107,157,0.9)' : isDimmed ? 'rgba(255,107,157,0.08)' : 'rgba(255,107,157,0.35)';
+      ctx.lineWidth = isHovered ? 3 : 2;
+    } else {
+      ctx.strokeStyle = isHovered ? 'rgba(135,206,235,0.9)' : isDimmed ? 'rgba(135,206,235,0.05)' : 'rgba(135,206,235,0.2)';
+      ctx.lineWidth = isHovered ? 2.5 : 1;
+    }
+    ctx.stroke();
+
+    if (isHovered) {
+      ctx.save();
+      ctx.font = '11px Quicksand, sans-serif';
+      ctx.fillStyle = e.type === 'artist' ? 'rgba(255,107,157,0.95)' : 'rgba(135,206,235,0.95)';
+      ctx.textAlign = 'center';
+      ctx.fillText(e.label, cx, cy - 6);
+      ctx.restore();
+    }
+  });
+
+  // Nodes
+  graphNodes.forEach((n, i) => {
+    const isHoveredNode = i === graphHover;
+    const isConnected = graphHover !== null && connectedSet.has(i);
+    const isDimmed = graphHover !== null && !isConnected;
+
+    ctx.save();
+    ctx.globalAlpha = isDimmed ? 0.2 : 1;
+    ctx.shadowColor = isHoveredNode ? 'rgba(255,107,157,0.6)' : 'rgba(0,0,0,0.4)';
+    ctx.shadowBlur = isHoveredNode ? 20 : 10;
+    ctx.shadowOffsetY = 4;
+
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, NODE_RADIUS, 0, Math.PI * 2);
+    ctx.closePath();
+
+    if (coverImages[i]) {
+      ctx.save(); ctx.clip();
+      ctx.drawImage(coverImages[i], n.x - NODE_RADIUS, n.y - NODE_RADIUS, NODE_RADIUS * 2, NODE_RADIUS * 2);
+      ctx.restore();
+    } else {
+      ctx.fillStyle = 'rgba(26,58,92,0.8)'; ctx.fill();
+    }
+
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, NODE_RADIUS, 0, Math.PI * 2);
+    ctx.strokeStyle = isHoveredNode ? '#ff6b9d' : isConnected ? 'rgba(255,107,157,0.6)' : 'rgba(255,255,255,0.25)';
+    ctx.lineWidth = isHoveredNode ? 3 : 1.5;
+    ctx.stroke();
+    ctx.restore();
+
+    if (graphScale >= 0.55 || isHoveredNode) {
+      ctx.save();
+      ctx.globalAlpha = isDimmed ? 0.22 : isHoveredNode ? 1 : 0.84;
+      ctx.font = `${isHoveredNode ? 12 : 10}px Quicksand, "Microsoft YaHei", sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillStyle = 'rgba(255,255,255,0.86)';
+      ctx.shadowColor = 'rgba(0,0,0,0.7)';
+      ctx.shadowBlur = 6;
+      const label = n.album.title.length > 18 ? n.album.title.slice(0, 17) + '…' : n.album.title;
+      ctx.fillText(label, n.x, n.y + NODE_RADIUS + 8);
+      ctx.restore();
+    }
+  });
+
+  ctx.restore();
+}
+
+function resizeGraphCanvas() {
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.parentElement.getBoundingClientRect();
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  canvas.style.width = rect.width + 'px';
+  canvas.style.height = rect.height + 'px';
+  if (graphNodes.length) fitGraphToViewport();
+}
+
+function getNodeAt(mx, my) {
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.width / dpr, h = canvas.height / dpr;
+  const sx = (mx - w / 2 - graphPan.x) / graphScale;
+  const sy = (my - h / 2 - graphPan.y) / graphScale;
+  for (let i = graphNodes.length - 1; i >= 0; i--) {
+    const n = graphNodes[i];
+    const dx = sx - n.x, dy = sy - n.y;
+    if (dx * dx + dy * dy <= NODE_RADIUS * NODE_RADIUS) return i;
+  }
+  return null;
+}
+
+function initGraph() {
+  resizeGraphCanvas();
+  window.addEventListener('resize', resizeGraphCanvas);
+
+  canvas.addEventListener('mousemove', e => {
+    const rect = canvas.getBoundingClientRect();
+    const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+
+    if (graphDrag !== null) {
+      const dpr = window.devicePixelRatio || 1;
+      graphNodes[graphDrag].x = (mx - canvas.width / dpr / 2 - graphPan.x) / graphScale;
+      graphNodes[graphDrag].y = (my - canvas.height / dpr / 2 - graphPan.y) / graphScale;
+      graphNodes[graphDrag].vx = 0; graphNodes[graphDrag].vy = 0;
+      return;
+    }
+    if (graphPanStart) {
+      graphPan.x = graphPanStart.x + (e.clientX - graphPanStartMouse.x);
+      graphPan.y = graphPanStart.y + (e.clientY - graphPanStartMouse.y);
+      return;
+    }
+
+    const node = getNodeAt(mx, my);
+    graphHover = node;
+    if (node !== null) {
+      canvas.style.cursor = 'pointer';
+      const n = graphNodes[node];
+      graphTooltipEl.innerHTML = `<div class="tt-title">${escapeHtml(n.album.title)}</div><div class="tt-artist">${escapeHtml(n.album.artist)}</div><div class="tt-tag">${n.album.tags.join(' / ')}</div>`;
+      graphTooltipEl.classList.add('visible');
+      graphTooltipEl.style.left = (mx + 16) + 'px';
+      graphTooltipEl.style.top = (my - 10) + 'px';
+    } else {
+      canvas.style.cursor = 'grab';
+      graphTooltipEl.classList.remove('visible');
+    }
+  });
+
+  canvas.addEventListener('mousedown', e => {
+    const rect = canvas.getBoundingClientRect();
+    const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+    const node = getNodeAt(mx, my);
+    if (node !== null) {
+      graphDrag = node; canvas.style.cursor = 'grabbing';
+    } else {
+      graphPanStart = { x: graphPan.x, y: graphPan.y };
+      graphPanStartMouse = { x: e.clientX, y: e.clientY };
+      canvas.style.cursor = 'grabbing';
+    }
+  });
+
+  window.addEventListener('mouseup', () => {
+    graphDrag = null; graphPanStart = null; graphPanStartMouse = null;
+  });
+
+  canvas.addEventListener('mouseleave', () => {
+    graphHover = null; graphTooltipEl.classList.remove('visible');
+  });
+
+  canvas.addEventListener('wheel', e => {
+    e.preventDefault();
+    const rect = canvas.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+    const oldScale = graphScale;
+    const newScale = Math.max(0.2, Math.min(5, graphScale * (e.deltaY > 0 ? 0.9 : 1.1)));
+    const dpr = window.devicePixelRatio || 1;
+    const w = canvas.width / dpr, h = canvas.height / dpr;
+    const wx = (mx - w / 2 - graphPan.x) / oldScale;
+    const wy = (my - h / 2 - graphPan.y) / oldScale;
+    graphScale = newScale;
+    graphPan.x = mx - w / 2 - wx * graphScale;
+    graphPan.y = my - h / 2 - wy * graphScale;
+  }, { passive: false });
+
+  // Touch
+  let touchDist = null;
+  canvas.addEventListener('touchstart', e => {
+    e.preventDefault();
+    if (e.touches.length === 1) {
+      const t = e.touches[0], rect = canvas.getBoundingClientRect();
+      const node = getNodeAt(t.clientX - rect.left, t.clientY - rect.top);
+      if (node !== null) { graphDrag = node; }
+      else {
+        graphPanStart = { x: graphPan.x, y: graphPan.y };
+        graphPanStartMouse = { x: t.clientX, y: t.clientY };
+      }
+    } else if (e.touches.length === 2) {
+      graphDrag = null;
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      touchDist = Math.sqrt(dx * dx + dy * dy);
+    }
+  }, { passive: false });
+
+  canvas.addEventListener('touchmove', e => {
+    e.preventDefault();
+    if (e.touches.length === 1) {
+      const t = e.touches[0], rect = canvas.getBoundingClientRect();
+      const mx = t.clientX - rect.left, my = t.clientY - rect.top;
+      if (graphDrag !== null) {
+        const dpr = window.devicePixelRatio || 1;
+        graphNodes[graphDrag].x = (mx - canvas.width / dpr / 2 - graphPan.x) / graphScale;
+        graphNodes[graphDrag].y = (my - canvas.height / dpr / 2 - graphPan.y) / graphScale;
+        graphNodes[graphDrag].vx = 0; graphNodes[graphDrag].vy = 0;
+      } else if (graphPanStart) {
+        graphPan.x = graphPanStart.x + (t.clientX - graphPanStartMouse.x);
+        graphPan.y = graphPanStart.y + (t.clientY - graphPanStartMouse.y);
+      }
+    } else if (e.touches.length === 2 && touchDist) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const newDist = Math.sqrt(dx * dx + dy * dy);
+      graphScale = Math.max(0.2, Math.min(5, graphScale * (newDist / touchDist)));
+      touchDist = newDist;
+    }
+  }, { passive: false });
+
+  canvas.addEventListener('touchend', () => {
+    graphDrag = null; graphPanStart = null; graphPanStartMouse = null; touchDist = null;
+  });
+}
+
+// Init
+initGraph();
+buildGraph();
+document.getElementById('resetGraphBtn').addEventListener('click', resetGraphView);
+document.getElementById('fitGraphBtn').addEventListener('click', fitGraphToViewport);
+</script>
+</body>
+</html>

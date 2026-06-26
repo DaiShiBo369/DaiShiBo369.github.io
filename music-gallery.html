@@ -1,0 +1,2370 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Disboundia Music Gallery | 独立音乐馆</title>
+<meta name="theme-color" content="#0a1628">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ===== Reset & Base ===== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: 'Quicksand', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  color: #fff;
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.6;
+  background: #0a1628;
+}
+
+/* ===== Sky Background ===== */
+.sky {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: -2;
+  background: linear-gradient(180deg,
+    #0a1628 0%,
+    #1a3a5c 25%,
+    #4a90d9 50%,
+    #87ceeb 75%,
+    #c8a8e8 100%
+  );
+  transition: background 0.3s ease;
+}
+
+.sky::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.18), transparent 28%),
+    radial-gradient(circle at 82% 24%, rgba(255, 107, 157, 0.18), transparent 30%),
+    linear-gradient(180deg, rgba(10, 22, 40, 0.1), rgba(10, 16, 30, 0.42));
+  pointer-events: none;
+}
+
+/* Stars */
+.stars {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 40%;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.star {
+  position: absolute;
+  width: 2px; height: 2px;
+  background: #fff;
+  border-radius: 50%;
+  animation: twinkle 3s ease-in-out infinite alternate;
+}
+
+@keyframes twinkle {
+  0% { opacity: 0.2; transform: scale(1); }
+  100% { opacity: 1; transform: scale(1.5); }
+}
+
+/* ===== Clouds ===== */
+.clouds {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.cloud {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  filter: blur(1px);
+}
+
+.cloud::before, .cloud::after {
+  content: '';
+  position: absolute;
+  background: inherit;
+  border-radius: 50%;
+}
+
+.cloud-1 {
+  width: 200px; height: 60px;
+  top: 8%; left: -5%;
+  animation: float-cloud 45s linear infinite;
+}
+.cloud-1::before { width: 80px; height: 80px; top: -40px; left: 30px; }
+.cloud-1::after { width: 100px; height: 70px; top: -30px; left: 80px; }
+
+.cloud-2 {
+  width: 280px; height: 70px;
+  top: 15%; left: 30%;
+  animation: float-cloud 60s linear infinite;
+  animation-delay: -15s;
+  opacity: 0.8;
+}
+.cloud-2::before { width: 100px; height: 90px; top: -45px; left: 50px; }
+.cloud-2::after { width: 120px; height: 80px; top: -35px; left: 120px; }
+
+.cloud-3 {
+  width: 160px; height: 50px;
+  top: 25%; left: 65%;
+  animation: float-cloud 50s linear infinite;
+  animation-delay: -25s;
+  opacity: 0.6;
+}
+.cloud-3::before { width: 70px; height: 65px; top: -30px; left: 25px; }
+.cloud-3::after { width: 80px; height: 55px; top: -25px; left: 65px; }
+
+.cloud-4 {
+  width: 240px; height: 65px;
+  top: 35%; left: -10%;
+  animation: float-cloud 55s linear infinite;
+  animation-delay: -35s;
+  opacity: 0.5;
+}
+.cloud-4::before { width: 90px; height: 85px; top: -40px; left: 40px; }
+.cloud-4::after { width: 110px; height: 75px; top: -30px; left: 100px; }
+
+.cloud-5 {
+  width: 180px; height: 55px;
+  top: 50%; left: 45%;
+  animation: float-cloud 48s linear infinite;
+  animation-delay: -10s;
+  opacity: 0.4;
+}
+.cloud-5::before { width: 75px; height: 70px; top: -35px; left: 35px; }
+.cloud-5::after { width: 90px; height: 60px; top: -28px; left: 80px; }
+
+@keyframes float-cloud {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(calc(100vw + 100%)); }
+}
+
+/* ===== Hero Section ===== */
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  text-align: center;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -1px;
+  width: min(960px, 88vw);
+  height: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.34), transparent);
+}
+
+.hero-title {
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  background: linear-gradient(135deg, #fff 0%, #87ceeb 40%, #c8a8e8 70%, #ff6b9d 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1rem;
+  text-shadow: none;
+}
+
+.hero-subtitle {
+  font-size: clamp(1rem, 3vw, 1.4rem);
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.7);
+  max-width: 600px;
+  margin-bottom: 2rem;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.8rem;
+  margin-bottom: 2rem;
+}
+
+.hero-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0.65rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.11);
+  color: rgba(255, 255, 255, 0.86);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.hero-btn:hover,
+.hero-btn:focus-visible {
+  transform: translateY(-2px);
+  background: rgba(255, 107, 157, 0.28);
+  border-color: rgba(255, 107, 157, 0.54);
+  outline: none;
+}
+
+.hero-btn.secondary:hover,
+.hero-btn.secondary:focus-visible {
+  background: rgba(135, 206, 235, 0.22);
+  border-color: rgba(135, 206, 235, 0.5);
+}
+
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  width: min(560px, 92vw);
+}
+
+.hero-stat {
+  padding: 0.8rem 1rem;
+  border-radius: 18px;
+  background: rgba(10, 16, 30, 0.34);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.hero-stat strong {
+  display: block;
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.hero-stat span {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.scroll-hint {
+  position: absolute;
+  bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.85rem;
+  animation: bounce-down 2s ease-in-out infinite;
+}
+
+.scroll-hint-arrow {
+  width: 20px; height: 20px;
+  border-right: 2px solid rgba(255, 255, 255, 0.5);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+  transform: rotate(45deg);
+}
+
+@keyframes bounce-down {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(10px); }
+}
+
+/* ===== Gallery Section ===== */
+.gallery {
+  position: relative;
+  padding: 2rem 1.5rem 6rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.gallery-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.gallery-header h2 {
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 0.5rem;
+}
+
+.gallery-header p {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.95rem;
+}
+
+.filter-status {
+  display: flex;
+  justify-content: center;
+  margin: -1.3rem auto 1.6rem;
+  min-height: 24px;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 0.82rem;
+}
+
+/* Search Bar */
+.search-bar {
+  max-width: 480px;
+  margin: 0 auto 1.5rem;
+  position: relative;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 0.65rem 1rem 0.65rem 2.6rem;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: #fff;
+  font-size: 0.9rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+.search-bar input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.search-bar input:focus {
+  border-color: rgba(255, 107, 157, 0.5);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.search-bar .search-icon {
+  position: absolute;
+  left: 0.9rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.9rem;
+  pointer-events: none;
+  transition: color 0.3s ease;
+}
+
+.search-bar input:focus ~ .search-icon {
+  color: rgba(255, 107, 157, 0.7);
+}
+
+/* Search Bar — Top Fixed */
+.search-bar-top {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 150;
+  width: 90%;
+  max-width: 480px;
+}
+
+.search-bar-top input {
+  width: 100%;
+  padding: 0.6rem 1rem 0.6rem 2.6rem;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(10, 22, 40, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  color: #fff;
+  font-size: 0.9rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.search-bar-top input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.search-bar-top input:focus {
+  border-color: rgba(255, 107, 157, 0.5);
+  background: rgba(10, 22, 40, 0.8);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+}
+
+.search-bar-top .search-icon {
+  position: absolute;
+  left: 0.9rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.9rem;
+  pointer-events: none;
+  transition: color 0.3s ease;
+}
+
+.search-bar-top input:focus ~ .search-icon {
+  color: rgba(255, 107, 157, 0.7);
+}
+
+/* Filter Tags */
+.filter-bar {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  max-width: 920px;
+  margin-bottom: 2rem;
+  margin-left: auto;
+  margin-right: auto;
+  overflow-x: auto;
+  padding: 0.2rem 0.4rem 0.7rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.32) transparent;
+}
+
+.filter-tag {
+  flex: 0 0 auto;
+  padding: 0.35rem 1rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.filter-tag:hover,
+.filter-tag.active {
+  background: rgba(255, 107, 157, 0.3);
+  border-color: rgba(255, 107, 157, 0.5);
+  color: #fff;
+}
+
+/* Country tag on card */
+.album-country {
+  position: absolute;
+  top: 1rem; left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  padding: 0.2rem 0.6rem;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.85);
+  white-space: nowrap;
+}
+
+/* Country filter bar — same style as tag filter but distinct */
+.country-bar {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  max-width: 920px;
+  margin-bottom: 1.5rem;
+  margin-left: auto;
+  margin-right: auto;
+  overflow-x: auto;
+  padding: 0.2rem 0.4rem 0.7rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(135, 206, 235, 0.35) transparent;
+}
+
+.country-bar .filter-tag {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.country-bar .filter-tag:hover,
+.country-bar .filter-tag.active {
+  background: rgba(135, 206, 235, 0.3);
+  border-color: rgba(135, 206, 235, 0.5);
+}
+
+/* Album Grid — flex wrap with floating cards */
+.album-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  padding: 1rem 0;
+  isolation: isolate;
+}
+
+@media (max-width: 768px) {
+  .album-grid {
+    gap: 1.5rem;
+  }
+}
+
+/* Album Card — floating semi-transparent card */
+.album-card {
+  width: 240px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  overflow: visible;
+  transition: box-shadow 0.4s ease,
+              transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+  transform: translateY(30px);
+  animation: card-in 0.6s ease forwards;
+  cursor: default;
+  position: relative;
+  /* Lock height to cover size so layout never shifts */
+  height: 240px;
+}
+
+.album-card.loaded {
+  animation: float-card 6s ease-in-out infinite;
+  opacity: 1;
+}
+
+.album-card:hover,
+.album-card.expanded {
+  transform: rotate(0deg) translateY(-6px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 40px rgba(255, 107, 157, 0.1);
+  z-index: 50;
+  animation-play-state: paused;
+}
+
+.album-card:focus-within {
+  z-index: 55;
+}
+
+/* Expanded overlay — floats above the grid, doesn't push siblings */
+.album-card:hover .album-card-inner,
+.album-card.expanded .album-card-inner {
+  position: absolute;
+  top: 0; left: 0;
+  width: 360px;
+  background: rgba(16, 24, 48, 0.92);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 40px rgba(255, 107, 157, 0.15);
+}
+
+.album-card:nth-child(4n) .album-card-inner {
+  transform-origin: top right;
+}
+
+.album-card:nth-child(4n):hover .album-card-inner,
+.album-card:nth-child(4n).expanded .album-card-inner {
+  right: 0;
+  left: auto;
+}
+
+@keyframes card-in {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float-card {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+/* Cover */
+.album-cover-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.album-cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.album-card:hover .album-cover {
+  transform: scale(1.05);
+}
+
+.album-year {
+  position: absolute;
+  top: 1rem; right: 1rem;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.album-tags {
+  position: absolute;
+  top: 1rem; left: 1rem;
+  display: none;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.album-tag {
+  background: rgba(255, 107, 157, 0.4);
+  backdrop-filter: blur(10px);
+  padding: 0.2rem 0.6rem;
+  border-radius: 10px;
+  font-size: 0.75rem;
+}
+
+/* Card Header — overlay on cover showing title + artist */
+.album-card-header {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 2.5rem 1rem 1rem;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+  pointer-events: none;
+}
+
+.album-card-header .album-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.15rem;
+  overflow-wrap: anywhere;
+}
+
+.album-card-header .album-artist {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Card Body — hidden by default, revealed on hover */
+.album-card-inner {
+  display: flex;
+  flex-direction: column;
+}
+
+.album-body {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.4s ease,
+              padding 0.4s ease;
+  padding: 0 1.25rem;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.album-card:hover .album-body,
+.album-card.expanded .album-body {
+  max-height: 800px;
+  opacity: 1;
+  padding: 1.25rem;
+}
+
+.album-body .album-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.2rem;
+  overflow-wrap: anywhere;
+}
+
+.album-body .album-artist {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 0.5rem;
+}
+
+.album-body .album-tags {
+  position: static;
+  display: flex;
+  margin-bottom: 0.8rem;
+}
+
+/* Story — always visible inside expanded body */
+.album-story {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.85rem;
+  line-height: 1.7;
+  margin-bottom: 0.8rem;
+}
+
+.album-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.album-action {
+  flex: 1;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.78);
+  font: inherit;
+  font-size: 0.78rem;
+  padding: 0.46rem 0.55rem;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.album-action:hover,
+.album-action:focus-visible {
+  background: rgba(255, 107, 157, 0.18);
+  border-color: rgba(255, 107, 157, 0.45);
+  color: #fff;
+  outline: none;
+}
+
+/* Player */
+.album-player {
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.album-player iframe {
+  display: block;
+  width: 100%;
+  height: 80px;
+  border: none;
+}
+
+.song-list {
+  margin-top: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.song-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.4rem 0.6rem;
+  border-radius: 8px;
+  transition: background 0.2s ease;
+}
+
+.song-item:focus-visible {
+  outline: 2px solid rgba(255, 107, 157, 0.55);
+  outline-offset: 2px;
+}
+
+.song-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.song-name {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.song-link {
+  font-size: 0.7rem;
+  color: rgba(255, 107, 157, 0.8);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+
+.song-link:hover {
+  color: #ff6b9d;
+}
+
+/* ===== Mobile: touch toggle ===== */
+@media (max-width: 768px) {
+  .album-card {
+    width: 220px;
+  }
+
+  .album-card.expanded {
+    transform: rotate(0deg);
+  }
+
+  .album-card:hover {
+    transform: rotate(var(--rotate, 0deg));
+  }
+
+  .album-card:hover .album-body {
+    max-height: 0;
+    opacity: 0;
+    padding: 0 1.25rem;
+  }
+
+  .album-card.expanded .album-body {
+    max-height: 800px;
+    opacity: 1;
+    padding: 1.25rem;
+    width: 100%;
+  }
+
+  .album-card:hover .album-card-inner,
+  .album-card.expanded .album-card-inner {
+    width: min(360px, calc(100vw - 5rem));
+  }
+}
+
+/* ===== Footer ===== */
+.footer {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 0.8rem;
+}
+
+/* ===== Back to Top ===== */
+.back-to-top {
+  position: fixed;
+  bottom: 2rem; right: 2rem;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.3s ease;
+  z-index: 100;
+  font-family: inherit;
+}
+
+.back-to-top.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.back-to-top:hover {
+  background: rgba(255, 107, 157, 0.3);
+  border-color: rgba(255, 107, 157, 0.5);
+}
+
+/* ===== Loading State ===== */
+.loading {
+  text-align: center;
+  padding: 4rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* ===== Empty State ===== */
+.empty {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 1.1rem;
+}
+
+/* ===== Sidebar ===== */
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 160;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.6rem;
+  background: rgba(10, 16, 30, 0.5);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 0 16px 16px 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: none;
+}
+
+.sidebar-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.6rem 0.5rem;
+  border-radius: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: none;
+  transition: all 0.25s ease;
+  min-width: 48px;
+}
+
+.sidebar-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.sidebar-btn.active {
+  background: rgba(255, 107, 157, 0.3);
+  color: #ff6b9d;
+}
+
+.sidebar-label {
+  font-size: 0.6rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Shift gallery content for sidebar */
+.gallery {
+  padding-left: 4rem;
+}
+
+@media (max-width: 900px) {
+  .hero {
+    min-height: 92vh;
+    padding: 4.5rem 1.2rem 5rem;
+  }
+
+  .hero-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .search-bar-top {
+    top: 0.75rem;
+    width: calc(100% - 2rem);
+    max-width: none;
+  }
+
+  .sidebar {
+    left: 50%;
+    top: auto;
+    bottom: 0.9rem;
+    transform: translateX(-50%);
+    flex-direction: row;
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 0.45rem;
+  }
+
+  .sidebar-btn {
+    min-width: 76px;
+    padding: 0.48rem 0.65rem;
+  }
+
+  .gallery {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .album-card:hover .album-card-inner,
+  .album-card.expanded .album-card-inner,
+  .album-card:nth-child(4n):hover .album-card-inner,
+  .album-card:nth-child(4n).expanded .album-card-inner {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+  }
+}
+
+/* ===== Player Bar ===== */
+.player-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  background: rgba(10, 16, 30, 0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: inherit;
+  transition: transform 0.3s ease;
+}
+
+.player-bar.hidden {
+  transform: translateY(100%);
+}
+
+.player-bar-inner {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.5rem 1.2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.player-cover {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.player-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.player-info {
+  min-width: 0;
+  flex-shrink: 0;
+  max-width: 160px;
+}
+
+.player-song-name {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #fff;
+}
+
+.player-artist {
+  display: block;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.player-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  flex-shrink: 0;
+}
+
+.player-controls button {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0.3rem 0.5rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.player-controls button:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.player-controls #playerPlay {
+  font-size: 1.3rem;
+  padding: 0.3rem 0.6rem;
+}
+
+.player-progress {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.player-progress span {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.5);
+  flex-shrink: 0;
+  min-width: 32px;
+  text-align: center;
+}
+
+.player-progress input[type="range"] {
+  flex: 1;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+.player-progress input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ff6b9d;
+  cursor: pointer;
+  border: none;
+}
+
+.player-progress input[type="range"]::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ff6b9d;
+  cursor: pointer;
+  border: none;
+}
+
+.player-volume {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.player-volume span {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.player-volume input[type="range"] {
+  width: 70px;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+.player-volume input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #87ceeb;
+  cursor: pointer;
+  border: none;
+}
+
+.player-volume input[type="range"]::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #87ceeb;
+  cursor: pointer;
+  border: none;
+}
+
+.player-toggle {
+  background: transparent !important;
+  border: none !important;
+  color: rgba(255, 255, 255, 0.6) !important;
+  font-size: 1.2rem !important;
+  cursor: pointer !important;
+  padding: 0.3rem 0.5rem !important;
+  border-radius: 6px !important;
+  transition: all 0.2s ease !important;
+  font-family: inherit !important;
+}
+
+.player-toggle:hover {
+  color: #fff !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Playlist panel */
+.player-playlist {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  background: rgba(10, 16, 30, 0.6);
+}
+
+.player-playlist.open {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.playlist-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 1.2rem;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.playlist-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.playlist-item.active {
+  color: #ff6b9d;
+}
+
+.playlist-item-cover {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.playlist-item-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.playlist-item-name {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
+
+.playlist-item-artist {
+  display: block;
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* Song item playing indicator */
+.song-item.playing {
+  background: rgba(255, 107, 157, 0.12);
+  position: relative;
+}
+
+.song-item.playing .song-name {
+  color: #ff6b9d;
+}
+
+.song-item.playing::before {
+  content: '';
+  position: absolute;
+  left: 0.3rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 16px;
+  background: #ff6b9d;
+  border-radius: 2px;
+  animation: eq-bar 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes eq-bar {
+  0% { height: 8px; }
+  100% { height: 16px; }
+}
+
+/* Song item clickable */
+.song-item.clickable {
+  cursor: pointer;
+}
+
+.song-item.clickable:hover {
+  background: rgba(255, 107, 157, 0.15);
+}
+
+/* ===== Mobile Player ===== */
+@media (max-width: 768px) {
+  .player-bar-inner {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.4rem 0.8rem;
+  }
+
+  .player-info {
+    max-width: 120px;
+  }
+
+  .player-progress {
+    order: 5;
+    width: 100%;
+    flex-basis: 100%;
+  }
+
+  .player-volume {
+    display: none;
+  }
+
+  .player-controls #playerPrev,
+  .player-controls #playerNext {
+    font-size: 0.9rem;
+  }
+}
+
+/* Add bottom padding for player bar */
+.gallery {
+  padding-bottom: 8rem;
+}
+
+.footer {
+  padding-bottom: 5rem;
+}
+</style>
+</head>
+<body>
+
+<!-- Sky Background -->
+<div class="sky" id="sky"></div>
+
+<!-- Stars -->
+<div class="stars" id="stars"></div>
+
+<!-- Clouds -->
+<div class="clouds">
+  <div class="cloud cloud-1"></div>
+  <div class="cloud cloud-2"></div>
+  <div class="cloud cloud-3"></div>
+  <div class="cloud cloud-4"></div>
+  <div class="cloud cloud-5"></div>
+</div>
+
+<!-- Sidebar -->
+<nav class="sidebar" id="sidebar">
+  <a class="sidebar-btn active" href="music-gallery.html" title="唱片架">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2"/><circle cx="8" cy="8" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
+    <span class="sidebar-label">唱片架</span>
+  </a>
+  <a class="sidebar-btn" href="music-graph.html" title="关系图">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="12" cy="18" r="2"/><line x1="7" y1="7" x2="10" y2="17"/><line x1="17" y1="7" x2="14" y2="17"/><line x1="7" y1="6" x2="17" y2="6"/></svg>
+    <span class="sidebar-label">关系图</span>
+  </a>
+</nav>
+
+<!-- Search Bar (top fixed) -->
+<div class="search-bar-top" id="searchBarTop">
+  <input type="text" id="searchInput" placeholder="搜索专辑、歌手、歌曲…" autocomplete="off">
+  <span class="search-icon">&#128269;</span>
+</div>
+
+<!-- Hero -->
+<section class="hero">
+  <h1 class="hero-title">Music Gallery</h1>
+  <p class="hero-subtitle">每一张专辑，都是一段时光的琥珀。这里存放着那些陪伴我走过日夜的旋律，以及它们背后的故事。</p>
+  <div class="hero-actions">
+    <a class="hero-btn" href="#gallery">进入唱片架</a>
+    <a class="hero-btn secondary" href="music-graph.html">查看关系图</a>
+  </div>
+  <div class="hero-stats" aria-label="音乐馆统计">
+    <div class="hero-stat">
+      <strong id="albumCount">--</strong>
+      <span>张专辑</span>
+    </div>
+    <div class="hero-stat">
+      <strong id="artistCount">--</strong>
+      <span>位音乐人</span>
+    </div>
+    <div class="hero-stat">
+      <strong id="tagCount">--</strong>
+      <span>个标签</span>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <span>向下探索</span>
+    <div class="scroll-hint-arrow"></div>
+  </div>
+</section>
+
+<!-- Gallery -->
+<section class="gallery" id="gallery">
+  <div class="gallery-header">
+    <h2>我的唱片架</h2>
+    <p>悬停卡片展开详情，探索每张专辑背后的故事</p>
+  </div>
+  <div class="filter-status" id="filterStatus"></div>
+  <div class="filter-bar" id="filterBar"></div>
+  <div class="country-bar" id="countryBar"></div>
+  <div class="album-grid" id="albumGrid"></div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <p>Disboundia Music Gallery &copy; 2026</p>
+</footer>
+
+<!-- Back to Top -->
+<button class="back-to-top" id="backToTop" title="返回顶部">&#8593;</button>
+
+<!-- Player Bar -->
+<div class="player-bar hidden" id="playerBar">
+  <div class="player-bar-inner">
+    <div class="player-cover">
+      <img id="playerCoverImg" src="" alt="">
+    </div>
+    <div class="player-info">
+      <span class="player-song-name" id="playerSongName">未在播放</span>
+      <span class="player-artist" id="playerArtist">—</span>
+    </div>
+    <div class="player-controls">
+      <button id="playerPrev">&#9198;</button>
+      <button id="playerPlay">&#9654;</button>
+      <button id="playerNext">&#9197;</button>
+    </div>
+    <div class="player-progress">
+      <span id="playerCurrentTime">0:00</span>
+      <input type="range" id="playerProgress" min="0" max="1000" value="0">
+      <span id="playerDuration">0:00</span>
+    </div>
+    <div class="player-volume">
+      <span>&#128264;</span>
+      <input type="range" id="playerVolume" min="0" max="100" value="80">
+    </div>
+    <button class="player-toggle" id="playerToggle">&#9776;</button>
+  </div>
+  <div class="player-playlist" id="playerPlaylist"></div>
+</div>
+
+<script>
+// ============================================================
+// 专辑数据 — 修改此数组即可添加/删除专辑
+//
+// cover: 封面图 URL（推荐使用图床）
+// songmid: 在 QQ 音乐网页版歌曲详情页 URL 中获取
+//          例：https://y.qq.com/n/ryqq/songDetail/003aAYrm3GE0Xg
+//          songmid = "003aAYrm3GE0Xg"
+// ============================================================
+
+const albums = [
+  {
+    title: "范特西",
+    artist: "周杰伦",
+    country: "中国",
+    cover: "https://y.qq.com/music/photo_new/T002R300x300M0000025dRbE3qxZYp.jpg",
+    year: "2001",
+    story: "第一次听到《双截棍》的时候我还在上小学，那时候完全听不懂他在唱什么，但就是觉得酷。后来慢慢长大，每一首歌都听懂了，才发现这张专辑里的每一首都是经典。从《爱在西元前》到《简单爱》，从《忍者》到《安静》，周董用一张专辑定义了一整个时代的华语流行音乐。每次重听都会回到那个夏天的午后，风扇吱呀地转，耳机里是永远不会过时的旋律。",
+    songs: [
+      { name: "双截棍", songmid: "003OUlpo2wCmG2", url: "" },
+      { name: "简单爱", songmid: "001u1Wef1J9uNb", url: "" },
+      { name: "爱在西元前", songmid: "001bPSGo1YJ2CB", url: "" },
+      { name: "安静", songmid: "004LkLmW3a3BOf", url: "" }
+    ],
+    tags: ["华语", "经典", "周杰伦"]
+  },
+  {
+    title: "OK Computer",
+    artist: "Radiohead",
+    country: "英国",
+    cover: "https://y.qq.com/music/photo_new/T002R300x300M0000011Aef63RfCUp.jpg",
+    year: "1997",
+    story: "高三那段最焦虑的日子里，是 OK Computer 陪我度过了无数个深夜。Thom Yorke 的声音像是来自另一个维度的呼唤，吉他噪音墙和电子元素的融合让我第一次意识到摇滚乐可以如此深邃。Paranoid Android 的结构像一部电影，No Surprises 的旋律像一首摇篮曲——虽然歌词里写满了对现代社会的恐惧和疏离。这张专辑教会我，音乐可以不只是旋律，更是一种对世界的态度。",
+    songs: [
+      { name: "Paranoid Android", songmid: "003CFaCp1pTQz0", url: "" },
+      { name: "Karma Police", songmid: "002oN3aI3yDXrN", url: "" },
+      { name: "No Surprises", songmid: "001X9p3R3y5SsA", url: "" }
+    ],
+    tags: ["摇滚", "经典", "英国", "另类/垃圾摇滚"]
+  },
+  {
+    title: "葉惠美",
+    artist: "周杰伦",
+    country: "中国",
+    cover: "https://y.qq.com/music/photo_new/T002R300x300M000000WoaG72WQ8Nu.jpg",
+    year: "2003",
+    story: "《以父之名》的前奏一响，我就知道这不是一张普通的专辑。开头的歌剧女声、钟声、雨声，构建出一个完整的世界。这张专辑里周董在音乐性和流行性之间找到了完美的平衡点。《晴天》写尽了青春的遗憾，《东风破》开启了华语乐坛的中国风浪潮，《梯田》让人看到他对社会议题的关注。这是我听过最多次的华语专辑，没有之一。",
+    songs: [
+      { name: "以父之名", songmid: "001B8t8W3p5vI0", url: "" },
+      { name: "晴天", songmid: "003aAYrm3GE0Xg", url: "" },
+      { name: "东风破", songmid: "001RD9Aw2i0R2x", url: "" },
+      { name: "梯田", songmid: "003zQ9Hj2F3kPc", url: "" }
+    ],
+    tags: ["华语", "经典", "周杰伦"]
+  },
+  {
+    title: "1989",
+    artist: "Taylor Swift",
+    country: "美国",
+    cover: "https://coverartarchive.org/release/e4417eaf-7a8c-40e2-8ae1-979f3c793157/front-500",
+    year: "2014",
+    story: "现代工业流行乐制作的教科书。Taylor Swift 从乡村转型流行后交出了一份完美的答卷，每首歌都是精心打磨的流行宝石。从 Shake It Off 的欢快到 Blank Space的讽刺，从 Bad Blood 的力量到 Wildest Dreams 的梦幻，这张专辑重新定义了流行音乐的标准。",
+    songs: [
+      { name: "Shake It Off", songmid: "", url: "" },
+      { name: "Blank Space", songmid: "", url: "" },
+      { name: "Bad Blood", songmid: "", url: "" },
+      { name: "Wildest Dreams", songmid: "", url: "" }
+    ],
+    tags: ["流行", "经典", "美国"]
+  },
+  {
+    title: "The Man-Machine",
+    artist: "Kraftwerk",
+    country: "德国",
+    cover: "https://coverartarchive.org/release/8cb01654-34b5-409c-9217-33e1782bd433/front-500",
+    year: "1978",
+    story: "电子乐的基石，影响了后续所有合成器音乐。Kraftwerk 用极简的旋律和冰冷的电子音色描绘了一个人与机器共生的未来世界。The Model 的旋律简单到令人难以置信，却成为跨越数十年的经典。从 David Bowie 到 Daft Punk，无数音乐人都从这张专辑中汲取灵感。",
+    songs: [
+      { name: "The Robots", songmid: "", url: "" },
+      { name: "The Model", songmid: "", url: "" },
+      { name: "Neon Lights", songmid: "", url: "" }
+    ],
+    tags: ["电子", "经典", "德国"]
+  },
+  {
+    title: "Discovery",
+    artist: "Daft Punk",
+    country: "法国",
+    cover: "https://coverartarchive.org/release/098060d4-ba3c-469d-88b0-08642261c7ab/front-500",
+    year: "2001",
+    story: "电子舞曲与流行旋律结合的巅峰。Daft Punk 用这张专辑证明了电子乐可以既深邃又充满律动，既有实验精神又能让人情不自禁地舞动。One More Time 的合成器旋律是派对永恒的主题曲，Digital Love 的温柔则让人心碎。",
+    songs: [
+      { name: "One More Time", songmid: "", url: "" },
+      { name: "Digital Love", songmid: "", url: "" },
+      { name: "Harder, Better, Faster, Stronger", songmid: "", url: "" },
+      { name: "Aerodynamic", songmid: "", url: "" }
+    ],
+    tags: ["电子", "经典", "法国"]
+  },
+  {
+    title: "Selected Ambient Works 85-92",
+    artist: "Aphex Twin",
+    country: "英国",
+    cover: "https://coverartarchive.org/release/309b05b5-c22b-49c8-aeb1-240af7b56514/front-500",
+    year: "1992",
+    story: "智能舞曲（IDM）与氛围电子的开山鼻祖。Richard D. James 在十几岁时就创作出了这些超越时代的作品，将环境音乐的宁静与电子乐的复杂性完美融合。Xtal 的美到令人窒息，Green Calx 则展现了他在声音设计上的天才。",
+    songs: [
+      { name: "Xtal", songmid: "", url: "" },
+      { name: "Tha", songmid: "", url: "" },
+      { name: "Pulsewidth", songmid: "", url: "" },
+      { name: "Green Calx", songmid: "", url: "" }
+    ],
+    tags: ["电子", "经典", "英国"]
+  },
+  {
+    title: "Mezzanine",
+    artist: "Massive Attack",
+    country: "英国",
+    cover: "https://coverartarchive.org/release/0d33ef7a-1f5d-4365-b807-b412271b99c3/front-500",
+    year: "1998",
+    story: "Trip-hop（神游舞曲）阴郁、深邃美学的代表。Teardrop 的钢琴旋律配上 Elizabeth Fraser 的空灵嗓音成为电视剧《House M.D.》的主题曲，而 Angel 则用沉重的贝斯线构建出令人窒息的黑暗氛围。这张专辑是深夜独处时最好的陪伴。",
+    songs: [
+      { name: "Angel", songmid: "", url: "" },
+      { name: "Risingson", songmid: "", url: "" },
+      { name: "Teardrop", songmid: "", url: "" },
+      { name: "Inertia Creeps", songmid: "", url: "" }
+    ],
+    tags: ["电子", "经典", "英国"]
+  },
+  {
+    title: "The Fat of the Land",
+    artist: "The Prodigy",
+    country: "英国",
+    cover: "https://coverartarchive.org/release/6e62a3d2-b2d8-47e8-a046-b7799089c2af/front-500",
+    year: "1997",
+    story: "电子乐与摇滚冲击力完美结合的 Big Beat 巨作。Breathe 的扭曲人声和爆裂鼓点让人血脉偾张，Firestarter 是夜店的绝对杀手锏，Smack My Bitch Up 则以其争议性和音乐实验性成为电子乐史上的里程碑。",
+    songs: [
+      { name: "Smack My Bitch Up", songmid: "", url: "" },
+      { name: "Breathe", songmid: "", url: "" },
+      { name: "Firestarter", songmid: "", url: "" },
+      { name: "Diesel Power", songmid: "", url: "" }
+    ],
+    tags: ["电子", "经典", "英国"]
+  },
+  {
+    title: "Never Mind the Bollocks, Here's the Sex Pistols",
+    artist: "Sex Pistols",
+    country: "英国",
+    cover: "https://coverartarchive.org/release/155cc065-924f-3046-a73b-624e3311ce11/front-500",
+    year: "1977",
+    story: "朋克运动的导火索，反叛精神的符号。Anarchy in the U.K. 的粗粝与愤怒点燃了整个时代的青年文化，God Save the Queen 则是对权威最直接的挑衅。这张专辑的伟大不在于技术，而在于它彻底改变了人们理解音乐的方式——你不需要成为大师才能改变世界。",
+    songs: [
+      { name: "Anarchy in the U.K.", songmid: "", url: "" },
+      { name: "God Save the Queen", songmid: "", url: "" },
+      { name: "Holidays in the Sun", songmid: "", url: "" },
+      { name: "Pretty Vacant", songmid: "", url: "" }
+    ],
+    tags: ["朋克摇滚", "经典", "英国"]
+  },
+  {
+    title: "Ramones",
+    artist: "The Ramones",
+    country: "美国",
+    cover: "https://coverartarchive.org/release/668a6f77-a070-4f38-bb26-1ebd18d1cc5d/front-500",
+    year: "1976",
+    story: "三和弦与极速节奏，定义了朋克的极简主义。Blitzkrieg Bop 的 Hey! Ho! Let's Go! 成为摇滚乐最经典的呐喊之一。The Ramones 用最简单的音乐语言证明了摇滚乐的力量不在于复杂性，而在于直接、原始的情感冲击。穿上皮夹克，戴上墨镜，全世界都是你的舞台。",
+    songs: [
+      { name: "Blitzkrieg Bop", songmid: "", url: "" },
+      { name: "Beat on the Brat", songmid: "", url: "" },
+      { name: "Judy Is a Punk", songmid: "", url: "" },
+      { name: "Now I Wanna Sniff Some Glue", songmid: "", url: "" }
+    ],
+    tags: ["朋克摇滚", "经典", "美国"]
+  },
+  {
+    title: "London Calling",
+    artist: "The Clash",
+    country: "英国",
+    cover: "https://coverartarchive.org/release/985bd7aa-d0df-46b8-9582-4bdeb3b768b8/front-500",
+    year: "1979",
+    story: "将雷鬼、爵士融入朋克，展现了该流派的深度。同名曲 London Calling 的贝斯线一响起就让人热血沸腾，而 Rudie Can't Fail 和 The Guns of Brixton 则展示了朋克音乐远不止愤怒嘶吼——它可以是多元的、充满律动的、甚至是可以跳舞的。",
+    songs: [
+      { name: "London Calling", songmid: "", url: "" },
+      { name: "Clampdown", songmid: "", url: "" },
+      { name: "Rudie Can't Fail", songmid: "", url: "" },
+      { name: "The Guns of Brixton", songmid: "", url: "" }
+    ],
+    tags: ["朋克摇滚", "经典", "英国"]
+  },
+  {
+    title: "Horses",
+    artist: "Patti Smith",
+    country: "美国",
+    cover: "https://coverartarchive.org/release/17de58a1-09f0-391e-8969-65a055c10ecf/front-500",
+    year: "1975",
+    story: "\"朋克教母\"的杰作，文学性与原始能量的结合。Gloria 的开场白 Jesus died for somebody's sins but not mine 成为摇滚史上最具力量的宣言之一。Patti Smith 用诗歌和即兴演唱重新定义了摇滚乐中的女性表达，这张专辑是文学与音乐交融的典范。",
+    songs: [
+      { name: "Gloria", songmid: "", url: "" },
+      { name: "Redondo Beach", songmid: "", url: "" },
+      { name: "Birdland", songmid: "", url: "" },
+      { name: "Free Money", songmid: "", url: "" }
+    ],
+    tags: ["朋克摇滚", "经典", "美国"]
+  },
+  {
+    title: "Dookie",
+    artist: "Green Day",
+    country: "美国",
+    cover: "https://coverartarchive.org/release/4bc174a0-cc5b-380e-b09f-a7e2cc7dba76/front-500",
+    year: "1994",
+    story: "90年代流行朋克（Pop-Punk）复兴的商业巅峰。Basket Case 的焦虑与自嘲成为了一代人的心声，Longview 的无聊感精准击中了青春期少年的日常，When I Come Around 的旋律则简单到让人一次就能跟着唱。Green Day 让朋克音乐变得可以传唱。",
+    songs: [
+      { name: "Basket Case", songmid: "", url: "" },
+      { name: "Longview", songmid: "", url: "" },
+      { name: "Welcome to Paradise", songmid: "", url: "" },
+      { name: "When I Come Around", songmid: "", url: "" }
+    ],
+    tags: ["朋克摇滚", "经典", "美国"]
+  },
+  {
+    title: "The Dark Side of the Moon",
+    artist: "Pink Floyd",
+    country: "英国",
+    cover: "https://coverartarchive.org/release/9a4df5ff-faa2-4e62-8542-dc7684e62bf2/front-500",
+    year: "1973",
+    story: "录音室技术的极致，探讨人性与存在的哲学课题。从心跳声开始的 Speak to Me 到空灵的 Eclipse，这张专辑是一次完整的听觉旅程。Time 的钟表声让人意识到时间的流逝，Money 的音效拼贴展现了录音艺术的魅力，而 The Great Gig in the Sky 则是悲伤与美的极致表达。",
+    songs: [
+      { name: "Speak to Me", songmid: "", url: "" },
+      { name: "Breathe", songmid: "", url: "" },
+      { name: "Time", songmid: "", url: "" },
+      { name: "Money", songmid: "", url: "" },
+      { name: "The Great Gig in the Sky", songmid: "", url: "" },
+      { name: "Brain Damage", songmid: "", url: "" },
+      { name: "Eclipse", songmid: "", url: "" }
+    ],
+    tags: ["前卫摇滚", "经典", "英国"]
+  },
+  {
+    title: "In the Court of the Crimson King",
+    artist: "King Crimson",
+    country: "英国",
+    cover: "https://coverartarchive.org/release/fe821f9f-b0c6-3e43-a23d-8d41e5af654c/front-500",
+    year: "1969",
+    story: "前卫摇滚的诞生标志，复杂的编曲与实验精神。21st Century Schizoid Man 的失真萨克斯和狂乱鼓点开创了摇滚乐的新维度，而 Epitaph 的壮美则证明了前卫摇滚不只有技术炫技，更有着深沉的情感内核。标题曲 Court of the Crimson King 的 Mellotron 音色至今令人毛骨悚然。",
+    songs: [
+      { name: "21st Century Schizoid Man", songmid: "", url: "" },
+      { name: "I Talk to the Wind", songmid: "", url: "" },
+      { name: "Epitaph", songmid: "", url: "" },
+      { name: "The Court of the Crimson King", songmid: "", url: "" }
+    ],
+    tags: ["前卫摇滚", "经典", "英国"]
+  },
+  {
+    title: "Close to the Edge",
+    artist: "Yes",
+    country: "英国",
+    cover: "https://coverartarchive.org/release/3f0d1bbb-134f-466d-a795-e6c0265f4d0c/front-500",
+    year: "1972",
+    story: "乐手演奏技巧的巅峰，宏大的结构与器乐交响。同名曲 Close to the Edge 长达近 19 分钟，却没有任何一秒让人觉得多余。And You and I 的吉他层次如同一座声音的大教堂，Siberian Khatru 则展现了乐队在节奏上的无限创造力。",
+    songs: [
+      { name: "Close to the Edge", songmid: "", url: "" },
+      { name: "And You and I", songmid: "", url: "" },
+      { name: "Siberian Khatru", songmid: "", url: "" }
+    ],
+    tags: ["前卫摇滚", "经典", "英国"]
+  },
+  {
+    title: "Selling England by the Pound",
+    artist: "Genesis",
+    country: "英国",
+    cover: "https://coverartarchive.org/release/19f2fd25-87e2-4b3a-823f-f17abbe07069/front-500",
+    year: "1973",
+    story: "充满英国神话色彩与精致戏剧感的艺术摇滚。Firth of Fifth 的钢琴前奏堪称摇滚乐中最美的键盘段落之一，Dancing with the Moonflower Knight 则将童话般的叙事融入复杂的音乐编排中。Peter Gabriel 的戏剧化演唱让每首歌都像一出迷你舞台剧。",
+    songs: [
+      { name: "Dancing with the Moonflower Knight", songmid: "", url: "" },
+      { name: "I Know What I Like", songmid: "", url: "" },
+      { name: "Firth of Fifth", songmid: "", url: "" },
+      { name: "The Cinema Show", songmid: "", url: "" }
+    ],
+    tags: ["前卫摇滚", "经典", "英国"]
+  },
+  {
+    title: "Moving Pictures",
+    artist: "Rush",
+    country: "加拿大",
+    cover: "https://coverartarchive.org/release/4fec1556-0149-379b-9494-6682e9dd9287/front-500",
+    year: "1981",
+    story: "将前卫摇滚的复杂性与硬摇滚的力度完美结合。Tom Sawyer 的合成器前奏和 Geddy Lee 的标志性高音成为摇滚电台的常客，YYZ 的器乐演奏展现了三位乐手超凡的技术水准，Limelight 则用温柔的笔触描绘了成名的孤独。",
+    songs: [
+      { name: "Tom Sawyer", songmid: "", url: "" },
+      { name: "Red Barchetta", songmid: "", url: "" },
+      { name: "YYZ", songmid: "", url: "" },
+      { name: "Limelight", songmid: "", url: "" }
+    ],
+    tags: ["前卫摇滚", "经典", "加拿大"]
+  },
+  {
+    title: "Nevermind",
+    artist: "Nirvana",
+    country: "美国",
+    cover: "https://coverartarchive.org/release/f922ec87-4758-421d-a839-3193455345ff/front-500",
+    year: "1991",
+    story: "彻底改变音乐工业，让地下另类音乐进入主流。Smells Like Teen Spirit 的失真吉他 Riff 一响，整个音乐世界都为之震动。Kurt Cobain 的嘶吼与脆弱，Krist Novoselic 的贝斯，Dave Grohl 的雷霆鼓点，三人的化学反应创造了摇滚史上最具破坏力的声音。",
+    songs: [
+      { name: "Smells Like Teen Spirit", songmid: "", url: "" },
+      { name: "Come as You Are", songmid: "", url: "" },
+      { name: "Lithium", songmid: "", url: "" },
+      { name: "In Bloom", songmid: "", url: "" }
+    ],
+    tags: ["另类/垃圾摇滚", "经典", "美国"]
+  },
+  {
+    title: "Ten",
+    artist: "Pearl Jam",
+    country: "美国",
+    cover: "https://coverartarchive.org/release/9ab961a0-aab6-4601-9ca4-50375fc9445d/front-500",
+    year: "1991",
+    story: "Grunge 运动中极具情感张力与叙事性的重磅作品。Alive 中 Eddie Vedder 的嘶吼充满生命力量，Jeremy 的叙事性让人不寒而栗，Even Flow 的吉他 Solo 则是 Stone Gossard 和 Mike McCready 的最佳证明。Pearl Jam 让 Grunge 不只有愤怒，还有深沉的柔情。",
+    songs: [
+      { name: "Alive", songmid: "", url: "" },
+      { name: "Even Flow", songmid: "", url: "" },
+      { name: "Jeremy", songmid: "", url: "" },
+      { name: "Black", songmid: "", url: "" }
+    ],
+    tags: ["另类/垃圾摇滚", "经典", "美国"]
+  },
+  {
+    title: "Automatic for the People",
+    artist: "R.E.M.",
+    country: "美国",
+    cover: "https://coverartarchive.org/release/7ccea213-bf47-455d-89af-2e91aa777761/front-500",
+    year: "1992",
+    story: "另类摇滚内省、忧郁且充满人文情怀的代表。Everybody Hurts 的旋律简单到任何人都能弹奏，但其中的悲伤却是如此深刻。Man on the Moon 对 Andy Kaufman 的致敬充满了温暖的幽默感，Nightswimming 则是关于成长与告别最美的挽歌。",
+    songs: [
+      { name: "Drive", songmid: "", url: "" },
+      { name: "Everybody Hurts", songmid: "", url: "" },
+      { name: "Man on the Moon", songmid: "", url: "" },
+      { name: "Nightswimming", songmid: "", url: "" }
+    ],
+    tags: ["另类/垃圾摇滚", "经典", "美国"]
+  },
+  {
+    title: "The Queen Is Dead",
+    artist: "The Smiths",
+    country: "英国",
+    cover: "https://coverartarchive.org/release/fd0da5e1-fbb4-3a6c-a575-929b78a272c3/front-500",
+    year: "1986",
+    story: "英国独立音乐（Indie）的圣经，歌词犀利且幽默。There Is a Light That Never Goes Out 是关于孤独与渴望最动人的歌曲之一，Bigmouth Strikes Again 的自嘲与机智让人忍俊不禁，而同名曲 The Queen Is Dead 则以华丽的方式表达了对体制的不满。Morrissey 和 Marr 的组合是摇滚史上最完美的词曲搭档之一。",
+    songs: [
+      { name: "The Queen Is Dead", songmid: "", url: "" },
+      { name: "Bigmouth Strikes Again", songmid: "", url: "" },
+      { name: "There Is a Light That Never Goes Out", songmid: "", url: "" },
+      { name: "Some Girls Are Bigger Than Others", songmid: "", url: "" }
+    ],
+    tags: ["另类/垃圾摇滚", "经典", "英国"]
+  },
+  {
+    title: "Paranoid",
+    artist: "Black Sabbath",
+    country: "英国",
+    cover: "https://coverartarchive.org/release/bd0ed0ac-e4f5-4bb5-887c-6963d8972381/front-500",
+    year: "1970",
+    story: "重金属的起源，厚重的吉他失真与阴暗主题。Paranoid 的 Riff 简短到只有几个音，却成为金属乐最标志性的旋律。Iron Man 的低沉咆哮，War Pigs 的反战怒吼——Tony Iommi 的吉他创造了全新的音色，Ozzy Osbourne 的声音则成为黑暗摇滚的代名词。",
+    songs: [
+      { name: "War Pigs", songmid: "", url: "" },
+      { name: "Paranoid", songmid: "", url: "" },
+      { name: "Iron Man", songmid: "", url: "" },
+      { name: "Hand of Doom", songmid: "", url: "" }
+    ],
+    tags: ["重金属", "经典", "英国"]
+  },
+  {
+    title: "Master of Puppets",
+    artist: "Metallica",
+    country: "美国",
+    cover: "https://coverartarchive.org/release/4c183eb6-1258-4a9f-b8e4-9f9e94187b6b/front-500",
+    year: "1986",
+    story: "激流金属（Thrash）的巅峰，严谨的结构与速度。同名曲 Master of Puppets 长达 8 分多钟，从柔和的原声吉他开场到最后的速度轰炸，如同一场精心设计的情绪过山车。Battery 的开篇 Solo，Disposable Heroes 的战争叙事，Damage Inc. 的失控感——Metallica 在这张专辑中达到了技术与情感的完美统一。",
+    songs: [
+      { name: "Battery", songmid: "", url: "" },
+      { name: "Master of Puppets", songmid: "", url: "" },
+      { name: "The Thing That Should Not Be", songmid: "", url: "" },
+      { name: "Welcome Home (Sanitarium)", songmid: "", url: "" },
+      { name: "Damage Inc.", songmid: "", url: "" }
+    ],
+    tags: ["重金属", "经典", "美国"]
+  },
+  {
+    title: "The Number of the Beast",
+    artist: "Iron Maiden",
+    country: "英国",
+    cover: "https://coverartarchive.org/release/eb8b0a99-0c1e-4cc8-9dbc-afdbb6c221ac/front-500",
+    year: "1982",
+    story: "英国重金属新浪潮领军作，宏大的英雄叙事。The Number of the Beast 以 Bruce Dickinson 标志性的高音开场，Run to the Hills 的 gallop 节奏成为金属乐的标志性技法，Hallowed Be Thy Name 则被无数金属乐队视为最伟大的金属歌曲之一。Eddie 的形象从此成为重金属文化的图腾。",
+    songs: [
+      { name: "Invaders", songmid: "", url: "" },
+      { name: "The Number of the Beast", songmid: "", url: "" },
+      { name: "Run to the Hills", songmid: "", url: "" },
+      { name: "Hallowed Be Thy Name", songmid: "", url: "" }
+    ],
+    tags: ["重金属", "经典", "英国"]
+  },
+  {
+    title: "British Steel",
+    artist: "Judas Priest",
+    country: "英国",
+    cover: "https://coverartarchive.org/release/b82929da-fb3a-3c4b-94c9-49d182717593/front-500",
+    year: "1980",
+    story: "精炼了金属乐的音色，定义了\"皮革与钉子\"的视觉。Breaking the Law 的 Riff 简短有力到让人一听就上瘾，Living After Midnight 是派对永不过时的主题曲，United 则成为足球场上的经典助威曲。Rob Halford 的嗓音是重金属的黄金标准。",
+    songs: [
+      { name: "Breaking the Law", songmid: "", url: "" },
+      { name: "Rapid Fire", songmid: "", url: "" },
+      { name: "Metal Gods", songmid: "", url: "" },
+      { name: "Living After Midnight", songmid: "", url: "" },
+      { name: "United", songmid: "", url: "" }
+    ],
+    tags: ["重金属", "经典", "英国"]
+  },
+  {
+    title: "Rust in Peace",
+    artist: "Megadeth",
+    country: "美国",
+    cover: "https://coverartarchive.org/release/200d226d-a20e-4fb7-9b40-8331e1a4731a/front-500",
+    year: "1990",
+    story: "金属乐历史上器乐演奏精密度与技术性的天花板。Holy Wars... The Punishment Due 从极速 Riff 到中段的原声吉他 Breakdown，再到最后的速度爆发，展现了 Dave Mustaine 和 Marty Friedman 的吉他演奏达到了人类能力的极限。Hangar 18 的多段 Solo 交换是金属吉他演奏的教科书。",
+    songs: [
+      { name: "Holy Wars... The Punishment Due", songmid: "", url: "" },
+      { name: "Hangar 18", songmid: "", url: "" },
+      { name: "Take No Prisoners", songmid: "", url: "" },
+      { name: "Five Magics", songmid: "", url: "" },
+      { name: "Tornado of Souls", songmid: "", url: "" }
+    ],
+    tags: ["重金属", "经典", "美国"]
+  }
+];
+
+// ============================================================
+// 以下为渲染逻辑，一般不需要修改
+// ============================================================
+
+// Generate stars
+(function generateStars() {
+  const container = document.getElementById('stars');
+  for (let i = 0; i < 80; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.style.left = Math.random() * 100 + '%';
+    star.style.top = Math.random() * 100 + '%';
+    star.style.animationDelay = Math.random() * 3 + 's';
+    star.style.animationDuration = (2 + Math.random() * 3) + 's';
+    star.style.width = star.style.height = (1 + Math.random() * 2) + 'px';
+    container.appendChild(star);
+  }
+})();
+
+// Collect all tags
+function getAllTags() {
+  const tagSet = new Set();
+  albums.forEach(a => a.tags.forEach(t => tagSet.add(t)));
+  return Array.from(tagSet);
+}
+
+// Collect all countries
+function getAllCountries() {
+  const countrySet = new Set();
+  albums.forEach(a => { if (a.country) countrySet.add(a.country); });
+  return Array.from(countrySet);
+}
+
+function renderHeroStats() {
+  document.getElementById('albumCount').textContent = albums.length;
+  document.getElementById('artistCount').textContent = new Set(albums.map(a => a.artist)).size;
+  document.getElementById('tagCount').textContent = getAllTags().length;
+}
+
+// Render filter bar
+function renderFilterBar() {
+  const bar = document.getElementById('filterBar');
+  const tags = getAllTags();
+
+  const allBtn = document.createElement('button');
+  allBtn.className = 'filter-tag active';
+  allBtn.textContent = '全部';
+  allBtn.onclick = () => filterAlbums(null);
+  bar.appendChild(allBtn);
+
+  tags.forEach(tag => {
+    const btn = document.createElement('button');
+    btn.className = 'filter-tag';
+    btn.textContent = tag;
+    btn.onclick = () => filterAlbums(tag);
+    bar.appendChild(btn);
+  });
+}
+
+// Render country filter bar
+function renderCountryBar() {
+  const bar = document.getElementById('countryBar');
+  const countries = getAllCountries();
+
+  const allBtn = document.createElement('button');
+  allBtn.className = 'filter-tag active';
+  allBtn.textContent = '全部';
+  allBtn.onclick = () => filterCountry(null);
+  bar.appendChild(allBtn);
+
+  countries.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = 'filter-tag';
+    btn.textContent = c;
+    btn.onclick = () => filterCountry(c);
+    bar.appendChild(btn);
+  });
+}
+
+// Get current search keyword
+function getSearchKeyword() {
+  return document.getElementById('searchInput').value.trim().toLowerCase();
+}
+
+// Apply combined filter (tag + country + search)
+function applyFilter() {
+  const tag = currentTag;
+  const country = currentCountry;
+  const keyword = getSearchKeyword();
+
+  let filtered = albums;
+
+  if (tag) {
+    filtered = filtered.filter(a => a.tags.includes(tag));
+  }
+
+  if (country) {
+    filtered = filtered.filter(a => a.country === country);
+  }
+
+  if (keyword) {
+    filtered = filtered.filter(a => {
+      return a.title.toLowerCase().includes(keyword)
+        || a.artist.toLowerCase().includes(keyword)
+        || (a.country && a.country.toLowerCase().includes(keyword))
+        || (a.story && a.story.toLowerCase().includes(keyword))
+        || a.songs.some(s => s.name.toLowerCase().includes(keyword));
+    });
+  }
+
+  renderAlbums(filtered);
+  updateFilterStatus(filtered.length);
+}
+
+let currentTag = null;
+let currentCountry = null;
+
+// Filter albums by tag
+function filterAlbums(tag) {
+  currentTag = tag;
+  document.querySelectorAll('#filterBar .filter-tag').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent === (tag || '全部'));
+  });
+  applyFilter();
+}
+
+// Filter albums by country
+function filterCountry(country) {
+  currentCountry = country;
+  document.querySelectorAll('#countryBar .filter-tag').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent === (country || '全部'));
+  });
+  applyFilter();
+}
+
+function updateFilterStatus(count) {
+  const el = document.getElementById('filterStatus');
+  const parts = [];
+  if (currentTag) parts.push(`标签：${currentTag}`);
+  if (currentCountry) parts.push(`地区：${currentCountry}`);
+  const keyword = getSearchKeyword();
+  if (keyword) parts.push(`搜索：${keyword}`);
+
+  if (parts.length === 0) {
+    el.textContent = `共收录 ${albums.length} 张专辑`;
+  } else {
+    el.textContent = `${parts.join(' / ')}，筛选出 ${count} 张专辑`;
+  }
+}
+
+// Render albums
+function renderAlbums(list) {
+  const grid = document.getElementById('albumGrid');
+
+  if (list.length === 0) {
+    grid.innerHTML = '<div class="empty">没有匹配的专辑。可以清空搜索，或切换标签和地区筛选。</div>';
+    return;
+  }
+
+  grid.innerHTML = list.map((album, i) => {
+    const albumIndex = albums.indexOf(album);
+    const songsHtml = album.songs.map((s, si) => {
+      const isPlaying = currentPlayerAlbum === albumIndex && currentPlayerSong === si;
+      const playingClass = isPlaying ? ' playing' : '';
+      const linkLabel = s.url ? '&#9654;' : 'QQ 音乐 &#8599;';
+      return `
+        <div class="song-item clickable${playingClass}" role="button" tabindex="0" data-album="${albumIndex}" data-song="${si}" onclick="playSong(${albumIndex}, ${si})" onkeydown="handleSongKeydown(event, ${albumIndex}, ${si})">
+          <span class="song-name">${escapeHtml(s.name)}</span>
+          <span class="song-link">${linkLabel}</span>
+        </div>`;
+    }).join('');
+
+    const playerHtml = album.songs.length > 0 ? `
+      <div class="song-list">${songsHtml}</div>` : '';
+
+    const tagsHtml = album.tags.map(t => `<span class="album-tag">${escapeHtml(t)}</span>`).join('');
+    const countryHtml = album.country ? `<span class="album-country">${escapeHtml(album.country)}</span>` : '';
+
+    const floatDelay = (Math.random() * 4).toFixed(2);
+    const rotate = (Math.random() * 6 - 3).toFixed(1);
+
+    return `
+      <article class="album-card" style="animation-delay: ${i * 0.1}s, 0s ${floatDelay}s; --rotate: ${rotate}deg; transform: rotate(${rotate}deg);">
+        <div class="album-card-inner">
+          <div class="album-cover-wrap">
+            <img class="album-cover" src="${escapeHtml(album.cover)}" alt="${escapeHtml(album.title)}" loading="lazy"
+                 onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 300 300%22><rect fill=%22%231a3a5c%22 width=%22300%22 height=%22300%22/><text x=%22150%22 y=%22160%22 text-anchor=%22middle%22 fill=%22%23fff%22 font-size=%2248%22>&#127925;</text></svg>'">
+            <span class="album-year">${escapeHtml(album.year)}</span>
+            <div class="album-card-header">
+              <h3 class="album-title">${escapeHtml(album.title)}</h3>
+              <p class="album-artist">${escapeHtml(album.artist)}</p>
+            </div>
+          </div>
+          <div class="album-body">
+            <h3 class="album-title">${escapeHtml(album.title)}</h3>
+            <p class="album-artist">${escapeHtml(album.artist)}</p>
+            <div class="album-tags">${tagsHtml}</div>
+            ${album.story ? `<div class="album-story">${escapeHtml(album.story)}</div>` : ''}
+            ${playerHtml}
+            <div class="album-actions">
+              <button class="album-action" type="button" onclick="toggleAlbumCard(event, this)">固定展开</button>
+              <a class="album-action" href="${getAlbumSearchUrl(album)}" target="_blank" rel="noopener">搜索专辑</a>
+            </div>
+          </div>
+        </div>
+      </article>`;
+  }).join('');
+
+  // Re-attach touch handlers after re-render
+  attachTouchHandlers();
+
+  // Switch to floating animation after card-in completes
+  document.querySelectorAll('.album-card').forEach(card => {
+    card.addEventListener('animationend', function handler(e) {
+      if (e.animationName === 'card-in') {
+        card.classList.add('loaded');
+        card.removeEventListener('animationend', handler);
+      }
+    });
+  });
+}
+
+// Touch device detection and click toggle
+function attachTouchHandlers() {
+  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+  if (!isTouchDevice) return;
+
+  document.querySelectorAll('.album-card').forEach(card => {
+    card.addEventListener('click', (e) => {
+      // Don't toggle if clicking an interactive control inside the card.
+      if (e.target.closest('a, button, iframe, .song-item')) return;
+
+      const wasExpanded = card.classList.contains('expanded');
+
+      collapseAlbumCards(card);
+      card.classList.toggle('expanded', !wasExpanded);
+      syncAlbumActionLabels();
+    });
+  });
+}
+
+function toggleAlbumCard(event, button) {
+  event.stopPropagation();
+  const card = button.closest('.album-card');
+  const shouldExpand = !card.classList.contains('expanded');
+  collapseAlbumCards(card);
+  card.classList.toggle('expanded', shouldExpand);
+  syncAlbumActionLabels();
+}
+
+function collapseAlbumCards(exceptCard) {
+  document.querySelectorAll('.album-card.expanded').forEach(c => {
+    if (c !== exceptCard) c.classList.remove('expanded');
+  });
+}
+
+function syncAlbumActionLabels() {
+  document.querySelectorAll('.album-card').forEach(card => {
+    const button = card.querySelector('.album-action[type="button"]');
+    if (button) button.textContent = card.classList.contains('expanded') ? '收起详情' : '固定展开';
+  });
+}
+
+function handleSongKeydown(event, albumIndex, songIndex) {
+  if (event.key === 'Enter' || event.key === ' ') {
+    event.preventDefault();
+    playSong(albumIndex, songIndex);
+  }
+}
+
+function getAlbumSearchUrl(album) {
+  return `https://y.qq.com/n/ryqq/search?w=${encodeURIComponent(album.title + ' ' + album.artist)}`;
+}
+
+// Escape HTML
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+// Back to top
+const backToTop = document.getElementById('backToTop');
+window.addEventListener('scroll', () => {
+  backToTop.classList.toggle('visible', window.scrollY > 400);
+});
+backToTop.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+// Search input — debounce 200ms
+let searchTimer;
+document.getElementById('searchInput').addEventListener('input', () => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(applyFilter, 200);
+});
+
+// Parallax sky
+window.addEventListener('scroll', () => {
+  const scroll = window.scrollY;
+  const maxScroll = document.body.scrollHeight - window.innerHeight;
+  const progress = Math.min(scroll / (maxScroll * 0.5), 1);
+
+  const sky = document.getElementById('sky');
+  if (progress < 0.33) {
+    sky.style.background = `linear-gradient(180deg,
+      #0a1628 0%,
+      #0f2040 20%,
+      #1a3a5c 45%,
+      #4a90d9 75%,
+      #87ceeb 100%)`;
+  } else if (progress < 0.66) {
+    sky.style.background = `linear-gradient(180deg,
+      #1a3a5c 0%,
+      #4a90d9 25%,
+      #87ceeb 50%,
+      #f0c8a0 75%,
+      #ff9a76 100%)`;
+  } else {
+    sky.style.background = `linear-gradient(180deg,
+      #2a1a4a 0%,
+      #4a2a6a 20%,
+      #c8a8e8 45%,
+      #ff6b9d 70%,
+      #ff9a76 100%)`;
+  }
+});
+
+// ============================================================
+// Built-in Audio Player
+// ============================================================
+let audio = new Audio();
+audio.volume = 0.8;
+let playQueue = [];
+let playIndex = -1;
+let currentPlayerAlbum = -1;
+let currentPlayerSong = -1;
+
+function playSong(albumIndex, songIndex) {
+  const album = albums[albumIndex];
+  const song = album.songs[songIndex];
+  if (!song) return;
+
+  // No url: fallback to QQ Music link
+  if (!song.url) {
+    if (song.songmid) {
+      window.open(`https://y.qq.com/n/ryqq/songDetail/${song.songmid}`, '_blank');
+    }
+    return;
+  }
+
+  // Set up queue with all songs in the album
+  playQueue = album.songs.map((s, i) => ({ albumIndex, songIndex: i, song: s }));
+  playIndex = songIndex;
+  currentPlayerAlbum = albumIndex;
+  currentPlayerSong = songIndex;
+
+  audio.src = song.url;
+  audio.play().catch(() => {});
+
+  // Update UI
+  document.getElementById('playerCoverImg').src = album.cover;
+  document.getElementById('playerSongName').textContent = song.name;
+  document.getElementById('playerArtist').textContent = album.artist;
+  document.getElementById('playerBar').classList.remove('hidden');
+  document.getElementById('playerPlay').innerHTML = '&#9646;&#9646;';
+
+  renderPlaylist();
+  updatePlayingHighlight();
+}
+
+function updatePlayingHighlight() {
+  // Clear old highlights
+  document.querySelectorAll('.song-item.playing').forEach(el => el.classList.remove('playing'));
+  // Add new highlight
+  if (currentPlayerAlbum >= 0 && currentPlayerSong >= 0) {
+    const el = document.querySelector(`.song-item[data-album="${currentPlayerAlbum}"][data-song="${currentPlayerSong}"]`);
+    if (el) el.classList.add('playing');
+  }
+}
+
+function getCurrentFilteredAlbums() {
+  const tag = currentTag;
+  const country = currentCountry;
+  const keyword = getSearchKeyword();
+  let filtered = albums;
+  if (tag) filtered = filtered.filter(a => a.tags.includes(tag));
+  if (country) filtered = filtered.filter(a => a.country === country);
+  if (keyword) {
+    filtered = filtered.filter(a => {
+      return a.title.toLowerCase().includes(keyword)
+        || a.artist.toLowerCase().includes(keyword)
+        || (a.country && a.country.toLowerCase().includes(keyword))
+        || (a.story && a.story.toLowerCase().includes(keyword))
+        || a.songs.some(s => s.name.toLowerCase().includes(keyword));
+    });
+  }
+  return filtered;
+}
+
+function renderPlaylist() {
+  const pl = document.getElementById('playerPlaylist');
+  pl.innerHTML = playQueue.map((item, i) => `
+    <div class="playlist-item${i === playIndex ? ' active' : ''}" onclick="playQueueIndex(${i})">
+      <img class="playlist-item-cover" src="${escapeHtml(albums[item.albumIndex].cover)}" alt="">
+      <div class="playlist-item-info">
+        <span class="playlist-item-name">${escapeHtml(item.song.name)}</span>
+        <span class="playlist-item-artist">${escapeHtml(albums[item.albumIndex].artist)}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function playQueueIndex(i) {
+  if (i >= 0 && i < playQueue.length) {
+    playSong(playQueue[i].albumIndex, playQueue[i].songIndex);
+  }
+}
+
+function formatTime(s) {
+  if (isNaN(s) || !isFinite(s)) return '0:00';
+  const m = Math.floor(s / 60);
+  const sec = Math.floor(s % 60);
+  return m + ':' + (sec < 10 ? '0' : '') + sec;
+}
+
+function initPlayer() {
+  const progress = document.getElementById('playerProgress');
+  const volume = document.getElementById('playerVolume');
+
+  // Play/Pause
+  document.getElementById('playerPlay').addEventListener('click', () => {
+    if (!audio.src) return;
+    if (audio.paused) {
+      audio.play().catch(() => {});
+    } else {
+      audio.pause();
+    }
+  });
+
+  // Prev
+  document.getElementById('playerPrev').addEventListener('click', () => {
+    if (playQueue.length === 0) return;
+    const newIdx = playIndex <= 0 ? playQueue.length - 1 : playIndex - 1;
+    playSong(playQueue[newIdx].albumIndex, playQueue[newIdx].songIndex);
+  });
+
+  // Next
+  document.getElementById('playerNext').addEventListener('click', () => {
+    if (playQueue.length === 0) return;
+    const newIdx = playIndex >= playQueue.length - 1 ? 0 : playIndex + 1;
+    playSong(playQueue[newIdx].albumIndex, playQueue[newIdx].songIndex);
+  });
+
+  // Time update
+  audio.addEventListener('timeupdate', () => {
+    if (audio.duration) {
+      progress.value = (audio.currentTime / audio.duration) * 1000;
+      document.getElementById('playerCurrentTime').textContent = formatTime(audio.currentTime);
+      document.getElementById('playerDuration').textContent = formatTime(audio.duration);
+    }
+  });
+
+  audio.addEventListener('ended', () => {
+    if (playQueue.length === 0) return;
+    const newIdx = playIndex >= playQueue.length - 1 ? 0 : playIndex + 1;
+    playSong(playQueue[newIdx].albumIndex, playQueue[newIdx].songIndex);
+  });
+
+  audio.addEventListener('play', () => {
+    document.getElementById('playerPlay').innerHTML = '&#9646;&#9646;';
+  });
+
+  audio.addEventListener('pause', () => {
+    document.getElementById('playerPlay').innerHTML = '&#9654;';
+  });
+
+  // Progress seek
+  progress.addEventListener('input', () => {
+    if (audio.duration) {
+      audio.currentTime = (progress.value / 1000) * audio.duration;
+    }
+  });
+
+  // Volume
+  volume.addEventListener('input', () => {
+    audio.volume = volume.value / 100;
+  });
+
+  // Playlist toggle
+  document.getElementById('playerToggle').addEventListener('click', () => {
+    document.getElementById('playerPlaylist').classList.toggle('open');
+  });
+}
+
+// Init (after all declarations)
+renderHeroStats();
+renderFilterBar();
+renderCountryBar();
+renderAlbums(albums);
+updateFilterStatus(albums.length);
+initPlayer();
+</script>
+
+</body>
+</html>
