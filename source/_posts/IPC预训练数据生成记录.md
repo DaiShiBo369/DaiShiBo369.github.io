@@ -1,3 +1,20 @@
+---
+title: 从 Surface Mesh 到 libuipc 预训练数据：一次数据生成管线搭建记录
+date: 2026-06-24 12:10:00
+categories:
+  - 科研
+tags:
+  - libuipc
+  - IPC
+  - FEM
+  - ABD
+  - Neo-Hookean
+  - 超弹性材料
+  - Neural IPC
+description: IPC数据生成管线搭建记录。
+cover: /img/covers/cover-research-libuipc-fem.svg
+mathjax: true
+---
 # 从 Surface Mesh 到 libuipc 预训练数据：一次数据生成管线搭建记录
 
 ## 背景

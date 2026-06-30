@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Disboundia article cover - LaTeX rendering exploration</title>
+  <desc id="desc">A same-series cover for a Disboundia development log about MathJax, SVG output, and LaTeX rendering in a Hexo blog.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#050505"/>
+      <stop offset="0.42" stop-color="#113b40"/>
+      <stop offset="0.72" stop-color="#39acb8"/>
+      <stop offset="1" stop-color="#e9e2ca"/>
+    </linearGradient>
+    <radialGradient id="light" cx="76%" cy="24%" r="68%">
+      <stop offset="0" stop-color="#e9e2ca" stop-opacity="0.72"/>
+      <stop offset="0.36" stop-color="#39acb8" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#050505" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="72" height="72" patternUnits="userSpaceOnUse">
+      <path d="M72 0H0V72" fill="none" stroke="#e9e2ca" stroke-opacity="0.08"/>
+      <circle cx="0" cy="0" r="2.5" fill="#e9e2ca" fill-opacity="0.16"/>
+    </pattern>
+    <filter id="softGlow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="12" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect width="1600" height="900" fill="url(#light)"/>
+  <rect width="1600" height="900" fill="url(#grid)"/>
+  <path d="M1004 84c206 14 368 132 414 306 48 182-70 354-254 406-164 46-346-22-444-164-90-132-78-294 30-414 68-76 160-124 254-134Z" fill="#050505" fill-opacity="0.24"/>
+  <g transform="translate(862 150)" filter="url(#softGlow)">
+    <rect x="0" y="0" width="560" height="430" rx="36" fill="#050505" fill-opacity="0.72" stroke="#e9e2ca" stroke-opacity="0.45"/>
+    <rect x="42" y="48" width="476" height="334" rx="24" fill="#0d1516" stroke="#39acb8" stroke-opacity="0.72"/>
+    <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M110 154h340" stroke="#e9e2ca" stroke-opacity="0.38" stroke-width="9"/>
+      <path d="M110 242h340" stroke="#e9e2ca" stroke-opacity="0.38" stroke-width="9"/>
+      <path d="M146 198h120M294 198h120" stroke="#39acb8" stroke-width="10"/>
+      <path d="M166 286h92M312 286h82" stroke="#e9e2ca" stroke-width="10"/>
+      <path d="M122 118c28-34 64-34 92 0M338 118c28-34 64-34 92 0" stroke="#39acb8" stroke-width="8"/>
+      <path d="M274 146l32 104M312 146l-32 104" stroke="#e9e2ca" stroke-width="9"/>
+    </g>
+    <g transform="translate(280 458)">
+      <circle cx="0" cy="0" r="82" fill="#050505" fill-opacity="0.9" stroke="#39acb8" stroke-width="4"/>
+      <path d="M-46 0h92M0-46v92" stroke="#e9e2ca" stroke-width="12" stroke-linecap="round"/>
+      <path d="M-128 0h-72M128 0h72M0-128v-72M0 128v72" stroke="#39acb8" stroke-width="8" stroke-linecap="round" opacity="0.62"/>
+    </g>
+  </g>
+  <g font-family="'PingFang SC','Microsoft YaHei','Segoe UI',Arial,sans-serif" fill="#e9e2ca">
+    <text x="112" y="136" font-size="30" letter-spacing="6" opacity="0.82">DISBOUNDIA</text>
+    <rect x="112" y="180" width="324" height="50" rx="25" fill="#050505" fill-opacity="0.48" stroke="#39acb8" stroke-opacity="0.72"/>
+    <text x="138" y="214" font-size="24" fill="#e9e2ca">开发日志 / MATHJAX</text>
+    <text x="112" y="330" font-size="82" font-weight="800">博客中的</text>
+    <text x="112" y="430" font-size="82" font-weight="800">LaTeX 显示探索</text>
+    <text x="116" y="514" font-size="30" fill="#dff7f9">从 raw 公式、CHTML 裁切到 SVG 输出</text>
+    <text x="116" y="790" font-size="26" fill="#e9e2ca">2026-06-24</text>
+  </g>
+</svg>

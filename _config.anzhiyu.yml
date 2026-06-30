@@ -10,7 +10,7 @@ menu:
       留言板: /comments/ || anzhiyu-icon-envelope
 
   我的:
-    音乐馆: /music/ || anzhiyu-icon-music
+    音乐馆: /music-gallery.html || anzhiyu-icon-music
     #追番页: /bangumis/ || anzhiyu-icon-bilibili
     相册集: /album/ || anzhiyu-icon-images
     小空调: /air-conditioner/ || anzhiyu-icon-fan
@@ -1056,18 +1056,18 @@ home_top:
   subTitle: 愿你择良所安。
   siteText: disboundary.top
   category:
-    - name: 学习
-      path: /categories/学习/
+    - name: 学习科研
+      path: /categories/学习科研/
       shadow: var(--anzhiyu-shadow-blue)
       class: blue
       icon: anzhiyu-icon-camera
-    - name: 生活
+    - name: 生活日常
       path: /categories/生活日常/
       shadow: var(--anzhiyu-shadow-green)
       class: green
       icon: anzhiyu-icon-book
-    - name: 想法
-      path: /categories/想法/
+    - name: 思考想法
+      path: /categories/思考想法/
       shadow: var(--anzhiyu-shadow-purple)
       class: purple
       icon: anzhiyu-icon-lightbulb

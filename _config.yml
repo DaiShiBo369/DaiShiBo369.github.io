@@ -5,8 +5,8 @@
 # Site
 title: Disboundia-解缚之境
 subtitle: Disboundary's Blog
-description: '百转千回，一笑了之'
-keywords: 学习,阅读,思考
+description: 'Disboundary的个人博客，记录<strong>学习</strong>、<strong>阅读</strong>、<strong>科研</strong>、<strong>生活</strong>、<strong>思考</strong>的点滴。希望陪伴你一同进步。'
+keywords: 学习,阅读,科研,生活,思考
 author: Disboundary
 language: zh-CN
 timezone: 'Asia/Shanghai'
@@ -29,6 +29,8 @@ category_dir: categories
 code_dir: downloads/code
 i18n_dir: :lang
 skip_render:
+  - music-gallery.html
+  - music-graph.html
 
 # Writing
 new_post_name: :title.md # File name of new posts
