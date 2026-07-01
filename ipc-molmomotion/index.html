@@ -1,0 +1,1167 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IPC 与 MolmoMotion 论文成果可视化</title>
+  <style>
+    :root {
+      --ink: #17212b;
+      --muted: #647180;
+      --paper: #fbfaf7;
+      --panel: #ffffff;
+      --line: #dfe5e8;
+      --ipc: #0f766e;
+      --ipc-soft: #d9f3ec;
+      --molmo: #7c3aed;
+      --molmo-soft: #eee6ff;
+      --gold: #c88519;
+      --coral: #d94f45;
+      --sky: #2f7dbd;
+      --green: #328765;
+      --shadow: 0 18px 55px rgba(35, 45, 55, 0.12);
+      --radius: 8px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Inter", "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+      background:
+        linear-gradient(180deg, rgba(216, 238, 232, 0.78), rgba(251, 250, 247, 0) 420px),
+        var(--paper);
+      line-height: 1.58;
+      letter-spacing: 0;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 28px 20px 64px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .mark {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius);
+      background:
+        linear-gradient(135deg, var(--ipc), transparent 52%),
+        linear-gradient(315deg, var(--molmo), transparent 50%),
+        #ffffff;
+      box-shadow: inset 0 0 0 1px rgba(23, 33, 43, 0.12);
+      flex: 0 0 auto;
+    }
+
+    .brand-title {
+      font-weight: 780;
+      font-size: 16px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .brand-sub {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .nav a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 7px 11px;
+      border: 1px solid rgba(23, 33, 43, 0.12);
+      border-radius: 999px;
+      color: #31404e;
+      background: rgba(255, 255, 255, 0.7);
+      font-size: 13px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.12fr) minmax(300px, 0.88fr);
+      gap: 30px;
+      align-items: stretch;
+      margin-bottom: 34px;
+    }
+
+    .hero-copy {
+      padding: 28px 0 16px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--green);
+      font-weight: 760;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 14px;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 26px;
+      height: 2px;
+      background: currentColor;
+      border-radius: 2px;
+    }
+
+    h1 {
+      font-size: clamp(34px, 6vw, 68px);
+      line-height: 0.98;
+      letter-spacing: 0;
+      margin: 0 0 18px;
+      max-width: 900px;
+    }
+
+    .lead {
+      max-width: 760px;
+      color: #46525d;
+      font-size: clamp(16px, 2.1vw, 20px);
+      margin: 0;
+    }
+
+    .hero-visual {
+      min-height: 330px;
+      border-radius: var(--radius);
+      background:
+        radial-gradient(circle at 23% 24%, rgba(15, 118, 110, 0.18), transparent 34%),
+        radial-gradient(circle at 72% 70%, rgba(124, 58, 237, 0.18), transparent 36%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(246, 250, 249, 0.86));
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(23, 33, 43, 0.08);
+      position: relative;
+      overflow: hidden;
+      padding: 22px;
+    }
+
+    .visual-grid {
+      position: absolute;
+      inset: 0;
+      opacity: 0.35;
+      background-image:
+        linear-gradient(rgba(23, 33, 43, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(23, 33, 43, 0.1) 1px, transparent 1px);
+      background-size: 28px 28px;
+      mask-image: linear-gradient(180deg, black, transparent);
+    }
+
+    .sim-stage {
+      position: relative;
+      height: 100%;
+      min-height: 286px;
+      display: grid;
+      grid-template-rows: 1fr auto;
+      gap: 14px;
+    }
+
+    .track-canvas {
+      position: relative;
+      min-height: 210px;
+      border: 1px solid rgba(23, 33, 43, 0.1);
+      background: rgba(255, 255, 255, 0.55);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .mesh {
+      position: absolute;
+      width: 145px;
+      height: 100px;
+      left: 28px;
+      bottom: 35px;
+      border-radius: 50% 40% 44% 50%;
+      background:
+        linear-gradient(135deg, rgba(15, 118, 110, 0.32), rgba(15, 118, 110, 0.04)),
+        repeating-linear-gradient(45deg, transparent 0 16px, rgba(15, 118, 110, 0.19) 17px 18px),
+        repeating-linear-gradient(-45deg, transparent 0 18px, rgba(15, 118, 110, 0.12) 19px 20px);
+      border: 2px solid rgba(15, 118, 110, 0.55);
+      transform: rotate(-8deg);
+    }
+
+    .barrier {
+      position: absolute;
+      left: 210px;
+      top: 28px;
+      width: 22px;
+      height: 154px;
+      border-radius: 3px;
+      background: linear-gradient(180deg, var(--coral), #f39a68);
+      box-shadow: 0 0 0 12px rgba(217, 79, 69, 0.09);
+    }
+
+    .points {
+      position: absolute;
+      right: 18px;
+      top: 25px;
+      width: 190px;
+      height: 150px;
+    }
+
+    .point {
+      position: absolute;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--molmo);
+      box-shadow: 0 0 0 5px rgba(124, 58, 237, 0.12);
+    }
+
+    .p1 { left: 12px; top: 88px; }
+    .p2 { left: 46px; top: 68px; }
+    .p3 { left: 88px; top: 72px; }
+    .p4 { left: 130px; top: 47px; }
+    .p5 { left: 160px; top: 29px; }
+    .p6 { left: 130px; top: 103px; }
+
+    .trajectory {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .label-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      position: relative;
+    }
+
+    .mini-label {
+      padding: 10px 12px;
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid rgba(23, 33, 43, 0.1);
+      font-size: 13px;
+      color: #41505d;
+    }
+
+    .mini-label b {
+      display: block;
+      color: var(--ink);
+      font-size: 14px;
+      margin-bottom: 2px;
+    }
+
+    section {
+      margin-top: 34px;
+      scroll-margin-top: 20px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 16px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: clamp(24px, 3vw, 34px);
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    .section-note {
+      color: var(--muted);
+      font-size: 14px;
+      max-width: 500px;
+      margin: 0;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .metric-card,
+    .paper-card,
+    .flow-card,
+    .result-card,
+    .source-card {
+      background: var(--panel);
+      border: 1px solid rgba(23, 33, 43, 0.09);
+      border-radius: var(--radius);
+      box-shadow: 0 12px 34px rgba(35, 45, 55, 0.08);
+    }
+
+    .metric-card {
+      padding: 16px;
+      min-height: 132px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .metric-top {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 680;
+    }
+
+    .metric-value {
+      font-size: 34px;
+      line-height: 1;
+      font-weight: 830;
+      letter-spacing: 0;
+      margin: 12px 0 6px;
+    }
+
+    .metric-card p {
+      color: #51606f;
+      font-size: 13px;
+      margin: 0;
+    }
+
+    .papers {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .paper-card {
+      overflow: hidden;
+    }
+
+    .paper-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 20px 20px 16px;
+      border-bottom: 1px solid rgba(23, 33, 43, 0.08);
+    }
+
+    .paper-name {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+
+    .paper-meta {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 8px;
+    }
+
+    .badge {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 30px;
+      min-width: 72px;
+      padding: 0 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 780;
+    }
+
+    .badge.ipc { color: #075b55; background: var(--ipc-soft); }
+    .badge.molmo { color: #5d27bf; background: var(--molmo-soft); }
+
+    .paper-body {
+      padding: 18px 20px 20px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .thesis {
+      font-size: 16px;
+      margin: 0;
+      color: #354350;
+    }
+
+    .pill-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: #f3f6f7;
+      color: #3f4f5c;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .pill::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: 0.75;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .flow-card {
+      padding: 20px;
+    }
+
+    .flow-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .flow-title h3 {
+      margin: 0;
+      font-size: 21px;
+      letter-spacing: 0;
+    }
+
+    .step-stack {
+      display: grid;
+      gap: 12px;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 36px 1fr;
+      gap: 12px;
+      align-items: start;
+      position: relative;
+    }
+
+    .step:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      left: 17px;
+      top: 41px;
+      bottom: -12px;
+      width: 2px;
+      background: linear-gradient(180deg, rgba(23, 33, 43, 0.14), rgba(23, 33, 43, 0.04));
+    }
+
+    .step-no {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 830;
+      font-size: 13px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .ipc-flow .step-no { background: var(--ipc); }
+    .molmo-flow .step-no { background: var(--molmo); }
+
+    .step h4 {
+      margin: 0 0 4px;
+      font-size: 15px;
+      line-height: 1.3;
+    }
+
+    .step p {
+      margin: 0;
+      color: #546372;
+      font-size: 13px;
+    }
+
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: var(--radius);
+      background: white;
+      box-shadow: 0 12px 34px rgba(35, 45, 55, 0.08);
+      border: 1px solid rgba(23, 33, 43, 0.09);
+    }
+
+    .compare-table th,
+    .compare-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(23, 33, 43, 0.08);
+      vertical-align: top;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    .compare-table th {
+      background: #eef4f2;
+      color: #26333f;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .compare-table tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .compare-table td:first-child {
+      width: 150px;
+      font-weight: 780;
+      color: #2d3944;
+    }
+
+    .results {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .result-card {
+      padding: 18px;
+      min-height: 188px;
+    }
+
+    .result-card h3 {
+      margin: 0 0 10px;
+      font-size: 18px;
+      letter-spacing: 0;
+    }
+
+    .result-card p {
+      color: #536170;
+      font-size: 14px;
+      margin: 0 0 14px;
+    }
+
+    .bar {
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: 100px 1fr 48px;
+      gap: 10px;
+      align-items: center;
+      font-size: 12px;
+      color: #52606e;
+    }
+
+    .bar-track {
+      height: 10px;
+      background: #eef2f3;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--molmo), var(--sky));
+    }
+
+    .callout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 0.8fr);
+      gap: 18px;
+      align-items: stretch;
+      padding: 22px;
+      border-radius: var(--radius);
+      border: 1px solid rgba(23, 33, 43, 0.08);
+      background:
+        linear-gradient(135deg, rgba(15, 118, 110, 0.08), transparent 46%),
+        linear-gradient(315deg, rgba(124, 58, 237, 0.09), transparent 50%),
+        #ffffff;
+      box-shadow: var(--shadow);
+    }
+
+    .callout h3 {
+      margin: 0 0 8px;
+      font-size: 22px;
+      letter-spacing: 0;
+    }
+
+    .callout p {
+      margin: 0;
+      color: #4f5e6b;
+    }
+
+    .takeaway-list {
+      display: grid;
+      gap: 9px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .takeaway-list li {
+      display: grid;
+      grid-template-columns: 11px 1fr;
+      gap: 10px;
+      align-items: start;
+      color: #42515e;
+      font-size: 14px;
+    }
+
+    .takeaway-list li::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--gold);
+      margin-top: 8px;
+    }
+
+    .sources {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .source-card {
+      padding: 18px;
+    }
+
+    .source-card h3 {
+      margin: 0 0 10px;
+      font-size: 17px;
+      letter-spacing: 0;
+    }
+
+    .source-card a {
+      display: inline-flex;
+      margin: 4px 8px 4px 0;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: #f2f5f6;
+      color: #243442;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .foot {
+      margin-top: 26px;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+    }
+
+    @media (max-width: 920px) {
+      .hero,
+      .papers,
+      .split,
+      .callout {
+        grid-template-columns: 1fr;
+      }
+
+      .summary-grid,
+      .results {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .hero-copy {
+        padding-top: 10px;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .page {
+        padding: 18px 14px 48px;
+      }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .nav {
+        justify-content: flex-start;
+      }
+
+      .hero-visual {
+        min-height: 280px;
+        padding: 14px;
+      }
+
+      .summary-grid,
+      .results,
+      .sources {
+        grid-template-columns: 1fr;
+      }
+
+      .section-head {
+        display: block;
+      }
+
+      .section-note {
+        margin-top: 8px;
+      }
+
+      .paper-head {
+        display: block;
+      }
+
+      .badge {
+        margin-top: 12px;
+      }
+
+      .compare-table {
+        display: block;
+        overflow-x: auto;
+        white-space: normal;
+      }
+
+      .compare-table th,
+      .compare-table td {
+        min-width: 210px;
+      }
+
+      .bar-row {
+        grid-template-columns: 86px 1fr 42px;
+      }
+
+      .label-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="返回顶部">
+        <span class="mark" aria-hidden="true"></span>
+        <span>
+          <span class="brand-title">IPC × MolmoMotion</span>
+          <span class="brand-sub">研究成果与完整步骤可视化</span>
+        </span>
+      </a>
+      <nav class="nav" aria-label="页面导航">
+        <a href="#overview">成果总览</a>
+        <a href="#papers">论文对照</a>
+        <a href="#steps">完整步骤</a>
+        <a href="#results">实验结果</a>
+        <a href="#sources">来源</a>
+      </nav>
+    </header>
+
+    <section class="hero" id="top">
+      <div class="hero-copy">
+        <div class="eyebrow">two research stacks</div>
+        <h1>从物理接触求解到语言条件 3D 运动预测</h1>
+        <p class="lead">
+          IPC 解决的是“如何稳定、无穿透地推进大变形接触仿真”；MolmoMotion 解决的是“如何根据视觉历史、物体点和语言目标预测未来 3D 轨迹”。两者都把复杂运动转化为可优化、可验证的几何量。
+        </p>
+      </div>
+      <div class="hero-visual" aria-label="IPC 和 MolmoMotion 的概念示意">
+        <div class="visual-grid" aria-hidden="true"></div>
+        <div class="sim-stage">
+          <div class="track-canvas">
+            <div class="mesh" title="大变形有限元物体"></div>
+            <div class="barrier" title="几何接触屏障"></div>
+            <div class="points">
+              <svg class="trajectory" viewBox="0 0 190 150" aria-hidden="true">
+                <path d="M16 93 C45 64, 78 88, 95 75 S139 44, 166 33" fill="none" stroke="#7c3aed" stroke-width="3" stroke-linecap="round"/>
+                <path d="M48 72 C74 52, 112 88, 134 105" fill="none" stroke="#2f7dbd" stroke-width="2" stroke-linecap="round" stroke-dasharray="5 5"/>
+              </svg>
+              <span class="point p1"></span>
+              <span class="point p2"></span>
+              <span class="point p3"></span>
+              <span class="point p4"></span>
+              <span class="point p5"></span>
+              <span class="point p6"></span>
+            </div>
+          </div>
+          <div class="label-row">
+            <div class="mini-label"><b>IPC</b>变形体 + 摩擦接触 + 屏障能量</div>
+            <div class="mini-label"><b>MolmoMotion</b>视觉语言输入 + 物体点未来轨迹</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="overview">
+      <div class="section-head">
+        <h2>成果总览</h2>
+        <p class="section-note">以下数字来自官方项目页、arXiv 页面和论文 HTML 页面；页面生成日期为 2026-07-01。</p>
+      </div>
+      <div class="summary-grid">
+        <article class="metric-card">
+          <div>
+            <div class="metric-top">IPC 规模验证</div>
+            <div class="metric-value" style="color: var(--ipc);">2.3M</div>
+          </div>
+          <p>官方项目页报告了最高约 2.3M tetrahedra 的大变形接触测试。</p>
+        </article>
+        <article class="metric-card">
+          <div>
+            <div class="metric-top">IPC 每步接触</div>
+            <div class="metric-value" style="color: var(--ipc);">498K</div>
+          </div>
+          <p>高接触数量下仍保持无交叉、无反转的时间推进。</p>
+        </article>
+        <article class="metric-card">
+          <div>
+            <div class="metric-top">MolmoMotion 训练数据</div>
+            <div class="metric-value" style="color: var(--molmo);">1.16M</div>
+          </div>
+          <p>从公开视频自动标注得到动作描述、物体 grounding、3D 点轨迹。</p>
+        </article>
+        <article class="metric-card">
+          <div>
+            <div class="metric-top">PointMotionBench</div>
+            <div class="metric-value" style="color: var(--molmo);">2.7K</div>
+          </div>
+          <p>人类验证 clips，覆盖 111 类物体与 61 种运动类型。</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="papers">
+      <div class="section-head">
+        <h2>两篇论文对照</h2>
+        <p class="section-note">一个是物理仿真求解器，一个是视觉语言 3D 运动预测模型；它们的共同点是显式几何约束。</p>
+      </div>
+      <div class="papers">
+        <article class="paper-card">
+          <div class="paper-head">
+            <div>
+              <h3 class="paper-name">Incremental Potential Contact</h3>
+              <div class="paper-meta">ACM TOG / SIGGRAPH 2020 · Minchen Li 等</div>
+            </div>
+            <span class="badge ipc">IPC</span>
+          </div>
+          <div class="paper-body">
+            <p class="thesis">
+              用增量势能最小化来统一处理非线性弹性、接触、摩擦和几何可行性，使每个时间步的轨迹保持无交叉、无反转。
+            </p>
+            <div class="pill-list">
+              <span class="pill">变分隐式时间步进</span>
+              <span class="pill">接触屏障势能</span>
+              <span class="pill">过滤线搜索</span>
+              <span class="pill">大变形有限元</span>
+              <span class="pill">用户可控精度</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="paper-card">
+          <div class="paper-head">
+            <div>
+              <h3 class="paper-name">MolmoMotion</h3>
+              <div class="paper-meta">arXiv 2606.18558 · 2026-06-17 · Jianing Zhang 等</div>
+            </div>
+            <span class="badge molmo">Motion</span>
+          </div>
+          <div class="paper-body">
+            <p class="thesis">
+              把未来运动预测定义为语言条件的物体附着 3D 点轨迹预测，用世界坐标中的点来统一刚体、关节体和可变形物体运动。
+            </p>
+            <div class="pill-list">
+              <span class="pill">Molmo2 视觉语言骨干</span>
+              <span class="pill">3D 世界坐标轨迹</span>
+              <span class="pill">AR 坐标文本解码</span>
+              <span class="pill">Flow matching 生成</span>
+              <span class="pill">机器人与视频生成迁移</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="steps">
+      <div class="section-head">
+        <h2>各自完整步骤</h2>
+        <p class="section-note">这里按“输入 - 核心求解 - 输出/验证”的方式重排论文流程，方便复现理解。</p>
+      </div>
+      <div class="split">
+        <article class="flow-card ipc-flow">
+          <div class="flow-title">
+            <h3>IPC 求解流程</h3>
+            <span class="badge ipc">contact solver</span>
+          </div>
+          <div class="step-stack">
+            <div class="step">
+              <div class="step-no">1</div>
+              <div>
+                <h4>准备场景与材料</h4>
+                <p>输入四面体网格、边界条件、初速度、密度、杨氏模量、泊松比、摩擦系数和时间步长。</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-no">2</div>
+              <div>
+                <h4>构造隐式时间步目标</h4>
+                <p>把惯性项、弹性能、外力势能和接触项写入一个增量势能；每个时间步变成一个非线性优化问题。</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-no">3</div>
+              <div>
+                <h4>检测候选接触并加入屏障</h4>
+                <p>对点-三角形、边-边等接近对加入 barrier potential；距离越接近零，能量越高，从而阻止穿透。</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-no">4</div>
+              <div>
+                <h4>处理摩擦与几何可行性</h4>
+                <p>在接触法向之外更新切向摩擦项；用连续碰撞检测和过滤线搜索限制步长，保证沿线搜索路径不发生交叉或反转。</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-no">5</div>
+              <div>
+                <h4>牛顿式迭代最小化</h4>
+                <p>求解梯度与 Hessian，对候选位移反复做可行线搜索；达到动力学精度和几何贴合精度后接受该时间步。</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-no">6</div>
+              <div>
+                <h4>输出并进入下一步</h4>
+                <p>保存网格状态、能量、动量、迭代统计和动画帧；用当前无穿透状态作为下一时间步初值。</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="flow-card molmo-flow">
+          <div class="flow-title">
+            <h3>MolmoMotion 训练与推理流程</h3>
+            <span class="badge molmo">3D forecast</span>
+          </div>
+          <div class="step-stack">
+            <div class="step">
+              <div class="step-no">1</div>
+              <div>
+                <h4>收集带动作描述的视频</h4>
+                <p>从 EgoDex、HD-EPIC、Xperience-10M、YT-VIS、Stereo4D 等公开视频来源构建大规模语义运动样本。</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-no">2</div>
+              <div>
+                <h4>语义 grounding 与点采样</h4>
+                <p>用语言模型抽取被操作/运动实体，用 MolmoPoint 定位，用 SAM3 得到 mask，再在物体内部采样 query points。</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-no">3</div>
+              <div>
+                <h4>2D 跟踪并提升到 3D</h4>
+                <p>用 AllTracker 跟踪密集 2D 点；用 ViPE 估计 metric depth、相机内参/位姿，把轨迹反投影到首帧相机锚定的世界坐标。</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-no">4</div>
+              <div>
+                <h4>过滤、平滑与裁剪</h4>
+                <p>用物体级空间/时间一致性去掉漂移点，用深度平滑降低抖动，并裁剪到真实发生明显运动的时间窗口。</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-no">5</div>
+              <div>
+                <h4>训练两类预测器</h4>
+                <p>MolmoMotion-AR 把毫米级坐标离散成文本序列自回归生成；MolmoMotion-FM 在连续坐标空间用 DiT decoder 学习 flow matching。</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-no">6</div>
+              <div>
+                <h4>评测与下游迁移</h4>
+                <p>在 PointMotionBench 上用 3D ADE/FDE/PWT 评估，再把 3D 运动先验迁移到机器人 pick-and-place 和轨迹引导视频生成。</p>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="comparison">
+      <div class="section-head">
+        <h2>方法差异</h2>
+        <p class="section-note">两篇论文都把“运动”显式化，但优化对象、监督来源和失败风险不同。</p>
+      </div>
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>维度</th>
+            <th>IPC</th>
+            <th>MolmoMotion</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>核心问题</td>
+            <td>物理仿真中接触、大变形、摩擦和反转导致求解崩溃。</td>
+            <td>视觉系统需要预测物体未来 3D 运动，而不是只生成看起来合理的视频。</td>
+          </tr>
+          <tr>
+            <td>表示方式</td>
+            <td>有限元节点、表面距离、接触候选对、增量势能。</td>
+            <td>物体附着 query points，在 metric world frame 中的未来 3D 坐标序列。</td>
+          </tr>
+          <tr>
+            <td>关键机制</td>
+            <td>barrier potential + interior-point style solver + CCD/filtered line search。</td>
+            <td>Molmo2 grounding + 2D track 到 3D lifting + AR/FM 两种轨迹解码。</td>
+          </tr>
+          <tr>
+            <td>主要成果</td>
+            <td>在极端压缩、碰撞和大接触数量下保持 intersection-free 与 inversion-free。</td>
+            <td>建立 MolmoMotion-1M、PointMotionBench，并在 3D 轨迹预测、机器人规划、视频生成中提升性能。</td>
+          </tr>
+          <tr>
+            <td>适合场景</td>
+            <td>动画、工程仿真、软体/刚体接触、需要强几何可行性的离线模拟。</td>
+            <td>机器人操作先验、视频生成运动控制、跨类别物体运动预测。</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="results">
+      <div class="section-head">
+        <h2>实验结果与影响</h2>
+        <p class="section-note">下面抽取了最能体现论文价值的结果，不铺满所有表格。</p>
+      </div>
+      <div class="results">
+        <article class="result-card">
+          <h3>IPC: 可行性保证</h3>
+          <p>官方项目页强调 IPC 在材料参数、时间步、速度、变形程度和边界条件变化下仍保持无交叉、无反转轨迹。</p>
+          <div class="bar">
+            <div class="bar-row">
+              <span>几何约束</span>
+              <span class="bar-track"><span class="bar-fill" style="width: 96%; background: linear-gradient(90deg, var(--ipc), var(--green));"></span></span>
+              <b>强</b>
+            </div>
+            <div class="bar-row">
+              <span>大变形</span>
+              <span class="bar-track"><span class="bar-fill" style="width: 92%; background: linear-gradient(90deg, var(--ipc), var(--green));"></span></span>
+              <b>强</b>
+            </div>
+          </div>
+        </article>
+
+        <article class="result-card">
+          <h3>MolmoMotion: 机器人迁移</h3>
+          <p>在 MolmoSpaces Franka pick-and-place 中，MolmoMotion 初始化的策略最终平均成功率达到 76.3%，高于 Molmo2 初始化的 56.0%。</p>
+          <div class="bar">
+            <div class="bar-row">
+              <span>MolmoMotion</span>
+              <span class="bar-track"><span class="bar-fill" style="width: 76.3%;"></span></span>
+              <b>76.3%</b>
+            </div>
+            <div class="bar-row">
+              <span>Molmo2</span>
+              <span class="bar-track"><span class="bar-fill" style="width: 56%; background: linear-gradient(90deg, #93a4b2, #bec8d0);"></span></span>
+              <b>56.0%</b>
+            </div>
+          </div>
+        </article>
+
+        <article class="result-card">
+          <h3>MolmoMotion: 视频生成控制</h3>
+          <p>把预测 3D 轨迹作为 DaS 图像到视频模型的控制信号后，官方页面报告它相对基础模型提升全部五项运动相关指标。</p>
+          <div class="bar">
+            <div class="bar-row">
+              <span>运动控制</span>
+              <span class="bar-track"><span class="bar-fill" style="width: 88%;"></span></span>
+              <b>提升</b>
+            </div>
+            <div class="bar-row">
+              <span>指令一致</span>
+              <span class="bar-track"><span class="bar-fill" style="width: 84%;"></span></span>
+              <b>提升</b>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <div class="callout">
+        <div>
+          <h3>一句话理解二者的关系</h3>
+          <p>
+            IPC 是“从物理定律和约束出发，可靠地算下一帧”；MolmoMotion 是“从视觉、语言和历史轨迹出发，预测物体会怎样运动”。如果把未来智能体放到真实物理世界里，前者提供强约束的仿真基座，后者提供可迁移的运动先验。
+          </p>
+        </div>
+        <ul class="takeaway-list">
+          <li>IPC 的贡献是求解可靠性：用优化和屏障能量把接触可行性写进时间步。</li>
+          <li>MolmoMotion 的贡献是数据与表示：用世界坐标 3D 点轨迹连接语言、视频和机器人。</li>
+          <li>二者都避免只看像素表象，转而使用显式几何状态来表达运动。</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="sources">
+      <div class="section-head">
+        <h2>信息来源</h2>
+        <p class="section-note">所有链接为联网核对来源，未依赖本地 PDF。</p>
+      </div>
+      <div class="sources">
+        <article class="source-card">
+          <h3>IPC</h3>
+          <a href="https://ipc-sim.github.io/" target="_blank" rel="noreferrer">官方项目页</a>
+          <a href="https://github.com/ipc-sim/IPC" target="_blank" rel="noreferrer">开源实现</a>
+          <a href="https://github.com/ipc-sim/IPC/wiki" target="_blank" rel="noreferrer">Quick Start</a>
+        </article>
+        <article class="source-card">
+          <h3>MolmoMotion</h3>
+          <a href="https://molmomotion.github.io/" target="_blank" rel="noreferrer">官方项目页</a>
+          <a href="https://arxiv.org/abs/2606.18558" target="_blank" rel="noreferrer">arXiv 摘要</a>
+          <a href="https://arxiv.org/html/2606.18558" target="_blank" rel="noreferrer">arXiv HTML</a>
+          <a href="https://github.com/allenai/molmo-motion" target="_blank" rel="noreferrer">代码</a>
+        </article>
+      </div>
+      <p class="foot">Prepared as a standalone HTML visualization. Last checked: 2026-07-01.</p>
+    </section>
+  </main>
+</body>
+</html>
