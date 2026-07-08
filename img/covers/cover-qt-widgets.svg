@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Qt Widgets quickstart cover</title>
+  <desc id="desc">A Qt Widgets article cover showing a desktop window, signal-slot arrows, and layout panels.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#08111f"/>
+      <stop offset="0.38" stop-color="#123734"/>
+      <stop offset="0.7" stop-color="#14532d"/>
+      <stop offset="1" stop-color="#38bdf8"/>
+    </linearGradient>
+    <radialGradient id="halo" cx="76%" cy="24%" r="68%">
+      <stop offset="0" stop-color="#bbf7d0" stop-opacity="0.5"/>
+      <stop offset="0.48" stop-color="#7dd3fc" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#020617" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="64" height="64" patternUnits="userSpaceOnUse">
+      <path d="M64 0H0V64" fill="none" stroke="#ffffff" stroke-opacity="0.05"/>
+      <circle cx="0" cy="0" r="2" fill="#ffffff" fill-opacity="0.14"/>
+    </pattern>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="22" stdDeviation="22" flood-color="#020617" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect width="1600" height="900" fill="url(#halo)"/>
+  <rect width="1600" height="900" fill="url(#grid)"/>
+  <g transform="translate(895 180)" filter="url(#shadow)">
+    <rect x="0" y="0" width="520" height="420" rx="8" fill="#f8fafc"/>
+    <rect x="0" y="0" width="520" height="54" rx="8" fill="#0f172a"/>
+    <circle cx="30" cy="27" r="8" fill="#fb7185"/>
+    <circle cx="58" cy="27" r="8" fill="#fbbf24"/>
+    <circle cx="86" cy="27" r="8" fill="#34d399"/>
+    <rect x="38" y="94" width="190" height="72" rx="8" fill="#d1fae5" stroke="#10b981"/>
+    <rect x="292" y="94" width="190" height="72" rx="8" fill="#e0f2fe" stroke="#0284c7"/>
+    <rect x="38" y="214" width="444" height="54" rx="8" fill="#ecfeff" stroke="#06b6d4"/>
+    <rect x="38" y="306" width="130" height="56" rx="8" fill="#f0fdf4" stroke="#22c55e"/>
+    <rect x="196" y="306" width="130" height="56" rx="8" fill="#f0fdf4" stroke="#22c55e"/>
+    <rect x="354" y="306" width="128" height="56" rx="8" fill="#f0fdf4" stroke="#22c55e"/>
+    <g stroke="#0f766e" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M228 130h64"/>
+      <path d="M276 114l16 16-16 16"/>
+      <path d="M260 268v38"/>
+    </g>
+    <g font-family="'Segoe UI',Arial,sans-serif" fill="#0f172a" font-size="24" font-weight="700">
+      <text x="84" y="139">Signal</text>
+      <text x="346" y="139">Slot</text>
+      <text x="188" y="249">QVBoxLayout</text>
+      <text x="76" y="342">OK</text>
+      <text x="224" y="342">Cancel</text>
+      <text x="382" y="342">Apply</text>
+    </g>
+  </g>
+  <g font-family="'PingFang SC','Microsoft YaHei','Segoe UI',Arial,sans-serif" fill="#fff">
+    <text x="112" y="140" font-size="30" letter-spacing="6" opacity="0.78">DISBOUNDIA</text>
+    <rect x="112" y="184" width="224" height="48" rx="8" fill="#86efac" fill-opacity="0.18" stroke="#bbf7d0" stroke-opacity="0.42"/>
+    <text x="136" y="217" font-size="24" fill="#dcfce7">技术 / Qt Widgets</text>
+    <text x="112" y="335" font-size="84" font-weight="800">Qt Widgets</text>
+    <text x="112" y="430" font-size="72" font-weight="800">速通笔记</text>
+    <text x="116" y="510" font-size="30" fill="#dbeafe">事件循环、信号槽、QObject 对象树与布局管理器</text>
+    <text x="116" y="790" font-size="26" fill="#bbf7d0">2026-07-08</text>
+  </g>
+</svg>

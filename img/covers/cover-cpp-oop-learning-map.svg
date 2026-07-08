@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">C++ object-oriented learning map cover</title>
+  <desc id="desc">A C++ article cover showing class nodes, inheritance arrows, virtual dispatch, templates, and operator overloading.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07111f"/>
+      <stop offset="0.4" stop-color="#172554"/>
+      <stop offset="0.72" stop-color="#334155"/>
+      <stop offset="1" stop-color="#14b8a6"/>
+    </linearGradient>
+    <radialGradient id="halo" cx="75%" cy="25%" r="70%">
+      <stop offset="0" stop-color="#67e8f9" stop-opacity="0.46"/>
+      <stop offset="0.45" stop-color="#a5b4fc" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#020617" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="66" height="66" patternUnits="userSpaceOnUse">
+      <path d="M66 0H0V66" fill="none" stroke="#ffffff" stroke-opacity="0.052"/>
+      <circle cx="0" cy="0" r="2" fill="#ffffff" fill-opacity="0.14"/>
+    </pattern>
+    <filter id="soft" x="-25%" y="-25%" width="150%" height="150%">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#020617" flood-opacity="0.34"/>
+    </filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect width="1600" height="900" fill="url(#halo)"/>
+  <rect width="1600" height="900" fill="url(#grid)"/>
+  <g transform="translate(880 150)" filter="url(#soft)">
+    <g fill="#f8fafc" stroke="#93c5fd" stroke-width="3">
+      <rect x="212" y="0" width="230" height="86" rx="8"/>
+      <rect x="40" y="168" width="230" height="86" rx="8"/>
+      <rect x="386" y="168" width="230" height="86" rx="8"/>
+      <rect x="40" y="336" width="230" height="86" rx="8"/>
+      <rect x="386" y="336" width="230" height="86" rx="8"/>
+      <rect x="212" y="502" width="230" height="86" rx="8"/>
+    </g>
+    <g stroke="#c4b5fd" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M327 86v52"/>
+      <path d="M327 138H155v30"/>
+      <path d="M327 138h174v30"/>
+      <path d="M155 254v82"/>
+      <path d="M501 254v82"/>
+      <path d="M270 379h116"/>
+      <path d="M328 422v80"/>
+    </g>
+    <g font-family="'Segoe UI',Arial,sans-serif" fill="#0f172a" text-anchor="middle">
+      <text x="327" y="54" font-size="28" font-weight="800">class</text>
+      <text x="155" y="222" font-size="26" font-weight="700">inherit</text>
+      <text x="501" y="222" font-size="26" font-weight="700">virtual</text>
+      <text x="155" y="390" font-size="26" font-weight="700">RAII</text>
+      <text x="501" y="390" font-size="26" font-weight="700">template</text>
+      <text x="327" y="556" font-size="26" font-weight="700">operator+</text>
+    </g>
+    <rect x="466" y="506" width="130" height="60" rx="8" fill="#0f172a" fill-opacity="0.86" stroke="#5eead4"/>
+    <text x="492" y="546" font-family="'Segoe UI',Arial,sans-serif" font-size="25" fill="#ccfbf1">&lt;T&gt;</text>
+  </g>
+  <g font-family="'PingFang SC','Microsoft YaHei','Segoe UI',Arial,sans-serif" fill="#fff">
+    <text x="112" y="140" font-size="30" letter-spacing="6" opacity="0.78">DISBOUNDIA</text>
+    <rect x="112" y="184" width="238" height="48" rx="8" fill="#67e8f9" fill-opacity="0.18" stroke="#67e8f9" stroke-opacity="0.42"/>
+    <text x="136" y="217" font-size="24" fill="#cffafe">学习 / C++ OOP</text>
+    <text x="112" y="335" font-size="82" font-weight="800">C++ 面向对象</text>
+    <text x="112" y="430" font-size="76" font-weight="800">学习地图</text>
+    <text x="116" y="510" font-size="30" fill="#dbeafe">从类、继承、多态到模板与运算符重载</text>
+    <text x="116" y="790" font-size="26" fill="#a7f3d0">2026-07-08</text>
+  </g>
+</svg>
