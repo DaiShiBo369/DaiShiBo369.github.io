@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">古诗词鉴赏答题框架支教课件封面</title>
+  <desc id="desc">以书页、诗行和课堂板书为主题的博客封面</desc>
+  <rect width="1200" height="675" fill="#f7f1e3"/>
+  <rect x="0" y="0" width="1200" height="675" fill="#17324d"/>
+  <path d="M0 490 C220 430 360 555 580 495 C780 440 910 520 1200 455 L1200 675 L0 675 Z" fill="#d7a74f"/>
+  <path d="M0 545 C220 500 420 610 650 550 C865 495 990 590 1200 535 L1200 675 L0 675 Z" fill="#f7f1e3"/>
+  <rect x="112" y="104" width="430" height="420" rx="18" fill="#ffffff" opacity="0.95"/>
+  <path d="M150 155 H505" stroke="#d7a74f" stroke-width="8" stroke-linecap="round"/>
+  <path d="M150 215 H455 M150 268 H492 M150 321 H430 M150 374 H474 M150 427 H392" stroke="#17324d" stroke-width="12" stroke-linecap="round" opacity="0.72"/>
+  <rect x="628" y="118" width="430" height="300" rx="16" fill="#24445f"/>
+  <rect x="656" y="146" width="374" height="244" rx="8" fill="#10253a"/>
+  <path d="M710 216 H968 M710 272 H912 M710 328 H982" stroke="#f7f1e3" stroke-width="14" stroke-linecap="round"/>
+  <circle cx="662" cy="505" r="42" fill="#d7a74f"/>
+  <path d="M643 505 L656 518 L684 488" fill="none" stroke="#17324d" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="620" y="502" fill="#ffffff" font-family="Microsoft YaHei, PingFang SC, Noto Sans SC, Arial, sans-serif" font-size="62" font-weight="700">古诗词鉴赏</text>
+  <text x="620" y="576" fill="#17324d" font-family="Microsoft YaHei, PingFang SC, Noto Sans SC, Arial, sans-serif" font-size="44" font-weight="700">答题框架 · 支教课件</text>
+</svg>
