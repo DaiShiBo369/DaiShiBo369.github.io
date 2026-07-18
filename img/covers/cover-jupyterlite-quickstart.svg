@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">JupyterLite quickstart cover</title>
+  <desc id="desc">A JupyterLite article cover showing a browser notebook, Python prompt, WebAssembly blocks, and static site deployment.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#101827"/>
+      <stop offset="0.42" stop-color="#154e5b"/>
+      <stop offset="0.72" stop-color="#7c3f17"/>
+      <stop offset="1" stop-color="#f0b429"/>
+    </linearGradient>
+    <radialGradient id="light" cx="78%" cy="18%" r="66%">
+      <stop offset="0" stop-color="#fef3c7" stop-opacity="0.58"/>
+      <stop offset="0.48" stop-color="#38bdf8" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#020617" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="72" height="72" patternUnits="userSpaceOnUse">
+      <path d="M72 0H0V72" fill="none" stroke="#ffffff" stroke-opacity="0.055"/>
+      <path d="M18 72V0M36 72V0M54 72V0" fill="none" stroke="#ffffff" stroke-opacity="0.025"/>
+      <circle cx="0" cy="0" r="2.2" fill="#ffffff" fill-opacity="0.16"/>
+    </pattern>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="24" stdDeviation="24" flood-color="#020617" flood-opacity="0.38"/>
+    </filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect width="1600" height="900" fill="url(#light)"/>
+  <rect width="1600" height="900" fill="url(#grid)"/>
+  <g transform="translate(868 150)" filter="url(#shadow)">
+    <rect x="0" y="0" width="560" height="470" rx="10" fill="#f8fafc"/>
+    <rect x="0" y="0" width="560" height="58" rx="10" fill="#111827"/>
+    <circle cx="34" cy="29" r="8" fill="#fb7185"/>
+    <circle cx="64" cy="29" r="8" fill="#facc15"/>
+    <circle cx="94" cy="29" r="8" fill="#34d399"/>
+    <rect x="134" y="18" width="322" height="22" rx="6" fill="#334155"/>
+    <rect x="42" y="98" width="476" height="68" rx="8" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/>
+    <rect x="42" y="200" width="476" height="118" rx="8" fill="#0f172a"/>
+    <rect x="42" y="352" width="226" height="70" rx="8" fill="#ecfccb" stroke="#65a30d" stroke-width="2"/>
+    <rect x="292" y="352" width="226" height="70" rx="8" fill="#ffedd5" stroke="#ea580c" stroke-width="2"/>
+    <g font-family="'Segoe UI',Arial,sans-serif">
+      <text x="70" y="140" font-size="25" font-weight="700" fill="#0f172a">Notebook in Browser</text>
+      <text x="70" y="242" font-size="25" font-weight="700" fill="#bae6fd">&gt;&gt;&gt; import numpy as np</text>
+      <text x="70" y="286" font-size="25" font-weight="700" fill="#fef3c7">array([1, 2, 3])</text>
+      <text x="92" y="397" font-size="24" font-weight="700" fill="#365314">Pyodide</text>
+      <text x="336" y="397" font-size="24" font-weight="700" fill="#7c2d12">Static Site</text>
+    </g>
+    <g fill="none" stroke="#0f766e" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M268 386h24"/>
+      <path d="M282 372l14 14-14 14"/>
+      <path d="M280 166v34"/>
+    </g>
+  </g>
+  <g transform="translate(130 620)">
+    <rect x="0" y="0" width="96" height="96" rx="8" fill="#fef3c7" fill-opacity="0.16" stroke="#fde68a" stroke-opacity="0.55"/>
+    <rect x="126" y="0" width="96" height="96" rx="8" fill="#dbeafe" fill-opacity="0.15" stroke="#7dd3fc" stroke-opacity="0.55"/>
+    <rect x="252" y="0" width="96" height="96" rx="8" fill="#dcfce7" fill-opacity="0.15" stroke="#86efac" stroke-opacity="0.55"/>
+    <text x="30" y="61" font-family="'Segoe UI',Arial,sans-serif" font-size="34" font-weight="800" fill="#fef3c7">JS</text>
+    <text x="145" y="61" font-family="'Segoe UI',Arial,sans-serif" font-size="34" font-weight="800" fill="#dbeafe">WASM</text>
+    <text x="277" y="61" font-family="'Segoe UI',Arial,sans-serif" font-size="34" font-weight="800" fill="#dcfce7">PY</text>
+  </g>
+  <g font-family="'PingFang SC','Microsoft YaHei','Segoe UI',Arial,sans-serif" fill="#fff">
+    <text x="112" y="140" font-size="30" opacity="0.78">DISBOUNDIA</text>
+    <rect x="112" y="184" width="238" height="48" rx="8" fill="#fef3c7" fill-opacity="0.16" stroke="#fde68a" stroke-opacity="0.44"/>
+    <text x="136" y="217" font-size="24" fill="#fef9c3">学习 / Python</text>
+    <text x="112" y="335" font-size="82" font-weight="800">JupyterLite</text>
+    <text x="112" y="428" font-size="70" font-weight="800">上手笔记</text>
+    <text x="116" y="508" font-size="30" fill="#dff6ff">在静态博客里运行轻量 Python 交互环境</text>
+    <text x="116" y="790" font-size="26" fill="#fef3c7">2026-07-09</text>
+  </g>
+</svg>

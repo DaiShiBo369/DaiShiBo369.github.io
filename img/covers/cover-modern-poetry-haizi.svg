@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Disboundia article cover - Haizi modern poetry</title>
+  <desc id="desc">A poetry cover with grassland, sea, a sun, and lines suggesting modern Chinese poetry.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07131f"/>
+      <stop offset="0.42" stop-color="#155e75"/>
+      <stop offset="0.72" stop-color="#0f766e"/>
+      <stop offset="1" stop-color="#f59e0b"/>
+    </linearGradient>
+    <linearGradient id="field" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#14532d"/>
+      <stop offset="0.55" stop-color="#15803d"/>
+      <stop offset="1" stop-color="#84cc16"/>
+    </linearGradient>
+    <linearGradient id="sea" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#38bdf8" stop-opacity="0.58"/>
+      <stop offset="1" stop-color="#0284c7" stop-opacity="0.82"/>
+    </linearGradient>
+    <pattern id="paper" width="72" height="72" patternUnits="userSpaceOnUse">
+      <path d="M72 0H0V72" fill="none" stroke="#ffffff" stroke-opacity="0.045"/>
+      <path d="M18 72V0M54 72V0" fill="none" stroke="#ffffff" stroke-opacity="0.025"/>
+    </pattern>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6"/>
+    </filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect width="1600" height="900" fill="url(#paper)"/>
+  <circle cx="1210" cy="210" r="92" fill="#fbbf24"/>
+  <circle cx="1210" cy="210" r="122" fill="none" stroke="#fde68a" stroke-opacity="0.36" stroke-width="10"/>
+  <path d="M0 620c210-68 398-54 570 28 160 76 318 88 494 24 188-68 350-78 536-18v246H0Z" fill="#03131c" fill-opacity="0.36"/>
+  <path d="M0 690c224-92 420-72 620 10 178 72 302 76 490 0 184-74 326-82 490-34v234H0Z" fill="url(#field)" opacity="0.9"/>
+  <path d="M760 706c132-52 264-44 396 18 148 68 284 64 444-16v192H760Z" fill="url(#sea)" opacity="0.82"/>
+  <path d="M820 742c96-36 184-30 282 12 110 48 218 42 338-18" fill="none" stroke="#e0f2fe" stroke-opacity="0.52" stroke-width="8" stroke-linecap="round"/>
+  <path d="M86 686c160-28 296-18 426 34M118 742c126-24 260-18 402 28M88 798c184-28 368-18 552 32" fill="none" stroke="#d9f99d" stroke-opacity="0.44" stroke-width="5" stroke-linecap="round"/>
+  <g transform="translate(940 284)" fill="none" stroke="#fff7ed" stroke-linecap="round">
+    <path d="M0 92c130-88 250-102 360-42" stroke-opacity="0.24" stroke-width="10" filter="url(#soft)"/>
+    <path d="M0 92c130-88 250-102 360-42" stroke-opacity="0.7" stroke-width="4"/>
+    <path d="M64 166c118-72 238-82 356-18" stroke-opacity="0.55" stroke-width="4"/>
+    <path d="M36 238c142-60 274-56 394 12" stroke-opacity="0.38" stroke-width="4"/>
+  </g>
+  <g font-family="'PingFang SC','Microsoft YaHei','Segoe UI',Arial,sans-serif" fill="#ffffff">
+    <text x="112" y="140" font-size="30" opacity="0.78">DISBOUNDIA</text>
+    <rect x="112" y="184" width="218" height="48" rx="24" fill="#fbbf24" fill-opacity="0.18" stroke="#fde68a" stroke-opacity="0.48"/>
+    <text x="136" y="217" font-size="24" fill="#fef3c7">文学 / 支教</text>
+    <text x="112" y="340" font-size="86" font-weight="800">走近海子</text>
+    <text x="116" y="432" font-size="40" font-weight="600" fill="#e0f2fe">远方、草原与太阳</text>
+    <text x="116" y="512" font-size="30" fill="#dbeafe">从三首诗进入现代诗的声音和情绪</text>
+    <text x="116" y="790" font-size="26" fill="#fef3c7">2026-07-16</text>
+  </g>
+</svg>

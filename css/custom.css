@@ -99,3 +99,87 @@ textarea,
 #article-container .mathjax-inline {
   white-space: nowrap;
 }
+
+body[data-type="about"] .author-content-item.about-card-no-image {
+  background:
+    radial-gradient(circle at 18% 16%, rgba(66, 90, 239, 0.16), transparent 28%),
+    linear-gradient(135deg, rgba(24, 160, 88, 0.13), rgba(245, 247, 250, 0.92));
+}
+
+body[data-type="about"] .author-content-item.like-technology.about-card-no-image,
+body[data-type="about"] .author-content-item.like-music.about-card-no-image,
+body[data-type="about"] .author-content-item.game-yuanshen.about-card-no-image {
+  color: var(--font-color);
+}
+
+body[data-type="about"] .author-content-item.like-technology.about-card-no-image::after,
+body[data-type="about"] .author-content-item.like-music.about-card-no-image::after,
+body[data-type="about"] .author-content-item.game-yuanshen.about-card-no-image::after {
+  display: none;
+}
+
+body[data-type="about"] .about-personality-description {
+  max-width: calc(100% - 260px);
+  margin-top: 0.8rem;
+  color: var(--anzhiyu-secondtext);
+  line-height: 1.65;
+}
+
+body[data-type="about"] .author-content-item.personalities .about-image-placeholder {
+  display: grid;
+  place-items: center;
+  width: 220px;
+  height: 150px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(124, 92, 255, 0.14), rgba(47, 169, 222, 0.18));
+  border: var(--style-border-always);
+  color: #7c5cff;
+  font-size: 42px;
+  font-weight: 800;
+}
+
+body[data-type="about"] .author-content-item.myphoto.about-photo-placeholder {
+  background:
+    linear-gradient(135deg, rgba(47, 169, 222, 0.18), rgba(255, 204, 87, 0.18)),
+    var(--anzhiyu-card-bg);
+}
+
+body[data-type="about"] .author-content-item.myphoto.about-photo-placeholder::before {
+  content: "";
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.42);
+  border: var(--style-border-always);
+}
+
+body[data-type="about"] .reward-list-item .reward-list-item-money {
+  background: rgba(66, 90, 239, 0.12);
+  color: var(--anzhiyu-main);
+}
+
+body[data-type="about"] .reward-list-item .reward-list-bottom-group {
+  gap: 0.6rem;
+}
+
+body[data-type="about"] .author-content-item.selfInfo .selfInfo-content {
+  word-break: keep-all;
+  white-space: nowrap;
+}
+
+@media screen and (max-width: 768px) {
+  body[data-type="about"] .about-personality-description {
+    max-width: 100%;
+  }
+
+  body[data-type="about"] .author-content-item.personalities .about-image-placeholder {
+    right: 12px;
+    width: 112px;
+    height: 92px;
+    font-size: 26px;
+  }
+
+  body[data-type="about"] .author-content-item.selfInfo .selfInfo-content {
+    font-size: 28px;
+  }
+}
