@@ -4,6 +4,41 @@
   
     
     <entry>
+      <title>GeoPT 动态 CFD：从网络改造到当前阶段的完整工作报告</title>
+      <link href="/2026/08/05/2026-08-05-geopt-dynamic-cfd-full-report/"/>
+      <url>/2026/08/05/2026-08-05-geopt-dynamic-cfd-full-report/</url>
+      
+        <content type="html"><![CDATA[<h1 id="GeoPT-动态-CFD：从网络改造到当前阶段的完整工作报告"><a href="#GeoPT-动态-CFD：从网络改造到当前阶段的完整工作报告" class="headerlink" title="GeoPT 动态 CFD：从网络改造到当前阶段的完整工作报告"></a>GeoPT 动态 CFD：从网络改造到当前阶段的完整工作报告</h1><blockquote><p>更新时间：2026-08-05  </p></blockquote><blockquote><p>研究对象：奔跑&#x2F;行走机器人外流场的瞬态变边界 CFD 代理模型  </p></blockquote><blockquote><p>当前阶段：DynamicTransolver V0 已实现并完成真实 CFD 序列过拟合诊断；动态泛化与公开基准测试尚待开展</p></blockquote><h2 id="1-工作概览"><a href="#1-工作概览" class="headerlink" title="1. 工作概览"></a>1. 工作概览</h2><p>在完成 GeoPT 静态风场验证后，研究重点由“固定机器人几何、改变来流条件的稳态预测”转向：</p><blockquote><p>给定当前流场、当前与下一时刻的机器人边界状态，预测下一时刻的三维流场。</p></blockquote><p>围绕这一目标，目前已完成以下工作：</p><ol><li><p>将静态 GeoPT&#x2F;Transolver 改造成显式的单步动态状态转移模型 DynamicTransolver V0。</p></li><li><p>保留 GeoPT 预训练骨干及其 14 维静态输入接口，新增上一帧流场和移动边界特征编码器。</p></li><li><p>定义动态 CFD 数据契约、固定欧拉点集、掩码、归一化、checkpoint 迁移和 rollout 评估流程。</p></li><li><p>审计生成的 H1 动态 OpenFOAM 资产，确认其可用于方法诊断，但当前仍属于 legacy diagnostic 数据，而非最终高保真训练集。</p></li><li><p>完成单转移、200 帧序列、GeoPT 与随机初始化对比，以及 30,000 点、1,000 epochs 的强化过拟合实验。</p></li><li><p>定位并修复动态网格上 <code>pv.sample()</code> 插值产生异常值的问题，改为基于包含单元的 cell-centered 场读取。</p></li><li><p>系统调研长时滚动误差控制方法，并制定从单步监督到多步课程学习、TBPTT 和稳定性正则化的实验路线。</p></li><li><p>调研 EAGLE、RealPDEBench 等公开动态 CFD 基准，形成可与已有论文直接比较的 benchmark 策略。</p></li></ol><p>当前最重要的结论是：<strong>GeoPT 预训练确实为动态任务提供了更好的初始化，能够同时改善单步拟合和长时 rollout；但单步过拟合继续提升并不能自动解决自回归误差累积，后续研究中心应转向多步训练、状态完备性和公开基准泛化。</strong></p><h2 id="2-从静态-GeoPT-到动态问题"><a href="#2-从静态-GeoPT-到动态问题" class="headerlink" title="2. 从静态 GeoPT 到动态问题"></a>2. 从静态 GeoPT 到动态问题</h2><h3 id="2-1-静态任务"><a href="#2-1-静态任务" class="headerlink" title="2.1 静态任务"></a>2.1 静态任务</h3><p>原静态 GeoPT 学习的是一次性映射：</p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">机器人几何 + 来流条件 -&gt; 稳态空间流场</span><br><span class="line"></span><br></pre></td></tr></table></figure><p>每个空间查询点具有 14 维输入：</p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">query_xyz                  3  查询点坐标</span><br><span class="line"></span><br><span class="line">normalized_xyz             3  归一化空间坐标</span><br><span class="line"></span><br><span class="line">sdf_or_marker              1  几何距离或区域标记</span><br><span class="line"></span><br><span class="line">nearest_normal_xyz         3  最近机器人表面法向</span><br><span class="line"></span><br><span class="line">inflow_direction_xyz       3  来流方向</span><br><span class="line"></span><br><span class="line">normalized_speed           1  归一化来流速度</span><br><span class="line"></span><br><span class="line">------------------------------------------------</span><br><span class="line"></span><br><span class="line">合计                       14</span><br><span class="line"></span><br></pre></td></tr></table></figure><p>这一输入描述几何和工况，但不包含上一时刻流场，因此原模型本身不是时间推进器。</p><h3 id="2-2-动态任务"><a href="#2-2-动态任务" class="headerlink" title="2.2 动态任务"></a>2.2 动态任务</h3><p>动态机器人 CFD 同时包含两种演化：</p><ul><li><p>流体状态随时间变化；</p></li><li><p>机器人作为流场边界，其位置、法向和壁面速度也随时间变化。</p></li></ul><p>因此 V0 将任务改写为：</p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">Y_t + G_t + G_(t+1) + B_(t-&gt;t+1) -&gt; Y_(t+1)</span><br><span class="line"></span><br></pre></td></tr></table></figure><p>其中：</p><ul><li><p><code>Y_t</code>：当前时刻空间流场；</p></li><li><p><code>G_t/G_(t+1)</code>：当前和下一时刻几何；</p></li><li><p><code>B_(t-&gt;t+1)</code>：边界移动特征；</p></li><li><p><code>Y_(t+1)</code>：下一时刻流场。</p></li></ul><p>目前实验状态通道为：</p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">Y_t.shape = [B, N, 4]</span><br><span class="line"></span><br><span class="line">channels  = [Ux, Uy, Uz, p_kinematic]</span><br><span class="line"></span><br></pre></td></tr></table></figure><p>正式 SST 数据契约计划扩展为 6 通道：</p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">[Ux, Uy, Uz, p_kinematic, k, omega]</span><br><span class="line"></span><br></pre></td></tr></table></figure><p>其中 <code>k</code> 是湍动能，<code>omega</code> 是比耗散率。当前缺少这两个湍流状态量，意味着 <code>[U,p]</code> 对下一时刻演化可能是部分观测状态。</p><h2 id="3-DynamicTransolver-V0-架构"><a href="#3-DynamicTransolver-V0-架构" class="headerlink" title="3. DynamicTransolver V0 架构"></a>3. DynamicTransolver V0 架构</h2><h3 id="3-1-总体结构"><a href="#3-1-总体结构" class="headerlink" title="3.1 总体结构"></a>3.1 总体结构</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  </span><br><span class="line"></span><br><span class="line">flowchart LR</span><br><span class="line"></span><br><span class="line">    A[&quot;查询点与下一帧几何&lt;br/&gt;query_xyz + static_fx&lt;br/&gt;B × N × 14&quot;] --&gt; D[&quot;GeoPT 静态输入干线&lt;br/&gt;14 → 512&quot;]</span><br><span class="line"></span><br><span class="line">    B[&quot;上一帧流场 Y_t&lt;br/&gt;B × N × C&quot;] --&gt; E[&quot;state_proj&lt;br/&gt;C → 512&quot;]</span><br><span class="line"></span><br><span class="line">    C[&quot;移动边界特征&lt;br/&gt;boundary_feat&lt;br/&gt;B × N × 8&quot;] --&gt; F[&quot;boundary_proj&lt;br/&gt;8 → 512&quot;]</span><br><span class="line"></span><br><span class="line">    D --&gt; G[&quot;逐点相加 + GELU&lt;br/&gt;512 → 256&quot;]</span><br><span class="line"></span><br><span class="line">    E --&gt; G</span><br><span class="line"></span><br><span class="line">    F --&gt; G</span><br><span class="line"></span><br><span class="line">    G --&gt; H[&quot;8 层 Transolver&lt;br/&gt;动态构造 Physics-Attention tokens&quot;]</span><br><span class="line"></span><br><span class="line">    H --&gt; I[&quot;LayerNorm + Linear&lt;br/&gt;预测 ΔY&quot;]</span><br><span class="line"></span><br><span class="line">    I --&gt; J[&quot;Ŷ(t+1) = Y_t + ΔY&quot;]</span><br><span class="line"></span><br></pre></td></tr></table></figure>  <iframe src="/downloads/geopt-dynamic-cfd/dynamic-transolver-v0.html" style="width:100%;height:760px;border:0;border-radius:8px;" loading="lazy"></iframe><p>对应前向接口为：</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">prediction = model(</span><br><span class="line"></span><br><span class="line">    query_xyz,       <span class="comment"># [B, N, 3]</span></span><br><span class="line"></span><br><span class="line">    static_fx,       <span class="comment"># [B, N, 11]</span></span><br><span class="line"></span><br><span class="line">    previous_state,  <span class="comment"># [B, N, C]</span></span><br><span class="line"></span><br><span class="line">    boundary_feat,   <span class="comment"># [B, N, 8]</span></span><br><span class="line"></span><br><span class="line">)</span><br><span class="line"></span><br></pre></td></tr></table></figure><h3 id="3-2-为什么保留-14-维静态输入"><a href="#3-2-为什么保留-14-维静态输入" class="headerlink" title="3.2 为什么保留 14 维静态输入"></a>3.2 为什么保留 14 维静态输入</h3><p>GeoPT checkpoint 的首层是 <code>Linear(14, 512)</code>。直接改变这 14 维会破坏已经学习到的空间几何表征，降低预训练权重可复用性。因此 V0 采用三路投影后融合：</p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">static_stem(query_xyz + static_fx)  -&gt; 512</span><br><span class="line"></span><br><span class="line">state_proj(previous_state)          -&gt; 512</span><br><span class="line"></span><br><span class="line">boundary_proj(boundary_feat)        -&gt; 512</span><br><span class="line"></span><br><span class="line">                         三者逐点相加</span><br><span class="line"></span><br><span class="line">                                  -&gt; GELU -&gt; 256 -&gt; Transolver</span><br><span class="line"></span><br></pre></td></tr></table></figure><p>这并不意味着 Transolver 不能接收更多信息，而是把新增信息放在独立适配器中，使原有静态骨干保持结构兼容。</p><h3 id="3-3-动态边界特征"><a href="#3-3-动态边界特征" class="headerlink" title="3.3 动态边界特征"></a>3.3 动态边界特征</h3><p>当前 <code>boundary_feat</code> 为 8 维：</p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">sdf_current                1  当前帧到机器人表面的有符号距离</span><br><span class="line"></span><br><span class="line">sdf_next - sdf_current     1  边界接近或远离查询点的程度</span><br><span class="line"></span><br><span class="line">wall_velocity_xyz          3  最近机器人表面的壁面速度</span><br><span class="line"></span><br><span class="line">current_fluid_mask         1  当前帧该点是否属于流体区</span><br><span class="line"></span><br><span class="line">next_fluid_mask            1  下一帧该点是否属于流体区</span><br><span class="line"></span><br><span class="line">normalized_dt              1  归一化时间步长</span><br><span class="line"></span><br><span class="line">----------------------------------------------------------</span><br><span class="line"></span><br><span class="line">合计                       8</span><br><span class="line"></span><br></pre></td></tr></table></figure><p><code>static_fx</code> 使用下一帧几何：</p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">normalized_xyz             3</span><br><span class="line"></span><br><span class="line">sdf_next                   1</span><br><span class="line"></span><br><span class="line">nearest_normal_next        3</span><br><span class="line"></span><br><span class="line">inflow_direction_xyz       3</span><br><span class="line"></span><br><span class="line">normalized_speed           1</span><br><span class="line"></span><br><span class="line">----------------------------------------------------------</span><br><span class="line"></span><br><span class="line">合计                      11</span><br><span class="line"></span><br></pre></td></tr></table></figure><p>因此，在 <code>t -&gt; t+1</code> 预测中，模型确实同时输入：当前空间流场、下一时刻机器人几何以及两帧之间的边界运动。</p><h3 id="3-4-残差预测与初始化"><a href="#3-4-残差预测与初始化" class="headerlink" title="3.4 残差预测与初始化"></a>3.4 残差预测与初始化</h3><p>模型预测状态增量：</p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">Y_hat_(t+1) = Y_t + Delta Y</span><br><span class="line"></span><br></pre></td></tr></table></figure><p>新增的状态适配器、边界适配器和动态输出头采用零初始化。加载 GeoPT 后，模型初始行为严格等价于：</p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">Y_hat_(t+1) = Y_t</span><br><span class="line"></span><br></pre></td></tr></table></figure><p>即 persistence baseline（持续性基线）。这使动态微调从稳定、可解释的初始状态开始。</p><h3 id="3-5-token-设计的当前边界"><a href="#3-5-token-设计的当前边界" class="headerlink" title="3.5 token 设计的当前边界"></a>3.5 token 设计的当前边界</h3><p>V0 没有加入跨时间持久化的 summary token。Transolver 原有 slice&#x2F;physics token 会在每层、每次 forward 中由当前点集重新构造，它们负责当前帧的空间信息聚合，但不保存上一帧记忆。</p><p>当前的时间信息通过 <code>previous_state</code> 和 <code>boundary_feat</code> 显式注入。后续可按证据逐步研究：</p><ul><li><p>V1：关节&#x2F;link motion tokens，用于更紧凑地表达机器人运动学；</p></li><li><p>V2：跨帧 persistent latent tokens，用于携带历史流场摘要；</p></li><li><p>只有在多步基线证明单帧状态不足时，再引入更复杂的时序记忆结构。</p></li></ul><h2 id="4-GeoPT-权重迁移与软件实现"><a href="#4-GeoPT-权重迁移与软件实现" class="headerlink" title="4. GeoPT 权重迁移与软件实现"></a>4. GeoPT 权重迁移与软件实现</h2><p>使用的 GeoPT 预训练权重：</p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">SHA256: c0b1b9c4e5d533dbc249190d3d1fbe8e6b066b36d325cf4377cc0d613c02d1c2</span><br><span class="line"></span><br><span class="line">源 checkpoint 张量数: 169</span><br><span class="line"></span><br><span class="line">成功加载张量数:      165</span><br><span class="line"></span><br><span class="line">加载参数元素数:       3,862,848</span><br><span class="line"></span><br><span class="line">动态模型总参数量:     3,870,532</span><br><span class="line"></span><br></pre></td></tr></table></figure><p>排除原静态任务最后 4 个输出头张量：</p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">blocks.7.ln_3.weight</span><br><span class="line"></span><br><span class="line">blocks.7.ln_3.bias</span><br><span class="line"></span><br><span class="line">blocks.7.mlp2.weight</span><br><span class="line"></span><br><span class="line">blocks.7.mlp2.bias</span><br><span class="line"></span><br></pre></td></tr></table></figure><p>已实现的主要模块包括：</p><ul><li><p>动态 Transolver 模型与残差输出头；</p></li><li><p>[[HDF5]] 动态轨迹格式及校验；</p></li><li><p>固定欧拉点集与嵌套点数子集；</p></li><li><p>训练集独占归一化统计；</p></li><li><p>fluid&#x2F;common&#x2F;newly-exposed&#x2F;solid 掩码；</p></li><li><p>GeoPT 与 from-scratch 公平初始化对比；</p></li><li><p>单步 teacher-forcing 训练；</p></li><li><p>自回归 rollout 评估；</p></li><li><p>每 epoch loss、耗时、checkpoint、显存和推理时间记录；</p></li><li><p>逐通道、逐时间步和异常转移诊断。</p></li></ul><p>初版验证覆盖模型、数据、checkpoint 加载和端到端前反向传播。真实 checkpoint 在 4,096 点、6 通道配置下完成 forward&#x2F;backward，零初始化时 persistence 最大绝对误差为 0。</p><h2 id="5-动态-CFD-数据资产审计"><a href="#5-动态-CFD-数据资产审计" class="headerlink" title="5. 动态 CFD 数据资产审计"></a>5. 动态 CFD 数据资产审计</h2><h3 id="5-1-已有-H1-数据"><a href="#5-1-已有-H1-数据" class="headerlink" title="5.1 已有 H1 数据"></a>5.1 已有 H1 数据</h3><p>hyj生成的数据位于：</p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">/essfs10/houyujie/data/robot_urdf_subset/postprocess_hyj/dynamic_openfoam_h1_walking</span><br><span class="line"></span><br></pre></td></tr></table></figure><p>交接文档：</p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">/essfs10/daishibo/workspaces/geopt-for-robotics/docs/HANDOFF_20260803.md</span><br><span class="line"></span><br></pre></td></tr></table></figure><p>主要内容：</p><ul><li><p>1 秒 H1 合成行走&#x2F;跑步周期(纯机器人几何)；</p></li><li><p>root-fixed treadmill 场景；</p></li><li><p>19 个主动关节、24 个 watertight links；</p></li><li><p>legacy 全链条包含 200 个唯一端点状态、199 个连续状态转移；</p></li><li><p>每个位姿重新生成 whole-pose Alpha-Wrap 和单区域网格；</p></li><li><p>使用[[保守场映射]]、[[FK ]]壁面速度、[[GCL]] 和 [[PIMPLE]] 进行顺序推进。</p></li></ul><p>这 200 帧是连续动态 CFD，不是 200 个彼此独立的稳态 CFD。但该批数据被明确标为 <code>diagnostic_only=true</code>：网格较粗，legacy 时间推进和拓扑&#x2F;物理连续性没有在全序列达到 strict-V2 标准。因此它适合验证网络、数据和 rollout 管线，不适合作为最终论文中的高保真泛化标签。</p><h3 id="5-2-strict-V2-与算力情况"><a href="#5-2-strict-V2-与算力情况" class="headerlink" title="5.2 strict-V2 与算力情况"></a>5.2 strict-V2 与算力情况</h3><p>严格流程目前只对第一个短区间 <code>0.005 -&gt; 0.006 s</code> 完成验收；高保真动态数据的关键困难仍是移动网格、场映射和连续性，而不仅是流体求解器残差。</p><p>legacy 顺序 CFD 记录时间约为：</p><table><thead><tr><th>阶段</th><th align="right">记录耗时</th></tr></thead><tbody><tr><td>场映射</td><td align="right">20.62 h</td></tr><tr><td>GCL</td><td align="right">0.54 h</td></tr><tr><td>PIMPLE 求解</td><td align="right">2.91 h</td></tr><tr><td>顺序 CFD 合计</td><td align="right">26.22 h</td></tr><tr><td></td><td align="right"></td></tr></tbody></table><p>PETSc4FOAM 的 GPU 求解器候选已通过场一致性检查：CPU 中位数 38.79 s，CUDA 中位数 27.70 s，求解器部分约 1.40 倍加速。但场映射是主要瓶颈，因此不能把 1.40 倍直接解释为完整动态 CFD 管线加速比。</p><h2 id="6-数据导出问题与修复"><a href="#6-数据导出问题与修复" class="headerlink" title="6. 数据导出问题与修复"></a>6. 数据导出问题与修复</h2><h3 id="6-1-原问题"><a href="#6-1-原问题" class="headerlink" title="6.1 原问题"></a>6.1 原问题</h3><p>早期数据导出使用 PyVista 的 <code>pv.sample()</code> 将动态 OpenFOAM 网格上的场插值到固定查询点。动态边界附近存在：</p><ul><li><p>查询点跨越 fluid&#x2F;solid 区域；</p></li><li><p>每帧网格拓扑和单元分布变化；</p></li><li><p>cell field 被转换为 point field 后再插值；</p></li><li><p>边界附近缺少稳定的有效邻域。</p></li></ul><p>这些因素会产生非物理的大速度或压力值。最明显的异常出现在 <code>570 -&gt; 575 ms</code> 转移，但这并不是原始 OpenFOAM 场损坏；异常主要由我们的重采样路径引入。</p><h3 id="6-2-修复方法"><a href="#6-2-修复方法" class="headerlink" title="6.2 修复方法"></a>6.2 修复方法</h3><p>修复后不再使用 <code>pv.sample()</code>：</p><ol><li><p>对固定欧拉查询点定位其所在 OpenFOAM cell；</p></li><li><p>直接读取该 cell 的 cell-centered <code>U</code> 和 <code>p</code>；</p></li><li><p>对流体有效性、速度上界和有限值进行门控；</p></li><li><p>所有点数配置使用同一固定点库的嵌套子集。</p></li></ol><p>修复后，8192 点、300 epochs 的同配置 GeoPT 结果变化为：</p><table><thead><tr><th>数据版本</th><th align="right">单步相对 L2</th><th align="right">rollout 均值</th><th align="right">rollout 最终步</th></tr></thead><tbody><tr><td>原 <code>pv.sample()</code> 导出</td><td align="right">0.1869</td><td align="right">0.5837</td><td align="right">0.7421</td></tr><tr><td>cell-centered 修复后</td><td align="right">0.0730</td><td align="right">0.4837</td><td align="right">0.6160</td></tr><tr><td>相对改善</td><td align="right">60.9%</td><td align="right">17.1%</td><td align="right">17.0%</td></tr></tbody></table><p>这说明数据提取质量会显著影响模型误差，尤其影响单步拟合；但修复采样后 rollout 仍明显高于单步误差，说明长时不稳定并不只是一个坏帧造成，误差累计显著。</p><h2 id="7-实验一：真实单转移过拟合"><a href="#7-实验一：真实单转移过拟合" class="headerlink" title="7. 实验一：真实单转移过拟合"></a>7. 实验一：真实单转移过拟合</h2><p>首先选择真实 H1 转移 <code>0.045 -&gt; 0.050 s</code>，使用 8,192 个点验证完整训练和推理链路。</p><table><thead><tr><th>指标</th><th align="right">结果</th></tr></thead><tbody><tr><td>监督点数</td><td align="right">7,747</td></tr><tr><td>persistence 归一化 MSE</td><td align="right">0.0630439</td></tr><tr><td>最终归一化 MSE</td><td align="right">0.0001294</td></tr><tr><td>loss 降低倍数</td><td align="right">487.2 倍</td></tr><tr><td>加权相对 L2</td><td align="right">0.9714%</td></tr><tr><td>参数更新数</td><td align="right">799</td></tr><tr><td>训练时间</td><td align="right">41.38 s</td></tr><tr><td>平均训练 step</td><td align="right">48.74 ms</td></tr><tr><td>平均单帧推理</td><td align="right">5.622 ms</td></tr><tr><td>推理吞吐</td><td align="right">177.86 FPS</td></tr><tr><td>训练峰值 allocated 显存</td><td align="right">970.37 MiB</td></tr><tr><td>推理增量峰值显存</td><td align="right">56.22 MiB</td></tr></tbody></table><p>物理量 RMSE：</p><table><thead><tr><th>通道</th><th align="right">RMSE</th></tr></thead><tbody><tr><td><code>Ux</code></td><td align="right">0.004018 m&#x2F;s</td></tr><tr><td><code>Uy</code></td><td align="right">0.001192 m&#x2F;s</td></tr><tr><td><code>Uz</code></td><td align="right">0.001020 m&#x2F;s</td></tr><tr><td><code>p_kinematic</code></td><td align="right">0.005400 m²&#x2F;s²</td></tr></tbody></table><p>该实验只证明模型和数据管线可以记住一个真实转移，不代表跨时间、跨动作或跨机器人泛化。</p><h2 id="8-实验二：完整-200-帧序列对比（存在一个坏帧）"><a href="#8-实验二：完整-200-帧序列对比（存在一个坏帧）" class="headerlink" title="8. 实验二：完整 200 帧序列对比（存在一个坏帧）"></a>8. 实验二：完整 200 帧序列对比（存在一个坏帧）</h2><p>  第二阶段使用 200 帧、199 个连续转移，比较相同架构、数据、超参数和随机种子下的：</p><ul><li><p>GeoPT 预训练初始化；</p></li><li><p>完全随机初始化。</p><p>8,192 点、300 epochs 的初始对比结果以及后续：</p></li></ul><table><thead><tr><th>运行</th><th align="right">点数</th><th align="right">epochs</th><th align="right">一步均值</th><th align="right">rollout 均值</th><th align="right">rollout 最终</th><th align="right">推理均值 ms</th></tr></thead><tbody><tr><td>geopt_8192</td><td align="right">8192</td><td align="right">300</td><td align="right">0.186928</td><td align="right">0.583678</td><td align="right">0.742142</td><td align="right">5.378</td></tr><tr><td>scratch_8192</td><td align="right">8192</td><td align="right">300</td><td align="right">0.206719</td><td align="right">1.250388</td><td align="right">1.808928</td><td align="right">5.240</td></tr><tr><td>winner_30000</td><td align="right">30000</td><td align="right">300</td><td align="right">0.140272</td><td align="right">2.826492</td><td align="right">4.161098</td><td align="right">16.572</td></tr><tr><td><img src="/img/geopt-dynamic-cfd/initialization.png" alt="GeoPT 与随机初始化对比"></td><td align="right"></td><td align="right"></td><td align="right"></td><td align="right"></td><td align="right"></td><td align="right"></td></tr></tbody></table><p>GeoPT 相比随机初始化：</p><ul><li><p>单步误差降低约 9.6%；</p></li><li><p>rollout 平均误差降低约 53.3%；</p></li><li><p>推理成本基本相同。</p></li></ul><p>表明静态 GeoPT 预训练骨干不仅加快局部拟合，还学到了对动态 rollout 有帮助的空间物理表征。</p><h2 id="9-实验三：30-000-点、1-000-epochs-强化过拟合"><a href="#9-实验三：30-000-点、1-000-epochs-强化过拟合" class="headerlink" title="9. 实验三：30,000 点、1,000 epochs 强化过拟合"></a>9. 实验三：30,000 点、1,000 epochs 强化过拟合</h2><p>在<strong>修复 cell-centered 数据后</strong>，使用完整 200 帧开展更高点数、更长训练实验：</p><p>点数:               30,000 &#x2F; frame<br>时间帧:             200<br>转移数:             199<br>训练 epochs:        1,000<br>总参数更新:         199,000<br>初始化:             GeoPT pretrained<br>随机种子:           17<br>学习率:             5e-4 -&gt; 5e-5</p><h3 id="9-1-单步结果"><a href="#9-1-单步结果" class="headerlink" title="9.1 单步结果"></a>9.1 单步结果</h3><table><thead><tr><th>指标</th><th align="right">结果</th></tr></thead><tbody><tr><td>最佳 epoch</td><td align="right">993</td></tr><tr><td>最佳 teacher loss</td><td align="right">0.0026324</td></tr><tr><td>单步相对 L2 均值</td><td align="right">0.04256</td></tr><tr><td>单步相对 L2 p95</td><td align="right">0.04597</td></tr><tr><td>单步相对 L2 最大值</td><td align="right">0.04771</td></tr><tr><td>epoch 1 单步均值</td><td align="right">0.17486</td></tr><tr><td>相对 epoch 1 改善</td><td align="right">75.66%</td></tr><tr><td>总训练时间</td><td align="right">13,661.8 s（约 3 h 47 min 42 s）</td></tr></tbody></table><h3 id="9-2-严格自回归-rollout"><a href="#9-2-严格自回归-rollout" class="headerlink" title="9.2 严格自回归 rollout"></a>9.2 严格自回归 rollout</h3><p>rollout 从首帧出发，每一步都把模型预测重新作为下一步输入，共滚动 199 步：</p><table><thead><tr><th>指标</th><th align="right">DynamicTransolver</th><th align="right">Persistence baseline</th></tr></thead><tbody><tr><td>rollout 相对 L2 均值</td><td align="right">0.36721</td><td align="right">1.20452</td></tr><tr><td>rollout p95</td><td align="right">0.46780</td><td align="right">-</td></tr><tr><td>rollout 最终步</td><td align="right">0.47119</td><td align="right">1.05717</td></tr><tr><td>rollout 最大值</td><td align="right">0.47854</td><td align="right">1.32455</td></tr></tbody></table><p>相对修复后的 8,192 点、300 epochs 模型：</p><ul><li><p>单步均值降低 41.74%；</p></li><li><p>rollout 均值降低 24.08%；</p></li><li><p>rollout 最终步降低 23.51%。</p><p><img src="/img/geopt-dynamic-cfd/rollout-30k-1000e.png" alt="30k 点 1000 epochs rollout 结果"></p></li></ul><h3 id="9-3-速度与显存"><a href="#9-3-速度与显存" class="headerlink" title="9.3 速度与显存"></a>9.3 速度与显存</h3><table><thead><tr><th>指标</th><th align="right">结果</th></tr></thead><tbody><tr><td>模型单帧平均推理</td><td align="right">16.637 ms</td></tr><tr><td>单帧中位数</td><td align="right">16.640 ms</td></tr><tr><td>单帧 p95</td><td align="right">16.663 ms</td></tr><tr><td>模型吞吐</td><td align="right">60.11 FPS</td></tr><tr><td>199 步完整 rollout</td><td align="right">3.430 s</td></tr><tr><td>rollout 吞吐</td><td align="right">58.02 FPS</td></tr><tr><td>推理增量峰值显存</td><td align="right">210.22 MiB</td></tr><tr><td>训练峰值 allocated 显存</td><td align="right">3,952.54 MiB</td></tr><tr><td>训练峰值 reserved 显存</td><td align="right">4,206 MiB</td></tr></tbody></table><h2 id="10-为什么单帧拟合较好，但-rollout-仍不稳定"><a href="#10-为什么单帧拟合较好，但-rollout-仍不稳定" class="headerlink" title="10. 为什么单帧拟合较好，但 rollout 仍不稳定"></a>10. 为什么单帧拟合较好，但 rollout 仍不稳定</h2><p>单步 teacher forcing 训练时，模型每次看到的 <code>Y_t</code> 都是真值；rollout 推理时，从第二步开始输入包含模型自己的误差。这形成分布偏移：</p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">训练:   true Y_t -&gt; model -&gt; Y_hat_(t+1)</span><br><span class="line"></span><br><span class="line">推理:   Y_hat_t -&gt; model -&gt; Y_hat_(t+1) -&gt; ...</span><br><span class="line"></span><br></pre></td></tr></table></figure><p>当前误差来源至少包括：</p><ol><li><p><strong>暴露偏差</strong>：训练没有充分见过带预测误差的输入状态。</p></li><li><p><strong>训练目标不匹配</strong>：单步 loss 不直接优化 50、100 或 199 步后的误差。</p></li><li><p><strong>瞬态放大</strong>：单步映射的局部 Jacobian 可能在某些方向放大小扰动。</p></li><li><p><strong>部分观测</strong>：当前 <code>[U,p]</code> 不包含 SST 的 <code>k,omega</code>，不同隐含湍流状态可能对应相近的可见状态。</p></li><li><p><strong>变边界困难区域</strong>：新增 21,808 个点增加了近壁面、新暴露流体和尾流区域的比例。</p></li></ol><p>点数增加本身不会必然导致不稳定。旧 30k 实验在共同的 8192 点子集上反而优于 8192 模型，说明更多点改善了已见区域；整体 rollout 恶化主要来自新增的高难度点及旧插值异常。修复数据并增加训练后，30k 模型的单步和 rollout 都得到提升。</p><h2 id="11-长时动态-PDE-方法调研"><a href="#11-长时动态-PDE-方法调研" class="headerlink" title="11. 长时动态 PDE 方法调研"></a>11. 长时动态 PDE 方法调研</h2><p>围绕上述问题，已完成长时 PDE surrogate 文献调研，形成三类方法路线。</p><h3 id="11-1-输入扰动与恢复训练"><a href="#11-1-输入扰动与恢复训练" class="headerlink" title="11.1 输入扰动与恢复训练"></a>11.1 输入扰动与恢复训练</h3><ul><li><p><strong>Learning to Simulate Complex Physics with Graph Networks (GNS)</strong>：向训练状态加入噪声，使模型学习从偏离真值轨迹的状态恢复。</p></li><li><p><strong>Message Passing Neural PDE Solvers (MP-PDE)</strong>：使用 temporal bundling 和 pushforward trick，让训练输入逐渐接近推理时的模型状态。</p></li><li><p><strong>DCCL</strong>：在教师状态和模型预测状态之间连续插值，并随训练推进逐渐增加预测状态比例。</p></li></ul><p>这类方法与现有 DynamicTransolver 最兼容，优先级最高。</p><h3 id="11-2-多步展开与课程学习"><a href="#11-2-多步展开与课程学习" class="headerlink" title="11.2 多步展开与课程学习"></a>11.2 多步展开与课程学习</h3><ul><li><p>从单步 horizon 逐步增加为 <code>1 -&gt; 4 -&gt; 8 -&gt; 16</code>；</p></li><li><p>比较 NOG（不通过 rollout 反传）、WIG（完整展开梯度）和 TBPTT（截断时间反向传播）；</p></li><li><p>使用多步加权 loss，使训练目标与最终 rollout 指标一致。</p></li></ul><p>TBPTT 的含义是：模型连续展开多个时间步，但只在有限窗口内保留反向传播计算图。它比完整序列反传节省显存，同时仍能让梯度看到多步误差。</p><h3 id="11-3-动力系统稳定性约束"><a href="#11-3-动力系统稳定性约束" class="headerlink" title="11.3 动力系统稳定性约束"></a>11.3 动力系统稳定性约束</h3><p>“Controlling Transient Amplification”指出，即使特征值看起来稳定，非正规 Jacobian 仍可能短时放大扰动。后续可监测或约束：</p><ul><li><p>局部状态转移 Jacobian 的放大率；</p></li><li><p>latent dynamics 的 normality&#x2F;commutativity；</p></li><li><p>长时间段中的误差增长率。</p></li></ul><p>该方向适合作为多步训练基线之后的增强项，不应先于基本 rollout curriculum。</p><h3 id="11-4-推荐实验顺序"><a href="#11-4-推荐实验顺序" class="headerlink" title="11.4 推荐实验顺序"></a>11.4 推荐实验顺序</h3><table><thead><tr><th>阶段</th><th>方法</th><th>目的</th></tr></thead><tbody><tr><td>E0</td><td>干净 cell-centered 单步基线</td><td>建立可信下限</td></tr><tr><td>E1</td><td>状态噪声</td><td>学习局部误差恢复</td></tr><tr><td>E2</td><td>Pushforward &#x2F; stop-gradient</td><td>缩小训练-推理输入差异</td></tr><tr><td>E3</td><td>DCCL</td><td>连续增加预测状态占比</td></tr><tr><td>E4</td><td>Horizon <code>1-&gt;4-&gt;8-&gt;16</code></td><td>直接优化长时误差</td></tr><tr><td>E5</td><td>NOG vs WIG vs TBPTT</td><td>比较精度、显存和训练时间</td></tr><tr><td>E6</td><td>加入 <code>k,omega</code></td><td>检验状态完备性</td></tr><tr><td>E7</td><td>Jacobian 稳定性诊断&#x2F;正则</td><td>控制瞬态放大</td></tr></tbody></table><h2 id="12-公开-benchmark-调研"><a href="#12-公开-benchmark-调研" class="headerlink" title="12. 公开 benchmark 调研"></a>12. 公开 benchmark 调研</h2><p>仅在自有 H1 数据上报告误差，无法证明方法相对已有动态 CFD 模型具有优势。因此已形成三级证据链。</p><h3 id="12-1-EAGLE：主要移动边界公开基准"><a href="#12-1-EAGLE：主要移动边界公开基准" class="headerlink" title="12.1 EAGLE：主要移动边界公开基准"></a>12.1 EAGLE：主要移动边界公开基准</h3><p>EAGLE 是二维 UAV 动态网格瞬态 CFD 数据集：</p><table><thead><tr><th>项目</th><th align="right">规模</th></tr></thead><tbody><tr><td>轨迹数</td><td align="right">1,184</td></tr><tr><td>每轨迹帧数</td><td align="right">990</td></tr><tr><td>总帧数</td><td align="right">1,172,160</td></tr><tr><td>地面几何数</td><td align="right">592</td></tr><tr><td>划分</td><td align="right">948 &#x2F; 118 &#x2F; 118</td></tr><tr><td>平均节点数</td><td align="right">3,388</td></tr><tr><td>主要场</td><td align="right"><code>Vx, Vy, PS, PG</code></td></tr></tbody></table><p>公开长时 NRMSE 参考值：</p><table><thead><tr><th>模型</th><th align="right">+1</th><th align="right">+10</th><th align="right">+25</th><th align="right">+50</th><th align="right">+250</th></tr></thead><tbody><tr><td>MGN</td><td align="right">0.0741</td><td align="right">0.1416</td><td align="right">0.2235</td><td align="right">0.3351</td><td align="right">0.6286</td></tr><tr><td>PIORF</td><td align="right">0.0757</td><td align="right">0.1419</td><td align="right">0.2279</td><td align="right">0.3470</td><td align="right">0.7050</td></tr><tr><td>FLARE</td><td align="right">0.0696</td><td align="right">0.1318</td><td align="right">0.2110</td><td align="right">0.3285</td><td align="right">0.6257</td></tr></tbody></table><p>建议先以 <code>&lt;0.634</code> 作为复现基本目标，以 <code>&lt;0.6257</code> 作为有竞争力目标。EAGLE 能验证移动边界和长时 rollout，但它是二维刚体 UAV，不能替代三维多关节机器人验证。</p><h3 id="12-2-RealPDEBench：跨真实与数值-CFD"><a href="#12-2-RealPDEBench：跨真实与数值-CFD" class="headerlink" title="12.2 RealPDEBench：跨真实与数值 CFD"></a>12.2 RealPDEBench：跨真实与数值 CFD</h3><p>RealPDEBench 提供真实实验与数值 CFD 的配对任务，并包含 Transolver、DPOT 等公开基线：</p><ul><li><p>Controlled Cylinder：强迫振动圆柱，96 条真实与 96 条数值轨迹；</p></li><li><p>FSI：流固耦合，51 条真实与 51 条数值轨迹；</p></li><li><p>支持 numerical-only、real-only、numerical pretrain -&gt; real finetune。</p></li></ul><p>它适合回答“预训练是否改善真实动态 CFD 预测”和“DynamicTransolver 是否优于原 Transolver”等问题。但数据位于固定欧拉网格，未显式提供 SDF 和壁面速度，不能单独证明当前动态边界特征设计的优势。</p><h3 id="12-3-自有-H1-G1：最终场景验证"><a href="#12-3-自有-H1-G1：最终场景验证" class="headerlink" title="12.3 自有 H1&#x2F;G1：最终场景验证"></a>12.3 自有 H1&#x2F;G1：最终场景验证</h3><p>最终论文证据应分为：</p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">EAGLE            公开移动边界基准，可与已有论文直接比较</span><br><span class="line"></span><br><span class="line">RealPDEBench     真实/数值迁移及原 Transolver 基线</span><br><span class="line"></span><br><span class="line">H1/G1            三维、多 link、多关节、移动壁面机器人场景</span><br><span class="line"></span><br></pre></td></tr></table></figure><p>这种组合既提供可比较的公开分数，也保留机器人动态 CFD 的原创性。</p><h2 id="13-当前能够支持的结论"><a href="#13-当前能够支持的结论" class="headerlink" title="13. 当前能够支持的结论"></a>13. 当前能够支持的结论</h2><h3 id="13-1-已有证据支持"><a href="#13-1-已有证据支持" class="headerlink" title="13.1 已有证据支持"></a>13.1 已有证据支持</h3><ol><li><p>原 GeoPT 静态骨干可以在不破坏 14 维预训练输入的前提下改造成动态单步状态转移器。</p></li><li><p>GeoPT 初始化在同一 200 帧诊断数据上优于随机初始化，尤其显著降低 rollout 误差。</p></li><li><p>动态 CFD 数据的抽样方式会显著影响模型误差，移动边界附近必须避免不受控的 point interpolation。</p></li><li><p>30k 点、1000 epochs 能继续降低单步和 rollout 误差，且达到约 60 FPS 的模型推理速度。</p></li><li><p>仅增加点数和单步 epochs 不足以达到严格长时 rollout 门槛。</p></li></ol><h3 id="13-2-当前不能声称"><a href="#13-2-当前不能声称" class="headerlink" title="13.2 当前不能声称"></a>13.2 当前不能声称</h3><ol><li><p>不能声称已完成动态姿态泛化：目前训练和评估使用同一条 200 帧轨迹。</p></li><li><p>不能声称已达到高保真动态 CFD 精度：当前 legacy 标签为 diagnostic-only。</p></li><li><p>不能声称优于公开 SOTA：EAGLE&#x2F;RealPDEBench 尚未实际训练和跑分。</p></li><li><p>不能把模型相对 OpenFOAM 的加速比作为正式结论：还需统一硬件、预处理和完整端到端计时。</p></li><li><p>不能仅凭单步误差说明长时预测稳定。</p></li></ol><h2 id="14-下一阶段计划"><a href="#14-下一阶段计划" class="headerlink" title="14. 下一阶段计划"></a>14. 下一阶段计划</h2><h3 id="14-1-近期：解决-rollout-稳定性"><a href="#14-1-近期：解决-rollout-稳定性" class="headerlink" title="14.1 近期：解决 rollout 稳定性"></a>14.1 近期：解决 rollout 稳定性</h3><ol><li><p>在 cell-centered 数据上固定 E0 基线。</p></li><li><p>依次加入状态噪声、pushforward 和 DCCL。</p></li><li><p>使用 <code>1 -&gt; 4 -&gt; 8 -&gt; 16</code> horizon curriculum。</p></li><li><p>在同一显存预算下比较 NOG、WIG 和 TBPTT。</p></li><li><p>同时报告 +1、+10、+25、+50、+100、最终步误差与误差增长曲线。</p></li></ol><h3 id="14-2-中期：提高数据与状态质量"><a href="#14-2-中期：提高数据与状态质量" class="headerlink" title="14.2 中期：提高数据与状态质量"></a>14.2 中期：提高数据与状态质量</h3><ol><li><p>获取多条动作、cadence scale（步频缩放）和 amplitude scale（动作幅度缩放）轨迹。</p></li><li><p>使用 strict-V2 动态 CFD，保证拓扑、守恒量、力和力矩连续性。</p></li><li><p>将 <code>k,omega</code> 纳入状态，验证当前系统是否受部分观测限制。</p></li><li><p>按完整轨迹划分 train&#x2F;validation&#x2F;test，禁止相邻帧泄漏。</p></li></ol><h3 id="14-3-公开比较"><a href="#14-3-公开比较" class="headerlink" title="14.3 公开比较"></a>14.3 公开比较</h3><ol><li><p>先复现 EAGLE 官方基线和指标脚本。</p></li><li><p>在同一划分、同一 rollout horizon 下运行 DynamicTransolver。</p></li><li><p>在 RealPDEBench 上比较 Transolver、GeoPT 初始化和 DynamicTransolver。</p></li><li><p>最终回到 H1&#x2F;G1，报告三维多关节场景中的精度、稳定性、显存和端到端速度。</p></li></ol><h2 id="15-工作区、分支与主要产物"><a href="#15-工作区、分支与主要产物" class="headerlink" title="15. 工作区、分支与主要产物"></a>15. 工作区、分支与主要产物</h2><h3 id="15-1-代码工作区"><a href="#15-1-代码工作区" class="headerlink" title="15.1 代码工作区"></a>15.1 代码工作区</h3><table><thead><tr><th>工作区</th><th>分支</th><th>内容</th></tr></thead><tbody><tr><td><code>/essfs10/daishibo/workspaces/geopt-dynamic-cfd</code></td><td><code>experiment/dynamic-cfd-transolver-v0</code></td><td>DynamicTransolver V0、200 帧管线、采样修复</td></tr><tr><td><code>/essfs10/daishibo/workspaces/geopt-dynamic-cfd-30k-1000e</code></td><td><code>experiment/dynamic-cfd-30k-1000e</code></td><td>30k 点、1000 epochs 实验</td></tr><tr><td><code>/essfs10/daishibo/workspaces/geopt-dynamic-cfd-long-horizon-research</code></td><td><code>research/long-horizon-pde-surrogates</code></td><td>长时训练、EAGLE 和 benchmark 调研</td></tr></tbody></table><p><code>experiment/dynamic-cfd-transolver-v0</code> 已推送至：</p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">https://github.com/DaiShiBo369/GeoPT_For_Robotics</span><br><span class="line"></span><br></pre></td></tr></table></figure><h3 id="15-2-主要结果"><a href="#15-2-主要结果" class="headerlink" title="15.2 主要结果"></a>15.2 主要结果</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">/essfs10/daishibo/data/geopt_dynamic_cfd_runs/h1_legacy_overfit_v0/</span><br><span class="line"></span><br><span class="line">/essfs10/daishibo/data/geopt_dynamic_cfd_runs/h1_legacy_200frame_overfit_v1/</span><br><span class="line"></span><br><span class="line">/essfs10/daishibo/data/geopt_dynamic_cfd_runs/h1_cellcenter_30k_1000e_v1/</span><br><span class="line"></span><br></pre></td></tr></table></figure><h3 id="15-3-主要文档"><a href="#15-3-主要文档" class="headerlink" title="15.3 主要文档"></a>15.3 主要文档</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">docs/dynamic_transolver_visualization.html</span><br><span class="line"></span><br><span class="line">docs/V0_IMPLEMENTATION_STATUS_ZH.md</span><br><span class="line"></span><br><span class="line">docs/H1_G1_DYNAMIC_CFD_COLLABORATION_PLAN_ZH.md</span><br><span class="line"></span><br><span class="line">docs/LONG_HORIZON_PDE_SURROGATE_RESEARCH_ZH.md</span><br><span class="line"></span><br><span class="line">docs/EAGLE_DATASET_RESEARCH_ZH.md</span><br><span class="line"></span><br><span class="line">docs/PUBLIC_BENCHMARK_STRATEGY_ZH.md</span><br><span class="line"></span><br></pre></td></tr></table></figure><h2 id="16-组会汇报"><a href="#16-组会汇报" class="headerlink" title="16. 组会汇报"></a>16. 组会汇报</h2><p>本阶段可凝练为四项贡献：</p><ol><li><p><strong>架构贡献</strong>：完成从静态 GeoPT 到显式变边界动态状态转移器的最小兼容改造，并成功迁移 165&#x2F;169 个预训练张量。</p></li><li><p><strong>实验贡献</strong>：在真实 H1 连续 CFD 上完成单转移和 200 帧过拟合诊断；GeoPT 相比随机初始化将初始 8192 点 rollout 均值误差降低约 53.3%。</p></li><li><p><strong>工程贡献</strong>：定位动态网格插值异常并改为 cell-centered 读取；修复后单步误差降低约 60.9%。</p></li><li><p><strong>研究推进</strong>：30k&#x2F;1000 epochs 将单步均值降至 0.0426、199 步 rollout 均值降至 0.3672，同时明确下一瓶颈是多步稳定性而非继续堆叠单步 epochs；已建立 EAGLE、RealPDEBench、自有 H1&#x2F;G1 的三级评价路线。</p></li></ol><p>最审慎且有信息量的阶段性表述是：</p><blockquote><p>我们已经证明 GeoPT 的空间预训练表征可以迁移到真实变边界瞬态 CFD，并明显优于随机初始化；同时，实验揭示了动态网格数据提取和长时误差累积是两个独立问题。下一阶段将以多步课程学习和公开 benchmark 为中心，验证该优势能否从轨迹内过拟合扩展到跨轨迹、跨动作和公开数据集泛化。</p></blockquote>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习科研 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> GeoPT </tag>
+            
+            <tag> CFD </tag>
+            
+            <tag> OpenFOAM </tag>
+            
+            <tag> Transolver </tag>
+            
+            <tag> 机器人 </tag>
+            
+            <tag> 动态CFD </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>古诗词鉴赏答题框架：支教课件下载</title>
       <link href="/2026/07/18/2026-07-18-gu-shi-ci-answer-framework-ppt/"/>
       <url>/2026/07/18/2026-07-18-gu-shi-ci-answer-framework-ppt/</url>
@@ -13,18 +48,14 @@
       
       <categories>
           
-          <category> 教学资源 </category>
+          <category> 学习科研源 </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> 古诗词 </tag>
-            
             <tag> 语文 </tag>
-            
-            <tag> 支教 </tag>
             
             <tag> PPT </tag>
             
@@ -71,9 +102,7 @@
       
       <categories>
           
-          <category> 学习 </category>
-          
-          <category> Python </category>
+          <category> 学习科研 </category>
           
       </categories>
       
@@ -89,8 +118,6 @@
             <tag> Pyodide </tag>
             
             <tag> WebAssembly </tag>
-            
-            <tag> 静态博客 </tag>
             
         </tags>
       
@@ -108,9 +135,7 @@
       
       <categories>
           
-          <category> 学习 </category>
-          
-          <category> C++ </category>
+          <category> 学习科研 </category>
           
       </categories>
       
@@ -120,14 +145,6 @@
             <tag> C++ </tag>
             
             <tag> OOP </tag>
-            
-            <tag> 面向对象 </tag>
-            
-            <tag> 虚函数 </tag>
-            
-            <tag> 模板 </tag>
-            
-            <tag> 运算符重载 </tag>
             
         </tags>
       
@@ -145,9 +162,7 @@
       
       <categories>
           
-          <category> 技术 </category>
-          
-          <category> Qt </category>
+          <category> 学习科研 </category>
           
       </categories>
       
@@ -158,11 +173,7 @@
             
             <tag> Qt </tag>
             
-            <tag> Qt Widgets </tag>
-            
             <tag> GUI </tag>
-            
-            <tag> 信号与槽 </tag>
             
             <tag> CMake </tag>
             
@@ -182,9 +193,7 @@
       
       <categories>
           
-          <category> 学习 </category>
-          
-          <category> 机器学习 </category>
+          <category> 学习科研 </category>
           
       </categories>
       
@@ -194,10 +203,6 @@
             <tag> Machine Learning </tag>
             
             <tag> Transformer </tag>
-            
-            <tag> Self-Attention </tag>
-            
-            <tag> Seq2Seq </tag>
             
             <tag> NLP </tag>
             
@@ -219,7 +224,7 @@
       
       <categories>
           
-          <category> 科研 </category>
+          <category> 学习科研 </category>
           
       </categories>
       
@@ -279,16 +284,18 @@
       
       <categories>
           
-          <category> 开发日志 </category>
+          <category> 学习科研 </category>
           
       </categories>
       
       
         <tags>
             
+            <tag> 开发日志 </tag>
+            
             <tag> Hexo </tag>
             
-            <tag> AnZhiYu </tag>
+            <tag> anzhiyu </tag>
             
             <tag> LaTeX </tag>
             
@@ -314,7 +321,7 @@
       
       <categories>
           
-          <category> 科研 </category>
+          <category> 学习科研 </category>
           
       </categories>
       
@@ -388,16 +395,18 @@
       
       <categories>
           
-          <category> 开发日志 </category>
+          <category> 学习科研 </category>
           
       </categories>
       
       
         <tags>
             
+            <tag> 开发日志 </tag>
+            
             <tag> Hexo </tag>
             
-            <tag> AnZhiYu </tag>
+            <tag> anzhiyu </tag>
             
             <tag> GitHub Pages </tag>
             
@@ -405,9 +414,7 @@
             
             <tag> 不蒜子 </tag>
             
-            <tag> 文章封面 </tag>
-            
-            <tag> UI优化 </tag>
+            <tag> UI </tag>
             
         </tags>
       
@@ -456,12 +463,20 @@
       
       <categories>
           
-          <category> 开发日志 </category>
+          <category> 生活日常 </category>
           
-          <category> 音乐馆 </category>
+          <category> 学习科研 </category>
           
       </categories>
       
+      
+        <tags>
+            
+            <tag> 音乐 </tag>
+            
+            <tag> 前端开发 </tag>
+            
+        </tags>
       
     </entry>
     
@@ -477,22 +492,20 @@
       
       <categories>
           
-          <category> 开发日志 </category>
-          
-          <category> Hexo </category>
-          
-          <category> Disboundia </category>
-          
-          <category> 图床 </category>
-          
-          <category> bug修复 </category>
-          
-          <category> anzhiyu </category>
-          
-          <category> Yaml </category>
+          <category> 学习科研 </category>
           
       </categories>
       
+      
+        <tags>
+            
+            <tag> 开发日志 </tag>
+            
+            <tag> Hexo </tag>
+            
+            <tag> anzhiyu </tag>
+            
+        </tags>
       
     </entry>
     
@@ -508,22 +521,20 @@
       
       <categories>
           
-          <category> 开发日志 </category>
-          
-          <category> Hexo </category>
-          
-          <category> Disboundia </category>
-          
-          <category> 图床 </category>
-          
-          <category> bug修复 </category>
-          
-          <category> anzhiyu </category>
-          
-          <category> Yaml </category>
+          <category> 学习科研 </category>
           
       </categories>
       
+      
+        <tags>
+            
+            <tag> 开发日志 </tag>
+            
+            <tag> Hexo </tag>
+            
+            <tag> anzhiyu </tag>
+            
+        </tags>
       
     </entry>
     
@@ -539,22 +550,20 @@
       
       <categories>
           
-          <category> 开发日志 </category>
-          
-          <category> Hexo </category>
-          
-          <category> Disboundia </category>
-          
-          <category> 图床 </category>
-          
-          <category> bug修复 </category>
-          
-          <category> anzhiyu </category>
-          
-          <category> Yaml </category>
+          <category> 学习科研 </category>
           
       </categories>
       
+      
+        <tags>
+            
+            <tag> 开发日志 </tag>
+            
+            <tag> Hexo </tag>
+            
+            <tag> anzhiyu </tag>
+            
+        </tags>
       
     </entry>
     

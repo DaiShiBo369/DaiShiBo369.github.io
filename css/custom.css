@@ -100,86 +100,193 @@ textarea,
   white-space: nowrap;
 }
 
-body[data-type="about"] .author-content-item.about-card-no-image {
-  background:
-    radial-gradient(circle at 18% 16%, rgba(66, 90, 239, 0.16), transparent 28%),
-    linear-gradient(135deg, rgba(24, 160, 88, 0.13), rgba(245, 247, 250, 0.92));
+.starring-page {
+  --starring-ink: #1f2937;
+  --starring-muted: #667085;
+  --starring-line: rgba(31, 41, 55, 0.14);
+  --starring-soft: #f7faf9;
+  --starring-accent: #2f7665;
+  --starring-accent-dark: #245d50;
+  --starring-amber: #b4751f;
+  color: var(--starring-ink);
 }
 
-body[data-type="about"] .author-content-item.like-technology.about-card-no-image,
-body[data-type="about"] .author-content-item.like-music.about-card-no-image,
-body[data-type="about"] .author-content-item.game-yuanshen.about-card-no-image {
-  color: var(--font-color);
+.starring-page * {
+  box-sizing: border-box;
 }
 
-body[data-type="about"] .author-content-item.like-technology.about-card-no-image::after,
-body[data-type="about"] .author-content-item.like-music.about-card-no-image::after,
-body[data-type="about"] .author-content-item.game-yuanshen.about-card-no-image::after {
-  display: none;
-}
-
-body[data-type="about"] .about-personality-description {
-  max-width: calc(100% - 260px);
-  margin-top: 0.8rem;
-  color: var(--anzhiyu-secondtext);
-  line-height: 1.65;
-}
-
-body[data-type="about"] .author-content-item.personalities .about-image-placeholder {
+.starring-hero {
   display: grid;
-  place-items: center;
-  width: 220px;
-  height: 150px;
-  border-radius: 18px;
-  background: linear-gradient(135deg, rgba(124, 92, 255, 0.14), rgba(47, 169, 222, 0.18));
-  border: var(--style-border-always);
-  color: #7c5cff;
-  font-size: 42px;
+  grid-template-columns: minmax(0, 0.9fr) minmax(280px, 1.1fr);
+  gap: 28px;
+  align-items: center;
+  padding: 8px 0 28px;
+  border-bottom: 1px solid var(--starring-line);
+}
+
+.starring-kicker {
+  margin: 0 0 10px !important;
+  color: var(--starring-accent) !important;
+  font-size: 0.78rem;
   font-weight: 800;
+  letter-spacing: 0 !important;
+  text-transform: uppercase;
 }
 
-body[data-type="about"] .author-content-item.myphoto.about-photo-placeholder {
-  background:
-    linear-gradient(135deg, rgba(47, 169, 222, 0.18), rgba(255, 204, 87, 0.18)),
-    var(--anzhiyu-card-bg);
+.starring-hero h1 {
+  margin: 0 0 14px !important;
+  color: var(--starring-ink);
+  font-size: clamp(2.3rem, 7vw, 4.4rem);
+  line-height: 1.02;
+  letter-spacing: 0 !important;
 }
 
-body[data-type="about"] .author-content-item.myphoto.about-photo-placeholder::before {
-  content: "";
-  width: 96px;
-  height: 96px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.42);
-  border: var(--style-border-always);
+.starring-lead {
+  max-width: 36rem;
+  margin: 0 !important;
+  color: var(--starring-muted) !important;
+  font-size: 1.02rem;
+  line-height: 1.9;
 }
 
-body[data-type="about"] .reward-list-item .reward-list-item-money {
-  background: rgba(66, 90, 239, 0.12);
-  color: var(--anzhiyu-main);
+.starring-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 22px;
 }
 
-body[data-type="about"] .reward-list-item .reward-list-bottom-group {
-  gap: 0.6rem;
+.starring-button {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 16px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-weight: 800;
+  line-height: 1.2;
+  text-decoration: none !important;
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
 }
 
-body[data-type="about"] .author-content-item.selfInfo .selfInfo-content {
-  word-break: keep-all;
-  white-space: nowrap;
+.starring-button:hover {
+  transform: translateY(-1px);
 }
 
-@media screen and (max-width: 768px) {
-  body[data-type="about"] .about-personality-description {
-    max-width: 100%;
+.starring-button-primary {
+  background: var(--starring-accent);
+  color: #fff !important;
+}
+
+.starring-button-primary:hover {
+  background: var(--starring-accent-dark);
+}
+
+.starring-button-muted {
+  border-color: var(--starring-line);
+  background: #fff;
+  color: var(--starring-ink) !important;
+}
+
+.starring-visual-wrap {
+  margin: 0 !important;
+}
+
+.starring-visual {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--starring-line);
+  border-radius: 8px;
+  background: var(--starring-soft);
+}
+
+.starring-section {
+  padding: 30px 0;
+  border-bottom: 1px solid var(--starring-line);
+}
+
+.starring-section-head {
+  margin-bottom: 16px;
+}
+
+.starring-section h2 {
+  margin: 0 !important;
+  color: var(--starring-ink);
+  font-size: 1.45rem;
+  letter-spacing: 0 !important;
+}
+
+.starring-app-frame {
+  display: block;
+  width: 100%;
+  min-height: 420px;
+  border: 1px solid var(--starring-line);
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.starring-download-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 20px;
+  align-items: center;
+  padding: 18px;
+  border: 1px solid var(--starring-line);
+  border-radius: 8px;
+  background: var(--starring-soft);
+}
+
+.starring-download-grid p {
+  margin: 0 !important;
+  color: var(--starring-muted) !important;
+  line-height: 1.85;
+}
+
+.starring-notes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  border-bottom: 0;
+}
+
+.starring-note {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid var(--starring-line);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.starring-note strong {
+  color: var(--starring-amber);
+}
+
+.starring-note span {
+  color: var(--starring-muted);
+  line-height: 1.75;
+}
+
+@media (max-width: 820px) {
+  .starring-hero {
+    grid-template-columns: 1fr;
   }
 
-  body[data-type="about"] .author-content-item.personalities .about-image-placeholder {
-    right: 12px;
-    width: 112px;
-    height: 92px;
-    font-size: 26px;
+  .starring-download-grid,
+  .starring-notes {
+    grid-template-columns: 1fr;
   }
 
-  body[data-type="about"] .author-content-item.selfInfo .selfInfo-content {
-    font-size: 28px;
+  .starring-actions,
+  .starring-button,
+  .starring-download-grid .starring-button {
+    width: 100%;
+  }
+
+  .starring-app-frame {
+    min-height: 360px;
   }
 }
