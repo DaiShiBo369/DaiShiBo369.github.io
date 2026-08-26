@@ -4,6 +4,39 @@
   
     
     <entry>
+      <title>动态边界 CFD 公开数据集筛选笔记</title>
+      <link href="/2026/08/26/2026-08-26-dynamic-boundary-cfd-public-dataset-scan/"/>
+      <url>/2026/08/26/2026-08-26-dynamic-boundary-cfd-public-dataset-scan/</url>
+      
+        <content type="html"><![CDATA[<h1 id="动态边界-CFD-公开数据集筛选笔记"><a href="#动态边界-CFD-公开数据集筛选笔记" class="headerlink" title="动态边界 CFD 公开数据集筛选笔记"></a>动态边界 CFD 公开数据集筛选笔记</h1><p>我最近在给 GeoPT &#x2F; DynamicTransolver 这类面向瞬态、移动边界 CFD 的模型找公开 benchmark。结论先说在前面：<strong>截至 2026-08-24，我没有找到一个现成数据集能同时满足 3D、长时间尺度、移动刚体&#x2F;可变形边界、全场 Eulerian 表达、并且还能直接提供或容易重建 <code>SDF</code>、法向量、边界速度、来流方向和来流大小</strong>。</p><p>这意味着，真正可行的方案不是“找到一个完美数据集”，而是把问题拆成三层：</p><ol><li>用一个主 benchmark 做核心验证；</li><li>用 3D 全场流体事件数据做辅助验证；</li><li>必要时自己从仿真里生成真正的 3D 移动边界&#x2F;碰撞数据。</li></ol><h2 id="我在找什么"><a href="#我在找什么" class="headerlink" title="我在找什么"></a>我在找什么</h2><p>我关心的不是“有时间维度”这件事本身，而是更严格的物理语义。理想数据集最好同时满足：</p><ul><li>3D；</li><li>长时间尺度，或至少长 horizon；</li><li>移动刚体、可变形边界，最好包含接触&#x2F;碰撞；</li><li>全场 Eulerian 表达，至少有速度和压力；</li><li>直接给出或容易重建 <code>SDF</code>、法向量、边界速度、来流方向和来流大小。</li></ul><p>按这个标准看，公开数据通常只满足其中两三项，很少能全中。</p><h2 id="目前最合理的组合"><a href="#目前最合理的组合" class="headerlink" title="目前最合理的组合"></a>目前最合理的组合</h2><p>我最后把候选分成三类：</p><ul><li><strong>主 benchmark</strong>：RealPDEBench FSI；</li><li><strong>3D 全场事件辅助 benchmark</strong>：FluidVerse 或 MPF-Bench；</li><li><strong>真正的 3D 移动固体&#x2F;碰撞</strong>：用 OpenFOAM、solids4foam、DualSPHysics 自己生成并按统一格式导出。</li></ul><h2 id="候选数据集"><a href="#候选数据集" class="headerlink" title="候选数据集"></a>候选数据集</h2><h3 id="1-RealPDEBench-FSI"><a href="#1-RealPDEBench-FSI" class="headerlink" title="1. RealPDEBench FSI"></a>1. RealPDEBench FSI</h3><ul><li>数据集页：<a href="https://realpdebench.github.io/datasets/fsi/">https://realpdebench.github.io/datasets/fsi/</a></li><li>论文：<a href="https://arxiv.org/html/2601.01829">https://arxiv.org/html/2601.01829</a></li></ul><p>这是目前最适合当主线的公开数据。它的物理问题是串列圆柱涡激振动，上游圆柱固定，下游圆柱在流体作用下横向运动。数据规模也比较完整，包含 real &#x2F; numerical trajectories，时间分辨率较高，字段里有 <code>u, v, p</code> 等。</p><p>它的优点是：</p><ul><li>真正的长时程移动边界 FSI；</li><li>论文里比较了 U-Net、CNO、DeepONet、FNO、MWT、GK-Transformer、Transolver、DPOT 等模型；</li><li>很适合做模型对比和时序 rollout。</li></ul><p>它的限制也很明确：</p><ul><li>只有 2D；</li><li>没有碰撞；</li><li>高层 schema 里没有直接给出随时间变化的 <code>SDF</code> 和法向量，需要自己根据圆柱轨迹重建。</li></ul><p>我的判断是：<strong>它适合作为主 benchmark，但不适合作为“3D 动态边界 CFD 已经被解决了”的证据</strong>。</p><h3 id="2-FluidVerse"><a href="#2-FluidVerse" class="headerlink" title="2. FluidVerse"></a>2. FluidVerse</h3><ul><li>数据集主页：<a href="https://huggingface.co/datasets/FluidVerse/samples">https://huggingface.co/datasets/FluidVerse/samples</a></li><li>3D 气泡坍缩：<a href="https://huggingface.co/datasets/FluidVerse/3D_SABW_SSOOSS">https://huggingface.co/datasets/FluidVerse/3D_SABW_SSOOSS</a></li><li>3D 液滴破碎：<a href="https://huggingface.co/datasets/FluidVerse/3D_SDBA_SSOOSS">https://huggingface.co/datasets/FluidVerse/3D_SDBA_SSOOSS</a></li></ul><p>FluidVerse 更像是 3D 全场流体事件的强辅助数据，而不是移动边界 CFD 数据。它的求解器是 ALPACA，属于可压缩 Euler 框架，字段里通常有密度、压力、速度和体积分数等。</p><p>优点：</p><ul><li>3D；</li><li>全场；</li><li>数据量大，适合训练和评估 rollouts；</li><li>对空间结构学习很有帮助。</li></ul><p>限制：</p><ul><li>研究对象是气泡&#x2F;液滴&#x2F;自由界面，不是刚体边界运动；</li><li>边界更多是对称或开放边界，不是动态固体边界；</li><li>事件时间较短。</li></ul><p>所以它更适合做 <strong>3D 全场事件建模</strong>，不适合直接冒充移动固体边界 CFD。</p><h3 id="3-MPF-Bench"><a href="#3-MPF-Bench" class="headerlink" title="3. MPF-Bench"></a>3. MPF-Bench</h3><ul><li>官方页：<a href="https://baskargroup.github.io/mpf-bench/">https://baskargroup.github.io/mpf-bench/</a></li><li>数据：<a href="https://huggingface.co/datasets/BGLab/mpf-bench">https://huggingface.co/datasets/BGLab/mpf-bench</a></li></ul><p>MPF-Bench 是规模较大的 3D 多相流数据集，包含大量气泡和液滴模拟子集，字段里有 <code>c, u, v, w, p, rho</code>，使用 LBM，网格是三维规则网格。</p><p>优点：</p><ul><li>3D；</li><li>多相；</li><li>适合做辅助验证；</li><li>对复杂流体模式识别有价值。</li></ul><p>限制：</p><ul><li>核心问题还是气泡&#x2F;液滴，不是移动刚体边界；</li><li>不包含典型的固体碰撞任务；</li><li>数据体量很大。</li></ul><p>它更适合作为多相场景的补充，而不是主任务。</p><h3 id="4-DARUS-4225"><a href="#4-DARUS-4225" class="headerlink" title="4. DARUS-4225"></a>4. DARUS-4225</h3><ul><li>数据页：<a href="https://darus.uni-stuttgart.de/dataset.xhtml?persistentId=doi:10.18419/darus-4225">https://darus.uni-stuttgart.de/dataset.xhtml?persistentId=doi%3A10.18419%2Fdarus-4225</a></li></ul><p>这是一个 3D 液滴-液柱碰撞数据集，包含多个输出时刻，字段里有 VOF、PLIC、速度等信息。它的几何和尺度都比较接近真实流体碰撞问题。</p><p>优点：</p><ul><li>真 3D；</li><li>有碰撞；</li><li>流体动力学语义清楚。</li></ul><p>限制：</p><ul><li>只有单一事件；</li><li>没有压力场；</li><li>仍然不是移动固体边界问题。</li></ul><h3 id="5-DARUS-1798"><a href="#5-DARUS-1798" class="headerlink" title="5. DARUS-1798"></a>5. DARUS-1798</h3><ul><li>数据页：<a href="https://darus.uni-stuttgart.de/dataset.xhtml?persistentId=doi:10.18419/DARUS-1798">https://darus.uni-stuttgart.de/dataset.xhtml?persistentId=doi%3A10.18419%2FDARUS-1798</a></li></ul><p>这是高 Weber 数液滴正碰撞的 3D DNS 数据，理论上和碰撞接近，但当前公开可访问状态并不适合作为立即可用的数据源。</p><p>结论很简单：<strong>接近碰撞，但不够顺手，也不是移动固体边界</strong>。</p><h3 id="6-BubbleSH"><a href="#6-BubbleSH" class="headerlink" title="6. BubbleSH"></a>6. BubbleSH</h3><ul><li>论文：<a href="https://arxiv.org/html/2607.07275">https://arxiv.org/html/2607.07275</a></li><li>数据：<a href="https://zenodo.org/records/21229301">https://zenodo.org/records/21229301</a></li></ul><p>这是 3D 气泡群 DNS 数据，带有相互作用过程，也比较适合长时程流体交互建模。</p><p>但它缺少完整的压力-速度场、<code>SDF</code> 和固体边界描述，因此更像流体相互作用数据，不是目标问题本身。</p><h3 id="7-3D-流固接触数据"><a href="#7-3D-流固接触数据" class="headerlink" title="7. 3D 流固接触数据"></a>7. 3D 流固接触数据</h3><p>这一类里能找到一些零散资源，比如：</p><ul><li><a href="https://arxiv.org/abs/2011.08691">https://arxiv.org/abs/2011.08691</a></li><li><a href="https://zenodo.org/records/3989604">https://zenodo.org/records/3989604</a></li><li><a href="https://zenodo.org/records/19210800">https://zenodo.org/records/19210800</a></li><li><a href="https://www.solids4foam.com/tutorials/tutorial4.html">https://www.solids4foam.com/tutorials/tutorial4.html</a></li></ul><p>它们通常更接近 OpenFOAM 工作流，但目前的问题是：<strong>短、碎、缺少统一的碰撞和长时程 split</strong>。</p><h2 id="如果必须先跑一个-2D-fallback"><a href="#如果必须先跑一个-2D-fallback" class="headerlink" title="如果必须先跑一个 2D fallback"></a>如果必须先跑一个 2D fallback</h2><p>我最后更愿意先用 <strong>MATEY Colliding Thermals</strong> 作为 2D 长时程 fallback。</p><ul><li>数据：<a href="https://zenodo.org/records/19889471">https://zenodo.org/records/19889471</a></li><li>论文：<a href="https://arxiv.org/html/2412.20601">https://arxiv.org/html/2412.20601</a></li></ul><p>它是两个浮力热团的碰撞，公开了约 1001 帧、约 500 秒的全场轨迹，字段包含密度、位温和速度。它没有移动固体边界，但作为“长时间 + 全场 + 碰撞”的 2D 备选，是目前最接近的。</p><h2 id="我对-Unsteady-Fluid-Mechanics-的判断"><a href="#我对-Unsteady-Fluid-Mechanics-的判断" class="headerlink" title="我对 Unsteady Fluid Mechanics 的判断"></a>我对 Unsteady Fluid Mechanics 的判断</h2><p>另一个值得单独看的目标是 <strong>Nonlinear Benchmark: Unsteady Fluid Mechanics</strong>：</p><ul><li>主页：<a href="https://www.nonlinearbenchmark.org/benchmarks/unsteady-fluid-mechanics">https://www.nonlinearbenchmark.org/benchmarks/unsteady-fluid-mechanics</a></li><li>4TU 数据页：<a href="https://data.4tu.nl/datasets/77985fa6-c546-4450-9d84-14b85f2d7e86">https://data.4tu.nl/datasets/77985fa6-c546-4450-9d84-14b85f2d7e86</a></li><li>DOI：<code>10.4121/77985fa6-c546-4450-9d84-14b85f2d7e86.v1</code></li></ul><p>它的优势是：</p><ul><li>明确的非定常流体问题；</li><li>输入运动类型明确；</li><li>输出包含尾流速度、压力、涡量和圆柱表面量；</li><li>比较接近“边界在动、源不动”的研究语义。</li></ul><p>但它的缺点也很现实：</p><ul><li><code>.mat</code> 内部变量和时间维度需要下载后核查；</li><li>当前数据格式未必和我们的 HDF5 manifest 完全一致；</li><li>还不能直接当成正式的 moving-boundary CFD 基准。</li></ul><p>所以我把它看成 <strong>最值得先做 smoke test 的对象</strong>，而不是最终论文结论的唯一依据。</p><h2 id="对论文设计的影响"><a href="#对论文设计的影响" class="headerlink" title="对论文设计的影响"></a>对论文设计的影响</h2><p>这里最重要的一点是：不要写成“Transolver 已经被证明对移动边界 CFD 没用”。</p><p>更稳妥的表达应该是：</p><ol><li>在固定规则网格的原始 Navier-Stokes 设置里，Transolver 有过不错结果；</li><li>但把任务切到移动边界、长 rollout、可变几何后，问题性质变了；</li><li>所以我们需要区分 <strong>架构增益</strong> 和 <strong>语义增益</strong>。</li></ol><p>更具体的对照组建议是：</p><ul><li>scratch baseline；</li><li>vanilla Transolver；</li><li>新动态架构，但不加 GeoPT；</li><li>新动态架构 + GeoPT。</li></ul><p>再补上 U-Net、FNO&#x2F;UNO、DPOT、一个强时序模型，以及一个强 GNN，比较会更完整。</p><h2 id="目前的待确认项"><a href="#目前的待确认项" class="headerlink" title="目前的待确认项"></a>目前的待确认项</h2><ul><li><code>Unsteady Fluid Mechanics</code> 的 <code>.mat</code> 内部变量名和时间维度，需要下载后再核实；</li><li>这类数据很多是测量或后处理网格，不一定能直接生成完整的 <code>SDF + normal + boundary velocity</code>；</li><li>现阶段第一轮结果只能算 pipeline smoke，不适合直接写成正式 benchmark 结论。</li></ul><h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>如果目标是 <strong>GeoPT &#x2F; DynamicTransolver 的动态边界 CFD 研究</strong>，我现在的建议很明确：</p><ol><li>主 benchmark 用 RealPDEBench FSI；</li><li>辅助验证用 FluidVerse 或 MPF-Bench；</li><li>真正的 3D 移动固体&#x2F;碰撞，自己生成数据；</li><li>先用 <code>Unsteady Fluid Mechanics</code> 和 MATEY 做 smoke test，再决定正式实验路线。</li></ol><p>换句话说，公开数据已经能支撑一个不错的研究起点，但还没有哪个单一数据集能把我们要的物理语义一次性补齐。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习科研 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> GeoPT </tag>
+            
+            <tag> CFD </tag>
+            
+            <tag> Transolver </tag>
+            
+            <tag> 数据集 </tag>
+            
+            <tag> 动态边界CFD </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>GeoPT 动态 CFD：从网络改造到当前阶段的完整工作报告</title>
       <link href="/2026/08/05/2026-08-05-geopt-dynamic-cfd-full-report/"/>
       <url>/2026/08/05/2026-08-05-geopt-dynamic-cfd-full-report/</url>
@@ -328,9 +361,9 @@
       
         <tags>
             
-            <tag> libuipc </tag>
-            
             <tag> IPC </tag>
+            
+            <tag> libuipc </tag>
             
             <tag> FEM </tag>
             
@@ -365,9 +398,9 @@
       
         <tags>
             
-            <tag> libuipc </tag>
-            
             <tag> IPC </tag>
+            
+            <tag> libuipc </tag>
             
             <tag> FEM </tag>
             
