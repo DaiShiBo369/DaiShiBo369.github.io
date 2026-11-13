@@ -290,3 +290,16 @@ textarea,
     min-height: 360px;
   }
 }
+
+/* 作者卡片简介中的重点文字 */
+.author-info__description strong { color: #ec6d9e !important; }
+
+/* 公众号卡片翻面时完整显示二维码 */
+#aside-content #card-wechat .back.face { background-color: #fff; background-size: contain !important; }
+
+/* 思考想法分类卡片：补足主题未提供的紫色样式 */
+a.categoryButton.purple { background: linear-gradient(to right, #8758ed, #c16fee); background-size: 200%; }
+@media screen and (max-width: 1200px) { .categoryGroup .categoryItem:nth-child(3) { display: block; } }
+
+/* 学业卡片保留校徽完整比例 */
+.author-content-item.careers img { left: auto; right: 16px; bottom: 20px; width: 42%; max-width: 210px; height: 150px; object-fit: contain; z-index: 0; }
