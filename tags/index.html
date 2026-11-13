@@ -178,8 +178,12 @@
     document.getElementById('loading-box').classList.remove("loaded")
   }
 }
-window.addEventListener('load',()=> { preloader.endLoading() })
-setTimeout(function(){preloader.endLoading();},10000)
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => preloader.endLoading(), { once: true });
+} else {
+  preloader.endLoading();
+}
+setTimeout(() => preloader.endLoading(), 2000);
 
 if (true) {
   document.addEventListener('pjax:send', () => { preloader.initLoading() })
@@ -245,13 +249,13 @@ if (true) {
         <span class="tagsPageCount">2</span>
       </a>
     
-      <a href="/tags/CFD/" id="/tags/CFD/">
-        <span class="tags-punctuation">#</span>CFD
+      <a href="/tags/GeoPT/" id="/tags/GeoPT/">
+        <span class="tags-punctuation">#</span>GeoPT
         <span class="tagsPageCount">2</span>
       </a>
     
-      <a href="/tags/GeoPT/" id="/tags/GeoPT/">
-        <span class="tags-punctuation">#</span>GeoPT
+      <a href="/tags/CFD/" id="/tags/CFD/">
+        <span class="tags-punctuation">#</span>CFD
         <span class="tagsPageCount">2</span>
       </a>
     
@@ -267,46 +271,6 @@ if (true) {
     
       <a href="/tags/前端开发/" id="/tags/前端开发/">
         <span class="tags-punctuation">#</span>前端开发
-        <span class="tagsPageCount">1</span>
-      </a>
-    
-      <a href="/tags/GitHub-Pages/" id="/tags/GitHub-Pages/">
-        <span class="tags-punctuation">#</span>GitHub Pages
-        <span class="tagsPageCount">1</span>
-      </a>
-    
-      <a href="/tags/本地搜索/" id="/tags/本地搜索/">
-        <span class="tags-punctuation">#</span>本地搜索
-        <span class="tagsPageCount">1</span>
-      </a>
-    
-      <a href="/tags/不蒜子/" id="/tags/不蒜子/">
-        <span class="tags-punctuation">#</span>不蒜子
-        <span class="tagsPageCount">1</span>
-      </a>
-    
-      <a href="/tags/UI/" id="/tags/UI/">
-        <span class="tags-punctuation">#</span>UI
-        <span class="tagsPageCount">1</span>
-      </a>
-    
-      <a href="/tags/MolmoMotion/" id="/tags/MolmoMotion/">
-        <span class="tags-punctuation">#</span>MolmoMotion
-        <span class="tagsPageCount">1</span>
-      </a>
-    
-      <a href="/tags/3D-Motion/" id="/tags/3D-Motion/">
-        <span class="tags-punctuation">#</span>3D Motion
-        <span class="tagsPageCount">1</span>
-      </a>
-    
-      <a href="/tags/物理仿真/" id="/tags/物理仿真/">
-        <span class="tags-punctuation">#</span>物理仿真
-        <span class="tagsPageCount">1</span>
-      </a>
-    
-      <a href="/tags/可视化/" id="/tags/可视化/">
-        <span class="tags-punctuation">#</span>可视化
         <span class="tagsPageCount">1</span>
       </a>
     
@@ -330,38 +294,43 @@ if (true) {
         <span class="tagsPageCount">1</span>
       </a>
     
-      <a href="/tags/Qt/" id="/tags/Qt/">
-        <span class="tags-punctuation">#</span>Qt
+      <a href="/tags/MolmoMotion/" id="/tags/MolmoMotion/">
+        <span class="tags-punctuation">#</span>MolmoMotion
         <span class="tagsPageCount">1</span>
       </a>
     
-      <a href="/tags/GUI/" id="/tags/GUI/">
-        <span class="tags-punctuation">#</span>GUI
+      <a href="/tags/3D-Motion/" id="/tags/3D-Motion/">
+        <span class="tags-punctuation">#</span>3D Motion
         <span class="tagsPageCount">1</span>
       </a>
     
-      <a href="/tags/CMake/" id="/tags/CMake/">
-        <span class="tags-punctuation">#</span>CMake
+      <a href="/tags/物理仿真/" id="/tags/物理仿真/">
+        <span class="tags-punctuation">#</span>物理仿真
         <span class="tagsPageCount">1</span>
       </a>
     
-      <a href="/tags/Machine-Learning/" id="/tags/Machine-Learning/">
-        <span class="tags-punctuation">#</span>Machine Learning
+      <a href="/tags/可视化/" id="/tags/可视化/">
+        <span class="tags-punctuation">#</span>可视化
         <span class="tagsPageCount">1</span>
       </a>
     
-      <a href="/tags/Transformer/" id="/tags/Transformer/">
-        <span class="tags-punctuation">#</span>Transformer
+      <a href="/tags/GitHub-Pages/" id="/tags/GitHub-Pages/">
+        <span class="tags-punctuation">#</span>GitHub Pages
         <span class="tagsPageCount">1</span>
       </a>
     
-      <a href="/tags/NLP/" id="/tags/NLP/">
-        <span class="tags-punctuation">#</span>NLP
+      <a href="/tags/本地搜索/" id="/tags/本地搜索/">
+        <span class="tags-punctuation">#</span>本地搜索
         <span class="tagsPageCount">1</span>
       </a>
     
-      <a href="/tags/Deep-Learning/" id="/tags/Deep-Learning/">
-        <span class="tags-punctuation">#</span>Deep Learning
+      <a href="/tags/不蒜子/" id="/tags/不蒜子/">
+        <span class="tags-punctuation">#</span>不蒜子
+        <span class="tagsPageCount">1</span>
+      </a>
+    
+      <a href="/tags/UI/" id="/tags/UI/">
+        <span class="tags-punctuation">#</span>UI
         <span class="tagsPageCount">1</span>
       </a>
     
@@ -390,6 +359,21 @@ if (true) {
         <span class="tagsPageCount">1</span>
       </a>
     
+      <a href="/tags/Qt/" id="/tags/Qt/">
+        <span class="tags-punctuation">#</span>Qt
+        <span class="tagsPageCount">1</span>
+      </a>
+    
+      <a href="/tags/GUI/" id="/tags/GUI/">
+        <span class="tags-punctuation">#</span>GUI
+        <span class="tagsPageCount">1</span>
+      </a>
+    
+      <a href="/tags/CMake/" id="/tags/CMake/">
+        <span class="tags-punctuation">#</span>CMake
+        <span class="tagsPageCount">1</span>
+      </a>
+    
       <a href="/tags/诗歌/" id="/tags/诗歌/">
         <span class="tags-punctuation">#</span>诗歌
         <span class="tagsPageCount">1</span>
@@ -400,6 +384,26 @@ if (true) {
         <span class="tagsPageCount">1</span>
       </a>
     
+      <a href="/tags/Machine-Learning/" id="/tags/Machine-Learning/">
+        <span class="tags-punctuation">#</span>Machine Learning
+        <span class="tagsPageCount">1</span>
+      </a>
+    
+      <a href="/tags/Transformer/" id="/tags/Transformer/">
+        <span class="tags-punctuation">#</span>Transformer
+        <span class="tagsPageCount">1</span>
+      </a>
+    
+      <a href="/tags/NLP/" id="/tags/NLP/">
+        <span class="tags-punctuation">#</span>NLP
+        <span class="tagsPageCount">1</span>
+      </a>
+    
+      <a href="/tags/Deep-Learning/" id="/tags/Deep-Learning/">
+        <span class="tags-punctuation">#</span>Deep Learning
+        <span class="tagsPageCount">1</span>
+      </a>
+    
       <a href="/tags/语文/" id="/tags/语文/">
         <span class="tags-punctuation">#</span>语文
         <span class="tagsPageCount">1</span>
@@ -407,16 +411,6 @@ if (true) {
     
       <a href="/tags/PPT/" id="/tags/PPT/">
         <span class="tags-punctuation">#</span>PPT
-        <span class="tagsPageCount">1</span>
-      </a>
-    
-      <a href="/tags/数据集/" id="/tags/数据集/">
-        <span class="tags-punctuation">#</span>数据集
-        <span class="tagsPageCount">1</span>
-      </a>
-    
-      <a href="/tags/动态边界CFD/" id="/tags/动态边界CFD/">
-        <span class="tags-punctuation">#</span>动态边界CFD
         <span class="tagsPageCount">1</span>
       </a>
     
@@ -432,6 +426,16 @@ if (true) {
     
       <a href="/tags/动态CFD/" id="/tags/动态CFD/">
         <span class="tags-punctuation">#</span>动态CFD
+        <span class="tagsPageCount">1</span>
+      </a>
+    
+      <a href="/tags/数据集/" id="/tags/数据集/">
+        <span class="tags-punctuation">#</span>数据集
+        <span class="tagsPageCount">1</span>
+      </a>
+    
+      <a href="/tags/动态边界CFD/" id="/tags/动态边界CFD/">
+        <span class="tags-punctuation">#</span>动态边界CFD
         <span class="tagsPageCount">1</span>
       </a>
     
